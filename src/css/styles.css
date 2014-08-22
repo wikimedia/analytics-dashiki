@@ -1,0 +1,14 @@
+section.projects-container {
+    background-color: #6D6D6D;
+    padding: 30px;
+    left: 30px;
+    top: 30px;
+    bottom: 30px;
+}
+section.main-container {
+    background-color: #EEEEEE;
+    padding: 30px;
+    right: 30px;
+    top: 30px;
+    bottom: 30px;
+}

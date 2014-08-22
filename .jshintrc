@@ -1,0 +1,32 @@
+{
+    // Details: https://github.com/victorporof/Sublime-JSHint#using-your-own-jshintrc-options
+    // Example: https://github.com/jshint/jshint/blob/master/examples/.jshintrc
+    // Documentation: http://www.jshint.com/docs/
+    "browser": true,
+    "esnext": true,
+    "globalstrict": true,
+    "quotmark": true,
+    "undef": true,
+    "unused": true,
+    "esnext": false,
+    "moz": true,
+    "boss": true,
+    "node": true,
+    "validthis": true,
+    "quotmark": false,
+
+    //Environment
+    "jquery":true,
+
+
+    "globals": {
+        "require":true,
+        "d3": true,
+        "vega":true,
+        "ko":true,
+        "Logger" :true,
+        "define": true,
+        "logger": true,
+        "Promise": true
+    }
+}

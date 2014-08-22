@@ -1,0 +1,14 @@
+{
+  "name": "dashiki",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "requirejs": "^2.1.11",
+    "requirejs-text": "^2.0.10",
+    "knockout": "~3.2.0",
+    "vega": "~1.4.1",
+    "topojson": "~1.6.18",
+    "jquery": "^2.1.1",
+    "moment": "^2.7.0"
+  }
+}

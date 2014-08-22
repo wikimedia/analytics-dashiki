@@ -1,0 +1,17 @@
+body { margin: 0; padding: 0; width: 100%; height: 100%; }
+
+/*  sections  */
+.section { padding: 0; margin: 0; height: 100%; }
+
+/*  column setup  */
+.col { position: absolute; top: 0; right: 0; left: 0; right: 0; height: 80%; }
+
+/*  left column menu layout */
+.span_small { right: 80%; }
+.span_large { left: 20%; }
+
+/*  go full width at less than 480 pixels */
+@media only screen and (max-width: 1024px) {
+    .span_small { position: relative; width: 100%; right: 0; }
+    .span_large { position: relative; width: 100%; left: 0; }
+}

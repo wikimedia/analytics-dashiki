@@ -1,0 +1,14 @@
+# temp files and install artifacts
+*swp
+.DS_Store
+node_modules/
+bower_modules/
+
+# personal dev stuff
+.jslintrc
+(OSX).sublime-keymap
+dashiki.sublime-project
+dashiki.sublime-workspace
+
+# don't ignore anything in the distribution directory so we can push releases
+!dist/*
