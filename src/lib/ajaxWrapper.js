@@ -1,5 +1,5 @@
 /* jshint -W098 */
-define(['jquery'], function($) {
+define([], function() {
     'use strict';
     /**
      * Enhance ajax requests to have:

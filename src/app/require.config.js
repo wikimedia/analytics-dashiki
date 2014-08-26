@@ -3,16 +3,30 @@
 'use strict';
 // require.js looks for the following global when initializing
 var require = {
-    baseUrl: ".",
+    baseUrl: '.',
     paths: {
-        "jquery"    : "bower_modules/jquery/dist/jquery",
-        "knockout"  : "bower_modules/knockout/dist/knockout",
-        "text"      : "bower_modules/requirejs-text/text",
-        "d3"        : "bower_modules/d3/d3",
-        "vega"      : "bower_modules/vega/vega",
-        "topojson"  : "bower_modules/topojson/topojson",
-        "moment"    : "bower_modules/moment/moment"
+        'jquery'    : 'bower_modules/jquery/dist/jquery',
+        'knockout'  : 'bower_modules/knockout/dist/knockout',
+        'text'      : 'bower_modules/requirejs-text/text',
+        'd3'        : 'bower_modules/d3/d3',
+        'vega'      : 'bower_modules/vega/vega',
+        'topojson'  : 'bower_modules/topojson/topojson',
+        'moment'    : 'bower_modules/moment/moment',
+        // NOTE: if you want functions like uri.expand, you must include both
+        // URI and URITemplate like define(['uri/URI', 'uri/URITemplate'] ...
+        // because URITemplate modifies URI when it's parsed
+        'uri'       : 'bower_modules/URIjs/src',
+        'config'    : 'app/config',
+        'logger'    :'lib/logger',
+        'ajaxWrapper':'lib/ajaxWrapper'
+    },
+    shim: {
+        'ajaxWrapper': {
+            //These script dependencies should be loaded before loading
+            //ajaxWrapper.js
+            deps: [ 'jquery']
+        }
     }
     // TODO: figure out cache busting.  This causes errors in testing:
-    // urlArgs: "bust=" +  (new Date()).getTime()
+    // urlArgs: 'bust=' +  (new Date()).getTime()
 };

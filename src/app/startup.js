@@ -1,4 +1,8 @@
-define(['knockout'], function(ko) {
+/**
+All requires below live on global scope.
+There is no need to specify them as such
+**/
+define(['knockout', 'jquery', 'ajaxWrapper','logger'], function(ko) {
 
     'use strict';
 

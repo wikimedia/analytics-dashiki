@@ -69,6 +69,18 @@ Debugging `./node_modules/gulp/bin/gulp.js`
 debugger listening on port 5858
 ```
 
+# Tests
+We use karma to run tests
+
+The way the karma installation works has changed with 0.12. It's documented here how to install it now:
+http://karma-runner.github.io/0.12/intro/installation.html. For global installation you'll need 
+to run npm install -g karma-cli and the local one is npm install karma. 
+In 0.12 no plugins ship with karma anymore so you have to specify them by hand, e.g. npm install --save-dev karma-chrome-launcher.
+
+To start running tests:
+```
+karma start
+```
 
 # Future Plans
 

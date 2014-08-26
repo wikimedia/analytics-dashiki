@@ -19,7 +19,7 @@
             strokeWidth     : 2
         "/>
  */
-define(['jquery', 'text!./vega-timeseries.html', './bindings'], function($, templateMarkup) {
+define([ 'text!./vega-timeseries.html', './bindings'], function( templateMarkup) {
 
     function VegaTimeseries(params) {
         $.extend(this, params);

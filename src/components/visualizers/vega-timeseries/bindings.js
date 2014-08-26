@@ -1,4 +1,4 @@
-define(['knockout', 'vega', 'jquery'], function(ko, vega, $) {
+define(['knockout', 'vega'], function(ko, vega) {
 
     /**
      * Utility Function.

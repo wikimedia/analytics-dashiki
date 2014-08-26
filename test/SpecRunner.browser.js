@@ -1,7 +1,10 @@
 (function() {
     // Reference your test modules here
     var testModules = [
-        'components/wikimetrics-layout'
+        'components/wikimetrics-layout',
+        'components/vega-timeseries',
+        'app/data-converters',
+        'app/apis',
     ];
 
     // After the 'jasmine-boot' module creates the Jasmine environment, load all test modules then run them
