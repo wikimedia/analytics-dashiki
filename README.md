@@ -11,52 +11,46 @@ cd dashiki
 python -m SimpleHTTPServer 5000
 ```
 
-You can now browse to http://localhost:5000/dist to use the latest release.
+Browse http://localhost:8000/dist to use the latest release.
+Or, browse to http://localhost:5000/src to run against raw files.
 
 To modify and develop:
 
-# Install Bower modules
+### Install Bower modules
 `bower install`
-  
-# Install npm modules
+
+### Install npm modules
 `npm install`
 
-# Use gulp to build
+### Build and Dev tools
+
+We're using karma as a test runner and gulp as a build tool.  You may want to
+install these tools globally:
+
 ```
 npm install -g gulp
-```
-After running 'gulp' should work
-
-If you were unable to install gulp globally 
-you can run the build via local module
-
-```
-./node_modules/gulp
-./node_modules/gulp/bin/gulp.js
-```
-# executing a gulp task 
-```
-$(which gulp) html
+npm install -g karma-cli
 ```
 
-Go into http://localhost:8000/src to run against raw files 
-
-# Handy commands
-
+Running gulp tasks to build, lint, clean, etc:
 ```
-bower ls
-bower list -p
+gulp html
+gulp
 ```
 
-Will list dependencies 
+The karma test runner will watch all files and execute all tests on changes:
+```
+karma start
+```
 
-# Debug gulp tasks
-Install node inspector 
+# Debugging dev tools
+Install node inspector
 
 ```
 npm install -g node-inspector
 ```
-You need to add "debugger" to the task you are interested in debuggin.
+
+Add "debugger" to the task you are interested in debugging:
 
 ```
 gulp.task('html', function() {
@@ -64,6 +58,7 @@ gulp.task('html', function() {
     // some code
 });
 ```
+
 And later call it with node-debug. Example:
 
 ```
@@ -73,3 +68,15 @@ Debugging `./node_modules/gulp/bin/gulp.js`
 
 debugger listening on port 5858
 ```
+
+
+# Future Plans
+
+### implement parameter validation
+
+The way people interact with components is by passing them params.  Therefore, components should implement validation and helpful error messages for unexpected parameters.  Ideally, this validation could be turned into documentation for the component interfaces.  Promising object validation libraries:
+
+* https://github.com/hapijs/joi
+* https://github.com/molnarg/js-schema
+* https://github.com/tjwebb/congruence
+* https://github.com/square/lgtm/wiki

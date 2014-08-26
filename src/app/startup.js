@@ -8,6 +8,7 @@ define(['knockout'], function(ko) {
     ko.components.register('metric-selector', { require: 'components/metric-selector/metric-selector' });
     ko.components.register('time-selector', { require: 'components/time-selector/time-selector' });
     ko.components.register('selection-visualizer', { require: 'components/selection-visualizer/selection-visualizer' });
+    ko.components.register('vega-timeseries', { require: 'components/visualizers/vega-timeseries/vega-timeseries' });
 
     // Start the application
     ko.applyBindings();
