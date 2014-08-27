@@ -4,7 +4,8 @@ define(['knockout', 'text!./wikimetrics-layout.html'], function(ko, templateMark
 
     function WikimetricsLayout() {
         var self = this;
-        self.loading = ko.observable();
+        self.selectedMetric = ko.observable();
+        self.selectedProjects = ko.observableArray();
     }
 
     return { viewModel: WikimetricsLayout, template: templateMarkup };

@@ -10,6 +10,7 @@
     "topojson": "~1.6.18",
     "jquery": "^2.1.1",
     "moment": "^2.7.0",
-    "URIjs": "~1.13.2"
+    "URIjs": "~1.13.2",
+    "knockout-projections": "~1.1.0-pre"
   }
 }

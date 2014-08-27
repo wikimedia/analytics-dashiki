@@ -2,7 +2,7 @@
  * This module returns a method that knows how to translate json data from
  *   wikimetrics to the canonical timeseries format understood by dashiki
  */
-define(['moment'], function(moment) {
+define(['moment', 'config'], function(moment, config) {
 
     /**
      * Parameters
@@ -18,17 +18,11 @@ define(['moment'], function(moment) {
      */
     return function (rawData){
         var aggregate = 'Sum',
-            submetrics = {
-                NewlyRegistered: 'newly_registered',
-                RollingActiveEditor: 'rolling_active_editor',
-                PagesCreated: 'pages_created',
-                NamespaceEdits: 'edits'
-            },
             normalized = [],
             keys = Object.keys(rawData),
             parameters = rawData.parameters,
             metricName = parameters.Metric,
-            submetric = submetrics[metricName],
+            submetric = config.wikimetricsDefaultSubmetrics[metricName],
             i;
 
         keys.splice(keys.indexOf('parameters'), 1);

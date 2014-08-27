@@ -13,7 +13,7 @@ var gulp = require('gulp'),
     clean = require('gulp-clean'),
     replace = require('gulp-replace'),
     uglify = require('gulp-uglify'),
-    htmlreplace = require('gulp-html-replace');
+    htmlreplace = require('gulp-html-replace'),
     jshint = require('gulp-jshint');
 
 // Config
@@ -27,13 +27,12 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
         },
         include: [
             'requireLib',
-            // TODO: find a way to include all components, gulp has a lot of plugins
+            'components/wikimetrics-visualizer/wikimetrics-visualizer',
             'components/wikimetrics-layout/wikimetrics-layout',
-            'components/wikimetrics-layout/wikimetrics-layout',
+            'components/visualizers/vega-timeseries/vega-timeseries',
             'components/project-selector/project-selector',
             'components/metric-selector/metric-selector',
-            'components/time-selector/time-selector',
-            'components/selection-visualizer/selection-visualizer'
+            'components/time-selector/time-selector'
         ],
         insertRequire: ['app/startup'],
         bundles: {

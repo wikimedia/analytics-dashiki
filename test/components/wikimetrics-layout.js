@@ -7,7 +7,8 @@ define(['components/wikimetrics-layout/wikimetrics-layout'], function(component)
         it('should create a loading observable', function() {
             var layout = new WikimetricsLayout();
 
-            expect(typeof(layout.loading)).toEqual('function');
+            expect(typeof(layout.selectedMetric)).toEqual('function');
+            expect(typeof(layout.selectedProjects)).toEqual('function');
         });
     });
 });

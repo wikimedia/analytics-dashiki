@@ -1,10 +1,10 @@
 <section class="section">
     <section class="col span_small projects-container">
-        <project-selector></project-selector>
+        <project-selector params="selectedProjects: selectedProjects"></project-selector>
     </section>
     <section class="col span_large main-container">
         <time-selector></time-selector>
-        <metric-selector></metric-selector>
-        <selection-visualizer></selection-visualizer>
+        <metric-selector params="selectedMetric: selectedMetric"></metric-selector>
+        <wikimetrics-visualizer params="projects: selectedProjects, metric: selectedMetric"></wikimetrics-visualizer>
     </section>
 </section>

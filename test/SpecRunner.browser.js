@@ -2,6 +2,7 @@
     // Reference your test modules here
     var testModules = [
         'components/wikimetrics-layout',
+        'components/wikimetrics-visualizer',
         'components/vega-timeseries',
         'app/data-converters',
         'app/apis',
