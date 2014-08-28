@@ -30,7 +30,7 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
             'components/wikimetrics-visualizer/wikimetrics-visualizer',
             'components/wikimetrics-layout/wikimetrics-layout',
             'components/visualizers/vega-timeseries/vega-timeseries',
-            'components/project-selector/project-selector',
+            'components/wikimetrics-layout/wikimetrics-layout',
             'components/metric-selector/metric-selector',
             'components/time-selector/time-selector'
         ],
@@ -38,7 +38,7 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
         bundles: {
             // If you want parts of the site to load on demand, remove them from the 'include' list
             // above, and group them into bundles here.
-            'on-demand': []
+            'project-selector': ['components/project-selector/project-selector']
         }
     });
 

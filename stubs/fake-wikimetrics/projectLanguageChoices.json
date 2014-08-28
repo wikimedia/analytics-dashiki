@@ -1,0 +1,74 @@
+[
+    [{
+        "name": "English",
+        "description": "All projects",
+        "projects": {
+            "Wikipedia": "eswiki",
+            "Somethingwiki": "somewiki",
+            "Wikidictionary": "somewiki"
+        }
+    }, {
+        "name": "German",
+        "description": "All projects",
+        "projects": {
+            "Wikipedia": "dewiki",
+            "SomethingGermanWiki": "somewiki",
+            "Wikidictionary": "somewiki"
+        }
+    }, {
+        "name": "Spanish",
+        "description": "All projects",
+        "projects": {
+            "Wikipedia": "eswiki",
+            "SomethingSpanishWiki": "somewiki",
+            "Wikidictionary": "somewiki"
+        }
+    }, {
+        "name": "Cantonese",
+        "description": "All projects",
+        "projects": {
+            "Wikipedia": "cawiki",
+            "SomethingCantoneseWiki": "somewiki",
+            "Wikidictionary": "somewiki"
+        }
+    }, {
+        "name": "Catalan",
+        "description": "All projects",
+        "projects": {
+            "Wikipedia": "cawiki",
+            "SomethingCatalanWiki": "somewiki",
+            "Wikidictionary": "somewiki"
+        }
+    }],
+    [{
+        "name": "Wikipedia",
+        "description": "280 languages",
+        "languages": {
+            "Spanish": "eswiki",
+            "English": "enwiki",
+            "German": "dewiki"
+        }
+    }, {
+        "name": "WikiSomething",
+        "description": "100 languages",
+        "languages": {
+            "Spanish": "eswiki",
+            "English": "enwiki",
+            "German": "dewiki"
+        }
+    }, {
+        "name": "Wikitionary",
+        "description": "170 languages",
+        "languages": {
+            "Spanish": "eswiki",
+            "English": "enwiki",
+            "German": "dewiki"
+        }
+    }, {
+        "name": "Commons",
+        "description": "Some languages",
+        "languages": {
+            "Mandarin": "mawiki"
+        }
+    }]
+]

@@ -1,1 +1,19 @@
--- select projects --
+<input
+       placeholder="+Search by project or language"
+       data-bind="projectAutocomplete: {
+            projectOptions: projectOptions,
+            languageOptions: languageOptions,
+            select: displaySecondLevel
+       }" class="typeahead search_box" autocomplete="off" size="20"/>
+
+<span class="tt-dropdown-menu" data-bind="css: {open: displaySuboptions}, click: hideSecondLevel">
+    <div class="tt-dataset-suboptions">
+        <span class="header" data-bind="text: selectedOption"></span>
+        <hr/>
+        <span class="tt-suggestions">
+        <!-- ko foreach: suboptions -->
+            <div class="tt-suggestion" data-bind="text: option"></div>
+        <!-- /ko -->
+        </span>
+    </div>
+</span>

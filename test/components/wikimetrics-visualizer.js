@@ -1,8 +1,8 @@
-define(function (require){
-    var component   = require('components/wikimetrics-visualizer/wikimetrics-visualizer'),
-        $           = require('jquery'),
-        api         = require('app/apis/wikimetrics'),
-        ko          = require('knockout');
+define(function (require) {
+    var component = require('components/wikimetrics-visualizer/wikimetrics-visualizer'),
+        $ = require('jquery'),
+        api = require('wikimetricsApi'),
+        ko = require('knockout');
 
     var WikimetricsVisualizer = component.viewModel,
         selectedMetric,
@@ -29,9 +29,9 @@ define(function (require){
         deferred = $.Deferred();
 
 
-    describe('WikimetricsVisualizer view model', function() {
+    describe('WikimetricsVisualizer view model', function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             // make api.get return a mock promise, which can be resolved
             // differently in each test
             sinon.stub(api, 'get').returns(deferred.promise());
@@ -44,11 +44,11 @@ define(function (require){
             deferred.resolveWith(this, [response]);
         });
 
-        afterEach(function() {
+        afterEach(function () {
             api.get.restore();
         });
 
-        it('should not do anything without a selected metric', function() {
+        it('should not do anything without a selected metric', function () {
 
             selectedProjects(['one', 'two']);
             // while datasets are going to be created
@@ -65,7 +65,7 @@ define(function (require){
             expect(visualizer.mergedData().length).toEqual(4);
         });
 
-        it('should transform selected projects and metrics into merged data', function() {
+        it('should transform selected projects and metrics into merged data', function () {
 
             selectedMetric(metric);
             selectedProjects.push(cohort);

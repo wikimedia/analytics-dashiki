@@ -11,13 +11,13 @@
             projects    : -- an observable of your selected projects --
         "/>
  */
-define(function(require) {
+define(function (require) {
     'use strict';
 
-    var ko              = require('knockout'),
-        templateMarkup  = require('text!./wikimetrics-visualizer.html'),
-        api             = require('app/apis/wikimetrics'),
-        converter       = require('app/data-converters/wikimetrics-timeseries');
+    var ko = require('knockout'),
+        templateMarkup = require('text!./wikimetrics-visualizer.html'),
+        api = require('wikimetricsApi'),
+        converter = require('app/data-converters/wikimetrics-timeseries');
 
     require('knockout-projections');
 
@@ -28,14 +28,14 @@ define(function(require) {
         // NOTE: this could become an array to enable real-time refreshing
         this.data = ko.observable([]);
 
-        this.load = ko.computed(function(){
+        this.load = ko.computed(function () {
             var self = this,
                 m = self.metric(),
                 p = self.project;
 
             // only re-fetch the data for a truthy metric/project combination
             if (m && p) {
-                api.get(m, p).pipe(converter).done(function(converted) {
+                api.get(m, p).pipe(converter).done(function (converted) {
                     self.data(converted);
                 });
             }
@@ -47,11 +47,11 @@ define(function(require) {
         self.metric = params.metric;
         self.projects = params.projects;
 
-        self.datasets = self.projects.map(function(project) {
+        self.datasets = self.projects.map(function (project) {
             return new WikimetricsDataset(self.metric, project);
         });
-        self.mergedData = ko.computed(function() {
-            return [].concat.apply([], this.datasets.map(function(set) {
+        self.mergedData = ko.computed(function () {
+            return [].concat.apply([], this.datasets.map(function (set) {
                 return set.data();
             })());
         }, self);

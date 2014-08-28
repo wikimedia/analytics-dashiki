@@ -34,7 +34,7 @@ npm install -g karma-cli
 
 Running gulp tasks to build, lint, clean, etc:
 ```
-gulp html
+gulp (html|lint|js)
 gulp
 ```
 
