@@ -3,7 +3,6 @@
  *   reports run by WikimetricsBot on wikimetrics.  Methods commented inline
  */
 define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
-
     'use strict';
 
     function WikimetricsApi(config) {
@@ -11,7 +10,7 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
         this.projectOptions = [];
         this.languageOptions = [];
         this.urlProjectLanguageChoices = config.urlProjectLanguageChoices;
-
+        this.categorizedMetricsUrl = config.categorizedMetricsUrl;
     }
 
 
@@ -85,7 +84,7 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
 
             }.bind(this));
         }
-    }
+    };
 
     WikimetricsApi.prototype._getJSONConfig = function (url, callback) {
         // callback should execute callback(json)
@@ -94,8 +93,21 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
             url: url,
             success: callback
         });
+    };
 
 
+    /**
+     * Parameters
+     *   callback : a function to pass returned data to
+     *              (note you can just pass an observable here)
+     *
+     * Returns
+     *   a jquery promise to an array of available metrics, formatted like this:
+     *
+     *      {category: 'some category', name: 'some metric'}
+     **/
+    WikimetricsApi.prototype.getCategorizedMetrics = function(callback) {
+        return $.get(this.categorizedMetricsUrl).done(callback);
     };
 
     return new WikimetricsApi(siteConfig);

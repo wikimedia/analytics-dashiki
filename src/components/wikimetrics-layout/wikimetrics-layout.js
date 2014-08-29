@@ -1,5 +1,4 @@
 define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], function (ko, templateMarkup, wikimetricsApi) {
-
     'use strict';
 
     /**
@@ -21,6 +20,26 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], functio
             self.projectOptions(wikimetricsApi.projectOptions);
         });
 
+        self.selectedProjects = ko.observableArray();
+
+        self.metricData = ko.observable();
+        wikimetricsApi.getCategorizedMetrics(self.metricData);
+
+        self.metrics = ko.computed(function() {
+            var configData = this.metricData();
+            if (configData) {
+                return configData.categorizedMetrics;
+            }
+            return [];
+        }, self);
+
+        self.defaultMetrics = ko.computed(function() {
+            var configData = this.metricData();
+            if (configData) {
+                return configData.defaultMetrics;
+            }
+            return [];
+        }, self);
     }
 
     return {

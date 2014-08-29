@@ -12,8 +12,7 @@ define([], function () {
             PagesCreated: 'pages_created',
             NamespaceEdits: 'edits'
         },
-        //totally fake for now
-        urlProjectLanguageChoices: '../../stubs/fake-wikimetrics/projectLanguageChoices.json'
-
+        urlProjectLanguageChoices: '/stubs/fake-wikimetrics/projectLanguageChoices.json',
+        categorizedMetricsUrl: '/stubs/categorizedMetrics.json',
     };
 });

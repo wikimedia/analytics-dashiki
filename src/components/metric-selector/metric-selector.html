@@ -1,1 +1,37 @@
--- select metrics --
+<div class="ui dropdown purple label" data-bind="click: toggle">
+    <i class="add sign box icon"></i>
+    <!-- ko ifnot: selectedMetric -->
+    <div class="text" data-bind="text: open() ? 'Close' : 'Add Metric'"></div>
+    <!-- /ko -->
+    <i class="dropdown icon vertically" data-bind="css: {flipped: open}"></i>
+</div>
+
+<!-- ko foreach: addedMetrics -->
+<div class="ui large label" data-bind="css: {black: $data === $parent.selectedMetric()}">
+    <a data-bind="click: $parent.selectMetric, metricName: $data"></a>
+    <i class="delete icon" data-bind="click: $parent.removeMetric"></i>
+</div>
+<!-- /ko -->
+
+<div class="ui two column grid target" data-bind="css: {open: open}">
+    <div class="column">
+        <div class="ui vertical pointing purple menu">
+        <!-- ko foreach: categories -->
+            <a class="item" data-bind="
+                css: {active: name === $parent.selectedCategory().name},
+                text: name,
+                click: $parent.selectCategory
+            "></a>
+        <!-- /ko -->
+        </div>
+    </div>
+    <div class="column">
+        <div class="ui vertical menu">
+        <!-- ko if: selectedCategory -->
+        <!-- ko foreach: selectedCategory().metrics -->
+            <a class="item" data-bind="metricName: $data, click: $parent.addMetric"></a>
+        <!-- /ko -->
+        <!-- /ko -->
+        </div>
+    </div>
+</div>

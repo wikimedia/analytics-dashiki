@@ -1,11 +1,17 @@
 define(['wikimetricsApi', 'jquery'], function (wikimetrics, $) {
 
-    describe('Wikimetrics API', function () {
-        beforeEach(function () {
-            sinon.stub($, 'get');
+    describe('Wikimetrics API', function() {
+        var getJSONConfigStub;
+
+        beforeEach(function() {
+            var deferred = new $.Deferred();
+            deferred.resolveWith('not important');
+            sinon.stub($, 'get').returns(deferred);
+            getJSONConfigStub = sinon.stub(wikimetrics, '_getJSONConfig');
         });
         afterEach(function () {
             $.get.restore();
+            getJSONConfigStub.restore();
         });
 
         it('should fetch the correct URL', function () {
@@ -18,17 +24,20 @@ define(['wikimetricsApi', 'jquery'], function (wikimetrics, $) {
 
         it('should not retrieve option file if project choices are already set ', function () {
             wikimetrics.root = 'something';
-            var stub = sinon.stub(wikimetrics, '_getJSONConfig')
             var callback = sinon.stub();
             wikimetrics.getProjectAndLanguageChoices(callback);
-            expect(stub.called).toBe(true);
+            expect(getJSONConfigStub.called).toBe(true);
 
             wikimetrics.projectOptions = ['some option'];
             wikimetrics.languageOptions = ['some other option'];
             wikimetrics.getProjectAndLanguageChoices(callback);
             // ajax call was not done the second time
-            expect(stub.calledOnce).toBe(true);
+            expect(getJSONConfigStub.calledOnce).toBe(true);
         });
 
+        it('should get metrics configuration', function() {
+            wikimetrics.getCategorizedMetrics();
+            expect($.get.calledWith(wikimetrics.categorizedMetricsUrl)).toBe(true);
+        });
     });
 });

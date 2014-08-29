@@ -1,0 +1,8 @@
+{
+    "defaultMetrics": ["RollingActiveEditor"],
+    "categorizedMetrics": [
+        {"name":"Community", "metrics":["NamespaceEdits","PagesCreated"]},
+        {"name":"Acquisition", "metrics":["NewlyRegistered"]},
+        {"name":"Retention", "metrics":["RollingActiveEditor"]}
+    ]
+}
