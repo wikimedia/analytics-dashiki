@@ -1,4 +1,4 @@
-define([], function() {
+define([], function () {
     'use strict';
     /**
      * Logger for client side errors.
@@ -22,16 +22,17 @@ define([], function() {
 
     window.logger = {
 
-        error: function(message) {
+        error: function (message) {
             console.log(this._getTimestamp() + message);
         },
-        _getTimestamp: function() {
+        _getTimestamp: function () {
             return new Date().toUTCString();
         }
     };
 
     // registering for window.onerror, although many events do not trigger this
-    window.onerror = function(message, file, line) {
+    window.onerror = function (message, file, line) {
         logger.error(file + ':' + line + '\n\n' + message);
     };
+
 });

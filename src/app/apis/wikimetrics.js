@@ -9,14 +9,20 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
         this.root = config.wikimetricsDomain;
         this.projectOptions = [];
         this.languageOptions = [];
+        /** project selection present upon bootstrap **/
+        this.defaultProjects = [];
         this.urlProjectLanguageChoices = config.urlProjectLanguageChoices;
         this.categorizedMetricsUrl = config.categorizedMetricsUrl;
+
+        /** Given a project returns language and project friendly names*/
+        this.reverseLookup = {};
     }
 
 
-    function ProjectOption(data) {
+    function ProjectOption(data, prettyNames) {
         // no need for these to be observables as they are fixed values
-        this.name = data.name;
+        this.code = data.name;
+        this.name = prettyNames && prettyNames[data.name] ? prettyNames[data.name] : data.name;
         this.languages = data.languages;
         this.description = data.description;
     }
@@ -26,6 +32,7 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
         this.name = data.name;
         this.projects = data.projects;
         this.description = data.description;
+        this.shortName = data.shortName;
     }
 
     /**
@@ -47,39 +54,40 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
 
     /**
      * Retrieves the static list of projects and languages for which we support metrics
-     * Options do not change once retrieved so we only retrieve them ad most once
-     * Choices are of this form:
-     *  [{
-        "name": "English",
-        "description": "All projects",
-        "projects": {
-            "Wikipedia": "eswiki",
-            "Somethingwiki": "somewiki",
-            "Wikidictionary": "somewiki"
-        },...
-        }], [{
-            "name": "Wikitionary",
-            "description": "170 languages",
-             "languages": {
-                "Spanish": "eswiki",
-                "English": "enwiki",
-                "German": "dewiki"
-                }
-            },...
-
-        }]
+     * Options do not change once retrieved so we only retrieve them at most once
      **/
     WikimetricsApi.prototype.getProjectAndLanguageChoices = function (callback) {
         var map = Array.prototype.map;
 
         if (this.languageOptions.length <= 0) {
             this._getJSONConfig(this.urlProjectLanguageChoices, function (json) {
-                this.projectOptions = map.call(json[1], function (data) {
-                    return new ProjectOption(data);
+                var self = this;
+
+                // keep track of the instances created to use the same objects later
+                var saveProjects = {};
+                var saveLanguages = {};
+
+                self.defaultProjects = json.defaultProjects;
+                self.prettyProjectNames = json.prettyProjectNames;
+
+                self.projectOptions = map.call(json.projects, function (data) {
+                    var project = new ProjectOption(data, self.prettyProjectNames);
+                    saveProjects[data.name] = project;
+                    return project;
                 });
-                this.languageOptions = map.call(json[0], function (data) {
-                    return new LanguageOption(data);
+
+                self.languageOptions = map.call(json.languages, function (data) {
+                    var language = new LanguageOption(data);
+                    saveLanguages[data.name] = language;
+                    return language;
                 });
+
+                self.reverseLookup = {};
+                Object.getOwnPropertyNames(json.reverse).forEach(function (code) {
+                    var combined = json.reverse[code];
+                    self.reverseLookup[code] = combined;
+                });
+
                 callback();
 
             }.bind(this));
@@ -106,7 +114,7 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
      *
      *      {category: 'some category', name: 'some metric'}
      **/
-    WikimetricsApi.prototype.getCategorizedMetrics = function(callback) {
+    WikimetricsApi.prototype.getCategorizedMetrics = function (callback) {
         return $.get(this.categorizedMetricsUrl).done(callback);
     };
 

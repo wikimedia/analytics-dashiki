@@ -1,19 +1,63 @@
-<input
-       placeholder="+Search by project or language"
-       data-bind="projectAutocomplete: {
-            projectOptions: projectOptions,
-            languageOptions: languageOptions,
-            select: displaySecondLevel
-       }" class="typeahead search_box" autocomplete="off" size="20"/>
+<div class="ui icon input">
+    <input placeholder="by project or language"
+           class="typeahead search_box"
+           autocomplete="off"
+           size="20"
+           data-bind="projectAutocomplete: {
+                          projectOptions: projectOptions,
+                          languageOptions: languageOptions,
+                          select: displaySecondLevel
+                      }, event: {
+                          blur: function(data,event){
+                              // TODO: this has to be in the binding, not here
+                              setTimeout(hideSecondLevel.bind($data), 500)
+                          }
+                      }"/>
+    <i class="search icon"></i>
+</div>
 
-<span class="tt-dropdown-menu" data-bind="css: {open: displaySuboptions}, click: hideSecondLevel">
+<span class="tt-dropdown-menu"
+      data-bind="css: {open: displaySuboptions},
+                 event: {
+                     blur: function(data,event){
+                         // TODO: this has to be in the binding, not here
+                         setTimeout(hideSecondLevel.bind($data),200);
+                     }
+                 }">
     <div class="tt-dataset-suboptions">
         <span class="header" data-bind="text: selectedOption"></span>
         <hr/>
         <span class="tt-suggestions">
         <!-- ko foreach: suboptions -->
-            <div class="tt-suggestion" data-bind="text: option"></div>
+            <div class="tt-suggestion"
+                 data-bind="text: name,
+                            click: $parent.addProject.bind($parent)">
+            </div>
         <!-- /ko -->
         </span>
     </div>
 </span>
+
+<hr/>
+
+<div class="ui secondary orange inverted vertical fluid menu">
+<!-- ko foreach: selectedProjectsByCategory -->
+    <div class="header item">
+        <span data-bind="text: name"></span>
+        <i class="down arrow icon" data-bind="click: $parent.removeCategory.bind($parent)"></i>
+    </div>
+    <div class="menu">
+    <!-- ko foreach: languages -->
+        <div class="item">
+            <span>
+                <i class="sign large icon" data-bind="style: {color: 'white'}"></i>
+                <a data-bind="text: name"></a>
+            </span>
+            <a data-bind="click: $parents[1].removeProject.bind($parents[1])">
+                <i class="delete icon"></i>
+            </a>
+        </div>
+    <!-- /ko -->
+    </div>
+<!-- /ko -->
+</div>

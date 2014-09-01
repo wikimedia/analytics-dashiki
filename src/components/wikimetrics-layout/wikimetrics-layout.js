@@ -11,21 +11,27 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], functio
         var self = this;
         self.selectedMetric = ko.observable();
         self.selectedProjects = ko.observableArray([]);
-        self.projectOptions = ko.observableArray([]);
-        self.languageOptions = ko.observableArray([]);
-        self.defaultProjects = [];
+        self.projectOptions = ko.observable([]);
+        self.languageOptions = ko.observable([]);
+        self.defaultProjects = ko.observable([]);
+        self.reverseLookup = ko.observable();
+        self.prettyProjectNames = ko.observable();
 
         wikimetricsApi.getProjectAndLanguageChoices(function () {
             self.languageOptions(wikimetricsApi.languageOptions);
             self.projectOptions(wikimetricsApi.projectOptions);
+            self.defaultProjects(wikimetricsApi.defaultProjects);
+            self.reverseLookup(wikimetricsApi.reverseLookup);
+            self.prettyProjectNames(wikimetricsApi.prettyProjectNames);
         });
 
-        self.selectedProjects = ko.observableArray();
+        /** infer selected projects from defaultProjectSelection object which is taylored for the ui **/
+
 
         self.metricData = ko.observable();
         wikimetricsApi.getCategorizedMetrics(self.metricData);
 
-        self.metrics = ko.computed(function() {
+        self.metrics = ko.computed(function () {
             var configData = this.metricData();
             if (configData) {
                 return configData.categorizedMetrics;
@@ -33,7 +39,7 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], functio
             return [];
         }, self);
 
-        self.defaultMetrics = ko.computed(function() {
+        self.defaultMetrics = ko.computed(function () {
             var configData = this.metricData();
             if (configData) {
                 return configData.defaultMetrics;

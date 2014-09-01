@@ -1,4 +1,6 @@
 define(['components/project-selector/project-selector', 'knockout'], function (component, ko) {
+    'use strict';
+
     var ProjectSelector = component.viewModel;
 
     describe('ProjectSelector view model', function () {
@@ -7,52 +9,106 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
             expect(ko.bindingHandlers.projectAutocomplete).not.toBe(undefined);
         });
 
-        it('initialization with parameters satisfies component interface', function () {
+        it('project selection updates category display on ui', function () {
 
 
             var projectOptions = [{
-                "name": "English",
-                "description": "All projects",
-                "projects": {
-                    "Wikipedia": "eswiki",
-                    "Somethingwiki": "somewiki",
-                    "Wikidictionary": "somewiki"
-                }
-            }, {
-                "name": "German",
-                "description": "All projects",
-                "projects": {
-                    "Wikipedia": "dewiki",
-                    "SomethingGermanWiki": "somewiki",
-                    "Wikidictionary": "somewiki"
-                }
+                code: "wiki",
+                name: "Wikipedia",
+                languages: {
+                    Abkhazian: "abwiki",
+                    Achinese: "acewiki",
+                    Afar: "aawiki",
+                    Afrikaans: "afwiki",
+                    Spanish: "eswiki"
+
+                },
+                description: ['287 languages"']
             }];
             var languageOptions = [{
-                "name": "Wikipedia",
-                "description": "280 languages",
-                "languages": {
-                    "Spanish": "eswiki",
-                    "English": "enwiki",
-                    "German": "dewiki"
-                }
+                name: "Afar",
+                projects: {
+                    wiki: "aawiki",
+                    wiktionary: "aawiktionary"
+                },
+                description: ['blah'],
+                shortName: "aa"
             }, {
-                "name": "WikiSomething",
-                "description": "100 languages",
-                "languages": {
-                    "Spanish": "eswiki",
-                    "English": "enwiki",
-                    "German": "dewiki"
-                }
+                name: "Spanish",
+                projects: {
+                    wiki: "eswiki",
+                    wiktionary: "eswiktionary"
+                },
+                description: ['blah'],
+                shortName: "es"
             }];
 
             var params = {};
-            params.projectOptions = ko.observableArray(projectOptions);
-            params.languageOptions = ko.observableArray(languageOptions);
-            params.defaultSelection = [];
+            params.reverseLookup = {
+                'aawiki': {
+                    'language': "Afar",
+                    'project': "wiki"
+                },
+                'eswiki': {
+                    'language': 'Spanish',
+                    'project': 'wiki'
+                }
 
+            };
+
+            params.prettyProjectNames = {
+                wiki: "Wikipedia",
+                wikibooks: "Wikibooks",
+                wiktionary: "Pretty Wiki"
+            };
+
+            params.projectOptions = ko.observable(projectOptions);
+            params.languageOptions = ko.observable(languageOptions);
+            params.defaultProjects = ko.observable(["eswiki"]);
+            params.selectedProjects = ko.observableArray(["eswiki"]);
+
+            // testing initialization
             var instance = new ProjectSelector(params);
             expect(instance.projectOptions).toBe(params.projectOptions());
             expect(instance.languageOptions).toBe(params.languageOptions());
+
+
+            function doesSelectedProjectsByCategoryContainProject(project) {
+                var found = false;
+                // testing, assuming just 1 element
+                var languages = instance.selectedProjectsByCategory()[0].languages;
+                for (var i = 0; i < languages.length; i++) {
+                    if (languages[i].projectCode === project) {
+                        found = true;
+                        break;
+                    }
+                }
+                return found;
+            }
+
+            // is ui what it should be?
+            expect(doesSelectedProjectsByCategoryContainProject('eswiki')).toBe(true);
+
+
+            // add a project see it gets added
+            instance.addProject({
+                'project': 'aawiki'
+            });
+
+            expect(instance.selectedProjects.indexOf('aawiki') > 0).toBe(true);
+
+            // make sure ui list is updated
+            expect(doesSelectedProjectsByCategoryContainProject('aawiki')).toBe(true);
+
+            // now remove project
+            instance.removeProject({
+                'projectCode': 'eswiki'
+            });
+
+            // is ui what it should be?
+            expect(doesSelectedProjectsByCategoryContainProject('eswiki')).toBe(false);
+
+
         });
 
     });

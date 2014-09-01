@@ -1,8 +1,34 @@
 {
-    "defaultMetrics": ["RollingActiveEditor"],
     "categorizedMetrics": [
-        {"name":"Community", "metrics":["NamespaceEdits","PagesCreated"]},
-        {"name":"Acquisition", "metrics":["NewlyRegistered"]},
-        {"name":"Retention", "metrics":["RollingActiveEditor"]}
+        {
+            "metrics": [
+                "Threshold"
+            ],
+            "name": "Activation"
+        },
+        {
+            "metrics": [
+                "NewlyRegistered"
+            ],
+            "name": "Acquisition"
+        },
+        {
+            "metrics": [
+                "PagesCreated",
+                "BytesAdded",
+                "NamespaceEdits"
+            ],
+            "name": "Community"
+        },
+        {
+            "metrics": [
+                "RollingActiveEditor",
+                "Survival"
+            ],
+            "name": "Retention"
+        }
+    ],
+    "defaultMetrics": [
+        "NamespaceEdits"
     ]
 }

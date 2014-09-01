@@ -1,5 +1,5 @@
 define(['knockout', 'typeahead'], function (ko) {
-
+    'use strict';
     // Data is an array of option objects
     function substringMatcher(data) {
         return function findMatches(query, callback) {

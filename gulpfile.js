@@ -42,34 +42,44 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
         }
     });
 
-var  jsfilesToLint = ['src/app/*.js','src/components/*/*.js','src/lib/*.js'];
+var jsfilesToLint = ['src/app/*.js', 'src/components/*/*.js', 'src/lib/*.js'];
 
 // linting
-gulp.task('lint', function() {
-  return gulp.src(jsfilesToLint)
-    .pipe(jshint())
-    .pipe(jshint.reporter('default'));
+gulp.task('lint', function () {
+    return gulp.src(jsfilesToLint)
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
 });
 
 // Discovers all AMD dependencies, concatenates together all required .js files, minifies them
 gulp.task('js', function () {
     return rjs(requireJsOptimizerConfig)
-        .pipe(uglify({ preserveComments: 'some' }))
+        .pipe(uglify({
+            preserveComments: 'some'
+        }))
         .pipe(gulp.dest('./dist/'));
 });
 
-// Concatenates CSS files, rewrites relative paths to Bootstrap fonts, copies Bootstrap fonts
-gulp.task('css', function () {
-    var bowerCss = gulp.src('src/bower_modules/**/*.css'),
-        appCss = gulp.src('src/css/*.css');
 
-    return es.concat(bowerCss, appCss)
+var jsfilesToLint = ['src/app/*.js', 'src/components/*/*.js', 'src/lib/*.js'];
+
+
+gulp.task('css', function () {
+    return gulp.src(['src/css/*.css'])
         .pipe(concat('style.css'))
         .pipe(gulp.dest('./dist/'));
 });
 
+/** Copies semantic fonts where the css expects them to be**/
+gulp.task('fonts', function () {
+    var semantic_fonts = 'src/fonts';
+    return gulp.src([semantic_fonts + '/icons.svg', semantic_fonts + '/icons.ttf', semantic_fonts + '/icons.woff'])
+        .pipe(gulp.dest('./fonts/'));
+});
+
+
 // Copies index.html, replacing <script> and <link> tags to reference production URLs
-gulp.task('html', function() {
+gulp.task('html', function () {
     return gulp.src('./src/index.html')
         .pipe(htmlreplace({
             'css': 'style.css',
@@ -79,18 +89,21 @@ gulp.task('html', function() {
 });
 
 // Removes all files from ./dist/
-gulp.task('clean', function() {
-    return gulp.src('./dist/**/*', { read: false })
+gulp.task('clean', function () {
+    return gulp.src('./dist/**/*', {
+            read: false
+        })
         .pipe(clean());
 });
 
-gulp.task('default', ['html', 'lint', 'js', 'css'], function(callback) {
+gulp.task('default', ['html', 'lint', 'js', 'css', 'fonts'], function (callback) {
     callback();
     console.log('\nPlaced optimized files in ' + chalk.magenta('dist/\n'));
+    console.log('\nPlaced font files in ' + chalk.magenta('fonts/\n'));
 });
 
 function logWatcher(event) {
-  console.log('File '+event.path+' was '+event.type+', running tasks...');
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
 }
 gulp.watch('./src/**/*.js', ['js']).on('change', logWatcher);
 gulp.watch('./src/**/*.html', ['html']).on('change', logWatcher);

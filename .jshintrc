@@ -20,6 +20,9 @@
 
 
     "globals": {
+        "describe":true,
+        "it":true,
+        "expect":true,
         "require":true,
         "d3": true,
         "vega":true,

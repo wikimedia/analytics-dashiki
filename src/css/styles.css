@@ -1,6 +1,6 @@
 section.projects-container {
-    background-color: #6D6D6D;
-    padding: 30px;
+    background-color: #fef0ed;
+    padding: 18px;
     left: 30px;
     top: 30px;
     bottom: 30px;
@@ -66,6 +66,7 @@ section.main-container {
 }
 .tt-suggestion:hover {
     font-weight:bold;
+    cursor: pointer;
 }
 .tt-suggestion p {
     margin: 0;
