@@ -11,10 +11,17 @@ define(['moment', 'config'], function(moment, config) {
      * Returns
      *   A sorted array of objects in canonical dashiki timeseries format:
      *   {
-     *       date    : -- an instance of a date object --
+     *       date    : -- getTime called on a date object --
      *       label   : -- in this case the cohort --
      *       value   : -- the value of the default submetric, see "submetrics" below --
      *   }
+     *
+     * NOTE: if implementing a similar converter, keep in mind it's important to
+     *       convert dates to the unix milliseconds format (getTime).  This is
+     *       so that Vega doesn't have to parse the date into a datetime.  If you
+     *       rely on Vega to do the parsing, it will be done more frequently, on
+     *       all data updates.  Also, it will mutate the property which has caused
+     *       some unexpected knockout dependency triggering in some cases.
      */
     return function (rawData){
         var aggregate = 'Sum',
@@ -30,7 +37,7 @@ define(['moment', 'config'], function(moment, config) {
             keys = Object.keys(rawData.result[aggregate][submetric]);
             for (i=0; i<keys.length; i++) {
                 normalized.push({
-                    date: moment(keys[i]).toDate(),
+                    date: moment(keys[i]).toDate().getTime(),
                     label: parameters.Cohort,
                     value: rawData.result[aggregate][submetric][keys[i]]
                 });
@@ -38,14 +45,14 @@ define(['moment', 'config'], function(moment, config) {
         } else {
             for (i=0; i<keys.length; i++) {
                 normalized.push({
-                    date: moment(keys[i]).toDate(),
+                    date: moment(keys[i]).toDate().getTime(),
                     label: parameters.Cohort,
                     value: rawData[keys[i]][aggregate][submetric]
                 });
             }
         }
         return normalized.sort(function(a, b){
-            return a.date.getTime() - b.date.getTime();
+            return a.date - b.date;
         });
     };
 });

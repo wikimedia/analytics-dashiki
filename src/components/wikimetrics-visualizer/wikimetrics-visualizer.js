@@ -19,42 +19,66 @@ define(function (require) {
         api = require('wikimetricsApi'),
         converter = require('app/data-converters/wikimetrics-timeseries');
 
-    require('knockout-projections');
-
-    function WikimetricsDataset(metric, project) {
-        this.metric = metric;
-        this.project = project;
-        // this is an array but we don't need to react to single value changes
-        // NOTE: this could become an array to enable real-time refreshing
-        this.data = ko.observable([]);
-
-        this.load = ko.computed(function () {
-            var self = this,
-                m = self.metric(),
-                p = self.project;
-
-            // only re-fetch the data for a truthy metric/project combination
-            if (m && p) {
-                api.get(m, p).pipe(converter).done(function (converted) {
-                    self.data(converted);
-                });
-            }
-        }, this);
+    function promiseKey(metric, project) {
+        return {
+            metric: metric,
+            project: project,
+            key: metric + '|' + project,
+            toString: function () {
+                return this.key;
+            },
+        };
     }
 
     function WikimetricsVisualizer(params) {
-        var self = this;
-        self.metric = params.metric;
-        self.projects = params.projects;
+        var loadingPromises = {};
 
-        self.datasets = self.projects.map(function (project) {
-            return new WikimetricsDataset(self.metric, project);
-        });
-        self.mergedData = ko.computed(function () {
-            return [].concat.apply([], this.datasets.map(function (set) {
-                return set.data();
-            })());
-        }, self);
+        this.metric = params.metric;
+        this.projects = params.projects;
+
+        this.mergedData = ko.observable();
+
+        var visualizer = this;
+        this.datasets = ko.computed(function () {
+            var projects = ko.unwrap(this.projects),
+                metric = ko.unwrap(this.metric);
+
+            if (metric) {
+                // 1. make sure there's a promise for every project that we want loaded
+                projects.forEach(function (project) {
+                    var key = promiseKey(metric, project);
+
+                    if (!loadingPromises.hasOwnProperty(key)) {
+                        loadingPromises[key] = api.get(metric, project).pipe(converter);
+                    }
+                });
+
+                // 2. clear loading promises that are no longer needed
+                // Every promise is holding about 7000 bytes on heap
+                // w/o eviction this would be a memory leak
+                Object.getOwnPropertyNames(loadingPromises).forEach(function (key) {
+                    var split = key.split('|'),
+                        m = split[0],
+                        p = split[1];
+
+                    if (metric !== m || projects.indexOf(p) < 0) {
+                        delete loadingPromises[key];
+                    }
+                });
+
+                // 3. concat results when all the promises get fulfilled
+                var allPromises = Object.getOwnPropertyNames(loadingPromises).map(function (key) {
+                    return loadingPromises[key];
+                });
+                $.when.apply(this, allPromises).then(function () {
+                    visualizer.mergedData([].concat.apply([], arguments));
+                });
+            } else {
+                loadingPromises = {};
+                visualizer.mergedData([]);
+            }
+
+        }, this);
     }
 
     return {
