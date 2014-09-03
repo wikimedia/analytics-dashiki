@@ -6,17 +6,14 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
     'use strict';
 
     function WikimetricsApi(config) {
+        $.extend(this, config);
         this.root = config.wikimetricsDomain;
-        this.projectOptions = [];
-        this.languageOptions = [];
-        /** project selection present upon bootstrap **/
-        this.defaultProjects = [];
-        this.urlProjectLanguageChoices = config.urlProjectLanguageChoices;
-        this.categorizedMetricsUrl = config.categorizedMetricsUrl;
-
-        /** Given a project returns language and project friendly names*/
-        this.reverseLookup = {};
     }
+
+    // only fetch certain things once per app life and keep their promise
+    var promiseDefaults,
+        promiseMetrics,
+        promiseLanguagesAndProjects;
 
 
     function ProjectOption(data, prettyNames) {
@@ -43,13 +40,15 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
      * Returns
      *   a jquery promise that is fetching the correct URL for the parameters passed in
      */
-    WikimetricsApi.prototype.get = function (metric, project) {
+    WikimetricsApi.prototype.getData = function (metric, project) {
+
         var address = uri.expand('https://{root}/static/public/datafiles/{metric}/{project}.json', {
             root: this.root,
             metric: metric,
             project: project,
         }).toString();
-        return $.get(address);
+
+        return this._getJSON(address);
     };
 
     /**
@@ -57,52 +56,42 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
      * Options do not change once retrieved so we only retrieve them at most once
      **/
     WikimetricsApi.prototype.getProjectAndLanguageChoices = function (callback) {
-        var map = Array.prototype.map;
 
-        if (this.languageOptions.length <= 0) {
-            this._getJSONConfig(this.urlProjectLanguageChoices, function (json) {
-                var self = this;
+        if (!promiseLanguagesAndProjects) {
+            promiseLanguagesAndProjects = this._getJSON(this.urlProjectLanguageChoices)
+                .pipe(function (json) {
+                    var map = Array.prototype.map;
+                    var self = this;
 
-                // keep track of the instances created to use the same objects later
-                var saveProjects = {};
-                var saveLanguages = {};
+                    self.defaultProjects = json.defaultProjects;
+                    self.prettyProjectNames = json.prettyProjectNames;
+                    self.reverseLookup = json.reverse;
 
-                self.defaultProjects = json.defaultProjects;
-                self.prettyProjectNames = json.prettyProjectNames;
+                    self.projectOptions = map.call(json.projects, function (data) {
+                        return new ProjectOption(data, self.prettyProjectNames);
+                    });
 
-                self.projectOptions = map.call(json.projects, function (data) {
-                    var project = new ProjectOption(data, self.prettyProjectNames);
-                    saveProjects[data.name] = project;
-                    return project;
-                });
+                    self.languageOptions = map.call(json.languages, function (data) {
+                        return new LanguageOption(data);
+                    });
 
-                self.languageOptions = map.call(json.languages, function (data) {
-                    var language = new LanguageOption(data);
-                    saveLanguages[data.name] = language;
-                    return language;
-                });
-
-                self.reverseLookup = {};
-                Object.getOwnPropertyNames(json.reverse).forEach(function (code) {
-                    var combined = json.reverse[code];
-                    self.reverseLookup[code] = combined;
-                });
-
-                callback();
-
-            }.bind(this));
+                    return self;
+                }.bind(this));
         }
+
+        return promiseLanguagesAndProjects.done(callback);
     };
 
-    WikimetricsApi.prototype._getJSONConfig = function (url, callback) {
-        // callback should execute callback(json)
-        $.ajax({
-            dataType: 'json',
-            url: url,
-            success: callback
-        });
-    };
+    /**
+     * Retrieves the default selections for metrics and projects
+     **/
+    WikimetricsApi.prototype.getDefaultDashboard = function (callback) {
 
+        if (!promiseDefaults) {
+            promiseDefaults = this._getJSON(this.urlDefaultDashboard);
+        }
+        return promiseDefaults.done(callback);
+    };
 
     /**
      * Parameters
@@ -115,7 +104,22 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
      *      {category: 'some category', name: 'some metric'}
      **/
     WikimetricsApi.prototype.getCategorizedMetrics = function (callback) {
-        return $.get(this.categorizedMetricsUrl).done(callback);
+
+        if (!promiseMetrics) {
+            promiseMetrics = this._getJSON(this.urlCategorizedMetrics);
+        }
+        return promiseMetrics.done(callback);
+    };
+
+    /**
+     * Returns
+     *   a promise to the url passed in
+     **/
+    WikimetricsApi.prototype._getJSON = function (url) {
+        return $.ajax({
+            dataType: 'json',
+            url: url
+        });
     };
 
     return new WikimetricsApi(siteConfig);

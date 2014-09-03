@@ -5,9 +5,8 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
     function ProjectSelector(params) {
         this.selectedProjects = params.selectedProjects;
 
-        this.selectedProjects = params.selectedProjects;
-        this.projectOptions = params.projectOptions();
-        this.languageOptions = params.languageOptions();
+        this.projectOptions = params.projectOptions;
+        this.languageOptions = params.languageOptions;
         this.reverseLookup = params.reverseLookup;
         this.prettyProjectNames = params.prettyProjectNames;
 
@@ -110,12 +109,13 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
         // change the whole selectedProjects array at once
         // so as to send updates only once
         var _selectedProjects = ko.utils.arrayFilter(this.selectedProjects(), function (item) {
-            var languages = data.languages;
-            for (var i = 0; i < languages.length; i++) {
+            var languages = data.languages,
+                i, keep;
+
+            for (i = 0; i < languages.length; i++) {
                 //remove them if they are equal
-                var keep = true;
-                if (item === languages[i].projectCode) {
-                    keep = false;
+                keep = item !== languages[i].projectCode;
+                if (!keep) {
                     break;
                 }
             }

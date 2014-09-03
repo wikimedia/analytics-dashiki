@@ -1,43 +1,45 @@
 define(['wikimetricsApi', 'jquery'], function (wikimetrics, $) {
 
     describe('Wikimetrics API', function() {
-        var getJSONConfigStub;
 
         beforeEach(function() {
             var deferred = new $.Deferred();
-            deferred.resolveWith('not important');
-            sinon.stub($, 'get').returns(deferred);
-            getJSONConfigStub = sinon.stub(wikimetrics, '_getJSONConfig');
+            deferred.resolveWith(null, ['not important']);
+            sinon.stub($, 'ajax').returns(deferred);
         });
         afterEach(function () {
-            $.get.restore();
-            getJSONConfigStub.restore();
+            $.ajax.restore();
         });
 
         it('should fetch the correct URL', function () {
             wikimetrics.root = 'something';
             var expected = 'https://something/static/public/datafiles/metric/project.json';
 
-            wikimetrics.get('metric', 'project');
-            expect($.get.calledWith(expected)).toBe(true);
+            wikimetrics.getData('metric', 'project');
+            expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
         it('should not retrieve option file if project choices are already set ', function () {
+            var getJSONStub = sinon.stub(wikimetrics, '_getJSON')
+                .returns(new $.Deferred());
+
             wikimetrics.root = 'something';
             var callback = sinon.stub();
             wikimetrics.getProjectAndLanguageChoices(callback);
-            expect(getJSONConfigStub.called).toBe(true);
+            expect(getJSONStub.called).toBe(true);
 
             wikimetrics.projectOptions = ['some option'];
             wikimetrics.languageOptions = ['some other option'];
             wikimetrics.getProjectAndLanguageChoices(callback);
             // ajax call was not done the second time
-            expect(getJSONConfigStub.calledOnce).toBe(true);
+            expect(getJSONStub.calledOnce).toBe(true);
+
+            getJSONStub.restore();
         });
 
         it('should get metrics configuration', function() {
             wikimetrics.getCategorizedMetrics();
-            expect($.get.calledWith(wikimetrics.categorizedMetricsUrl)).toBe(true);
+            expect($.ajax.getCalls()[0].args[0].url).toBe(wikimetrics.urlCategorizedMetrics);
         });
     });
 });

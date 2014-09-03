@@ -6,8 +6,13 @@
         <metric-selector params="
             metrics             : array (plain, observable, or observableArray) of categories
                                     [
-                                        {name: 'Something', metrics: ['one','two'},
-                                        {name: 'Else', metrics: ['three']}
+                                        {name: 'Something', metrics: [
+                                            {name: 'one', submetric: 'one_1'},
+                                            {name: 'two', submetric: 'two_1'},
+                                        ]},
+                                        {name: 'Else', metrics: [
+                                            {name: 'three', submetric: 'three_1'},
+                                        ]},
                                     ]
             selectedMetric      : an observable of the selected metric
             defaultSelection    : (optional) array of pre-added metric names
@@ -21,81 +26,103 @@ define(function(require) {
 
     require('./bindings');
 
+    /* helper to sort named objects */
+    function sortByName (a, b) {
+        return a.name === b.name ?
+            0 : a.name > b.name ? 1 : -1;
+    }
+
     function MetricSelector(params) {
         var self = this;
 
-        self.open = ko.observable(false);
-        self.toggle = function () {
+        this.open = ko.observable(false);
+        this.toggle = function () {
             this.open(!this.open());
         };
 
-        self.selectedMetric = params.selectedMetric;
-        self.addedMetrics = ko.observableArray([]);
+        this.metricsByCategory = params.metrics;
+        this.selectedMetric = params.selectedMetric;
+        this.selectedCategory = ko.observable();
+        this.addedMetrics = ko.observableArray([]);
 
-        if (ko.isObservable(params.defaultSelection)) {
-            params.defaultSelection.subscribe(function() {
-                self.addedMetrics(ko.unwrap(this));
-            }, params.defaultSelection);
-        }
-        self.addedMetrics(ko.unwrap(params.defaultSelection) || []);
+        this.defaultSelection = ko.computed(function () {
+            var names = ko.unwrap(params.defaultSelection),
+                metrics = ko.unwrap(this.metricsByCategory);
 
-        self.selectedCategory = ko.observable();
+            if (!names || !metrics) {
+                return [];
+            }
 
-        self.categories = ko.computed(function(){
-            var unwrap = ko.unwrap(params.metrics) || [],
-                copy = unwrap.slice(),
-                categories = copy.sort(function(a, b){
-                    return a.name === b.name ?
-                        0 : a.name > b.name ? 1 : -1;
+            var defaultMetrics = [];
+            metrics.forEach(function (category) {
+                category.metrics.forEach(function (metric) {
+                    if ($.inArray(metric.name, names) >= 0) {
+                        defaultMetrics.push(metric);
+                    }
                 });
+            });
+            return defaultMetrics;
+        }, this);
+
+        this.categories = ko.computed(function(){
+            var unwrap = ko.unwrap(this.metricsByCategory) || [],
+                copy = unwrap.slice(),
+                categories = copy.sort(sortByName);
 
             categories.splice(0, 0, {
                 name: 'All metrics',
                 metrics: [].concat.apply([], categories.map(function(c) {
                     return c.metrics;
-                })).sort()
+                })).sort(sortByName)
             });
 
             if (categories.length) {
                 this.selectedCategory(categories[0]);
             }
             return categories;
-        }, self);
+        }, this);
 
-        self.selectCategory = function (category) {
+        // functions
+        this.setDefault = function () {
+            self.addedMetrics(self.defaultSelection() || []);
+        };
+
+        this.selectCategory = function (category) {
             self.selectedCategory(category);
         };
 
-        self.addMetric = function (name) {
-            if (self.addedMetrics.indexOf(name) >= 0) {
+        this.addMetric = function (metric) {
+            if ($.inArray(metric, self.addedMetrics()) >= 0) {
                 return;
             }
-            self.addedMetrics.push(name);
+            self.addedMetrics.push(metric);
             self.reassignSelected();
         };
 
-        self.removeMetric = function (name) {
-            self.addedMetrics.remove(name);
-            if (self.selectedMetric() === name) {
-                self.selectedMetric(null);
+        this.removeMetric = function (metric) {
+            self.addedMetrics.remove(metric);
+            if (self.selectedMetric().name === metric.name) {
                 self.reassignSelected();
             }
         };
 
-        self.reassignSelected = function () {
-            if (!self.selectedMetric()) {
-                self.selectedMetric(
-                    self.addedMetrics().length ? self.addedMetrics()[0] : null
-                );
+        this.reassignSelected = function () {
+            var candidate = self.addedMetrics().length ? self.addedMetrics()[0] : null;
+            if (candidate !== self.selectedMetric()) {
+                self.selectedMetric(candidate);
             }
         };
 
-        self.selectMetric = function (name) {
-            self.selectedMetric(name);
+        this.selectMetric = function (metric) {
+            self.selectedMetric(metric);
         };
 
+        // set the default selection to something, even if empty
+        this.setDefault();
+        // process new defaults coming in
+        this.defaultSelection.subscribe(this.setDefault, this);
         // start off with a metric selected, if metrics were pre-added but no default was picked
-        self.reassignSelected();
+        this.reassignSelected();
     }
 
     return {

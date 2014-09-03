@@ -1,0 +1,11 @@
+{
+    "categorizedMetrics": [
+        {
+            "metrics": [
+                {"name":"PagesCreated", "defaultSubmetric":"pages_created"},
+                {"name":"NamespaceEdits", "defaultSubmetric":"edits"}
+            ],
+            "name": "Community"
+        }
+    ]
+}

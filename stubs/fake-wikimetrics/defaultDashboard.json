@@ -1,0 +1,15 @@
+{
+    "defaultProjectsReal": [
+        "enwiki", "eswiki", "dewiki", "frwiki", "ruwiki", "jawiki", "itwiki"
+    ],
+    "defaultMetricsReal": [
+        "RollingActiveEditor", "NewlyRegistered"
+    ],
+
+    "defaultProjects": [
+        "eswiki"
+    ],
+    "defaultMetrics": [
+        "NamespaceEdits"
+    ]
+}

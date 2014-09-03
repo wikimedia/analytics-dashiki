@@ -257,22 +257,18 @@ define(['knockout', 'vega'], function (ko, vega) {
             if (dimensions !== value) {
                 $.extend(value, dimensions);
             }
-            if (value.data && value.data.length > 0) {
-                // NOTE: if data is empty, it's faster for some reason
-                // to just create a new graph (so we check for value.data.length)
-                if (element.view && value.data.length) {
-                    var parsed = vega.parse.data(vegaData(value.data)).load;
-                    element.view.data(parsed).update({
-                        duration: value.updateDuration
-                    });
-                } else {
-                    vega.parse.spec(vegaDefinition(value), function (graph) {
-                        element.view = graph({
-                            el: element
-                        }).update();
-                        $(window).trigger('resize');
-                    });
-                }
+            if (element.view) {
+                var parsed = vega.parse.data(vegaData(value.data)).load;
+                element.view.data(parsed).update({
+                    duration: value.updateDuration
+                });
+            } else {
+                vega.parse.spec(vegaDefinition(value), function (graph) {
+                    element.view = graph({
+                        el: element
+                    }).update();
+                    $(window).trigger('resize');
+                });
             }
         }
     };

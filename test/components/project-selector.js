@@ -69,8 +69,8 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
 
             // testing initialization
             var instance = new ProjectSelector(params);
-            expect(instance.projectOptions).toBe(params.projectOptions());
-            expect(instance.languageOptions).toBe(params.languageOptions());
+            expect(instance.projectOptions()).toBe(params.projectOptions());
+            expect(instance.languageOptions()).toBe(params.languageOptions());
 
 
             function doesSelectedProjectsByCategoryContainProject(project) {

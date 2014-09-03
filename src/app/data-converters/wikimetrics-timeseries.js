@@ -2,11 +2,13 @@
  * This module returns a method that knows how to translate json data from
  *   wikimetrics to the canonical timeseries format understood by dashiki
  */
-define(['moment', 'config'], function(moment, config) {
+define(['moment'], function(moment) {
 
     /**
      * Parameters
-     *   rawData : Wikimetrics json data, as fetched from a Wikimetrics public report result file
+     *   defaultSubmetrics  : keys: metric names, values: default submetric to use
+     *   rawData            : Wikimetrics json data, as fetched from a Wikimetrics
+     *                        public report result file
      *
      * Returns
      *   A sorted array of objects in canonical dashiki timeseries format:
@@ -23,13 +25,13 @@ define(['moment', 'config'], function(moment, config) {
      *       all data updates.  Also, it will mutate the property which has caused
      *       some unexpected knockout dependency triggering in some cases.
      */
-    return function (rawData){
+    return function (defaultSubmetrics, rawData){
         var aggregate = 'Sum',
             normalized = [],
             keys = Object.keys(rawData),
             parameters = rawData.parameters,
             metricName = parameters.Metric,
-            submetric = config.wikimetricsDefaultSubmetrics[metricName],
+            submetric = defaultSubmetrics[metricName],
             i;
 
         keys.splice(keys.indexOf('parameters'), 1);

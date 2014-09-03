@@ -8,9 +8,12 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
         });
 
         it('should process params', function() {
-            var metricsConfig = [
-                {name: 'Something', metrics: ['a','b']},
-                {name: 'Else', metrics: ['c']}
+            var metricA = {name: 'a', submetric: 'a_1'},
+                metricB = {name: 'b', submetric: 'b_1'},
+                metricC = {name: 'c', submetric: 'c_1'},
+                metricsConfig = [
+                {name: 'Something', metrics: [metricA, metricB]},
+                {name: 'Else', metrics: [metricC]},
             ];
             var params = {
                 metrics: metricsConfig,
@@ -23,48 +26,48 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
             expect(instance.selectedMetric).toBe(params.selectedMetric);
             expect(instance.selectedMetric()).toBeNull();
             expect(instance.categories()[0].name).toBe('All metrics');
-            expect(instance.categories()[0].metrics).toEqual(['a','b','c']);
+            expect(instance.categories()[0].metrics).toEqual([metricA, metricB, metricC]);
             // don't clobber what's passed in
             expect(metricsConfig[0].name).not.toBe('All metrics');
 
-            // defaultSelection can be set
+            // addedMetrics can be set
             params.defaultSelection = ['b'];
             instance = new MetricSelector(params);
-            expect(instance.addedMetrics()).toEqual(['b']);
+            expect(instance.addedMetrics()).toEqual([metricB]);
 
             // defaultSelection can be observable, and the instance reacts to changes
             params.defaultSelection = ko.observable();
             instance = new MetricSelector(params);
             params.defaultSelection(['b']);
-            expect(instance.addedMetrics()).toEqual(['b']);
+            expect(instance.addedMetrics()).toEqual([metricB]);
 
             // metrics can be observable
             params.metrics = ko.observableArray(metricsConfig);
             instance = new MetricSelector(params);
-            expect(instance.categories()[0].metrics).toEqual(['a','b','c']);
+            expect(instance.categories()[0].metrics).toEqual([metricA, metricB, metricC]);
 
             // **** internal methods
             // adding a metric
-            instance.addMetric('c');
-            expect(instance.addedMetrics()).toEqual(['b','c']);
-            expect(instance.selectedMetric()).toEqual('b');
+            instance.addMetric(metricC);
+            expect(instance.addedMetrics()).toEqual([metricB, metricC]);
+            expect(instance.selectedMetric()).toEqual(metricB);
 
             // removing an un-selected metric
-            instance.removeMetric('c');
-            expect(instance.selectedMetric()).toEqual('b');
+            instance.removeMetric(metricC);
+            expect(instance.selectedMetric()).toEqual(metricB);
 
             // removing the selected metric selects the next one
-            instance.addMetric('c');
-            instance.removeMetric('b');
-            expect(instance.selectedMetric()).toEqual('c');
+            instance.addMetric(metricC);
+            instance.removeMetric(metricB);
+            expect(instance.selectedMetric()).toEqual(metricC);
 
             // removing all metrics clears selectedMetric
-            instance.removeMetric('c');
+            instance.removeMetric(metricC);
             expect(instance.selectedMetric()).toBeNull();
 
             // adding a metric selects it
-            instance.addMetric('c');
-            expect(instance.selectedMetric()).toEqual('c');
+            instance.addMetric(metricC);
+            expect(instance.selectedMetric()).toEqual(metricC);
 
             // categories work properly
             instance = new MetricSelector(params);

@@ -1,4 +1,8 @@
 define(['app/data-converters/wikimetrics-timeseries', 'moment'], function(converter, moment) {
+    // pass the configuration to the converter
+    var configuredConverter = converter.bind(null, {
+        'RollingActiveEditor': 'rolling_active_editor'
+    });
 
     describe('wikimetrics-timeseries converter', function() {
         // test new wikimetrics format
@@ -45,12 +49,12 @@ define(['app/data-converters/wikimetrics-timeseries', 'moment'], function(conver
         };
 
         it('should convert', function() {
-            var converted = converter(sample);
+            var converted = configuredConverter(sample);
             expect(converted[0].date).toEqual(moment('2014-08-18 00:00:00').toDate().getTime());
             expect(converted[0].label).toEqual('arwiki');
             expect(converted[1].value).toEqual(1120.0);
 
-            converted = converter(sample2);
+            converted = configuredConverter(sample2);
             expect(converted[0].date).toEqual(moment('2014-08-18 00:00:00').toDate().getTime());
             expect(converted[0].label).toEqual('arwiki');
             expect(converted[1].value).toEqual(1120.0);

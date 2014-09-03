@@ -34,8 +34,8 @@ define(['knockout', 'typeahead'], function (ko) {
         update: function (element, valueAccessor, allBindings, viewModel) {
 
             var value = ko.unwrap(valueAccessor());
-            var projectOptions = value.projectOptions;
-            var languageOptions = value.languageOptions;
+            var projectOptions = ko.unwrap(value.projectOptions);
+            var languageOptions = ko.unwrap(value.languageOptions);
 
             // to destroy typeaheads: $('.typeahead').typeahead('destroy');
             if (projectOptions.length > 0 && languageOptions.length > 0) {

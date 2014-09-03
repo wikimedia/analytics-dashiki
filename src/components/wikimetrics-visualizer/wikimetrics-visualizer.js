@@ -19,62 +19,35 @@ define(function (require) {
         api = require('wikimetricsApi'),
         converter = require('app/data-converters/wikimetrics-timeseries');
 
-    function promiseKey(metric, project) {
-        return {
-            metric: metric,
-            project: project,
-            key: metric + '|' + project,
-            toString: function () {
-                return this.key;
-            },
-        };
-    }
-
     function WikimetricsVisualizer(params) {
-        var loadingPromises = {};
+        var visualizer = this;
 
         this.metric = params.metric;
         this.projects = params.projects;
-
         this.mergedData = ko.observable();
 
-        var visualizer = this;
         this.datasets = ko.computed(function () {
             var projects = ko.unwrap(this.projects),
-                metric = ko.unwrap(this.metric);
+                metric = ko.unwrap(this.metric),
+                configuredConverter;
 
-            if (metric) {
-                // 1. make sure there's a promise for every project that we want loaded
-                projects.forEach(function (project) {
-                    var key = promiseKey(metric, project);
+            if (metric && projects && projects.length) {
+                var submetrics = {},
+                    promises;
 
-                    if (!loadingPromises.hasOwnProperty(key)) {
-                        loadingPromises[key] = api.get(metric, project).pipe(converter);
-                    }
+                submetrics[metric.name] = metric.submetric || metric.defaultSubmetric;
+                configuredConverter = converter.bind(null, submetrics);
+
+                // NOTE: this is fetching all datafiles each time and relies on the cache
+                // For a more optimal, but perhaps prematurely optimized, version see:
+                //     https://gerrit.wikimedia.org/r/#/c/158244/8/src/components/wikimetrics-visualizer/wikimetrics-visualizer.js
+                promises = projects.map(function (project) {
+                    return api.getData(metric.name, project).pipe(configuredConverter);
                 });
-
-                // 2. clear loading promises that are no longer needed
-                // Every promise is holding about 7000 bytes on heap
-                // w/o eviction this would be a memory leak
-                Object.getOwnPropertyNames(loadingPromises).forEach(function (key) {
-                    var split = key.split('|'),
-                        m = split[0],
-                        p = split[1];
-
-                    if (metric !== m || projects.indexOf(p) < 0) {
-                        delete loadingPromises[key];
-                    }
-                });
-
-                // 3. concat results when all the promises get fulfilled
-                var allPromises = Object.getOwnPropertyNames(loadingPromises).map(function (key) {
-                    return loadingPromises[key];
-                });
-                $.when.apply(this, allPromises).then(function () {
+                $.when.apply(this, promises).then(function () {
                     visualizer.mergedData([].concat.apply([], arguments));
                 });
             } else {
-                loadingPromises = {};
                 visualizer.mergedData([]);
             }
 

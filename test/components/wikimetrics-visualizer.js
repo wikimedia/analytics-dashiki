@@ -11,7 +11,7 @@ define(function (require) {
         cohort = 'cohort',
         v1 = 12,
         v2 = 1,
-        metric = 'RollingActiveEditor',
+        metric = {name: 'RollingActiveEditor', submetric: 'rolling_active_editor'},
         response = {
             'result': {
                 'Sum': {
@@ -23,7 +23,7 @@ define(function (require) {
             },
             'parameters': {
                 'Cohort': cohort,
-                'Metric': metric
+                'Metric': metric.name
             }
         },
         deferred = $.Deferred();
@@ -34,18 +34,19 @@ define(function (require) {
         beforeEach(function () {
             // make api.get return a mock promise, which can be resolved
             // differently in each test
-            sinon.stub(api, 'get').returns(deferred.promise());
+            sinon.stub(api, 'getData').returns(deferred.promise());
             selectedMetric = ko.observable();
             selectedProjects = ko.observableArray();
+
             visualizer = new WikimetricsVisualizer({
                 metric: selectedMetric,
-                projects: selectedProjects
+                projects: selectedProjects,
             });
             deferred.resolveWith(this, [response]);
         });
 
         afterEach(function () {
-            api.get.restore();
+            api.getData.restore();
         });
 
         it('should not do anything without a selected metric', function () {
@@ -55,14 +56,17 @@ define(function (require) {
             expect(visualizer.mergedData().length).toEqual(0);
 
             // but after a metric is set
-            selectedMetric('RollingActiveEditor');
+            selectedMetric(metric);
             // promises will result in merged data being available (2 records x 2 datasets = 4):
             expect(visualizer.mergedData().length).toEqual(4);
         });
 
         it('should transform selected projects and metrics into merged data', function () {
 
-            selectedMetric(metric);
+            selectedMetric({
+                name: 'RollingActiveEditor',
+                submetric: 'rolling_active_editor'
+            });
             selectedProjects.push(cohort);
 
             expect(visualizer.mergedData().length).toEqual(2);

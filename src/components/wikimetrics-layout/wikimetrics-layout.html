@@ -1,21 +1,22 @@
 <section class="section">
     <section class="col span_small projects-container">
-        <project-selector params="{ projectOptions:projectOptions,
-                                    languageOptions:languageOptions,
-                                    defaultProjects: defaultProjects,
-                                    reverseLookup: reverseLookup,
-                                    prettyProjectNames: prettyProjectNames,
-                                    selectedProjects: selectedProjects }">
+        <project-selector params="projectOptions:projectOptions,
+                                  languageOptions:languageOptions,
+                                  defaultProjects: defaultProjects,
+                                  reverseLookup: reverseLookup,
+                                  prettyProjectNames: prettyProjectNames,
+                                  selectedProjects: selectedProjects">
 
         </project-selector>
     </section>
     <section class="col span_large main-container">
         <time-selector></time-selector>
-        <metric-selector params="
-            selectedMetric: selectedMetric,
-            metrics: metrics,
-            defaultSelection: defaultMetrics
-        "></metric-selector>
-        <wikimetrics-visualizer params="projects: selectedProjects, metric: selectedMetric"></wikimetrics-visualizer>
+        <metric-selector params="selectedMetric: selectedMetric,
+                                 metrics: metrics,
+                                 defaultSelection: defaultMetrics">
+        </metric-selector>
+        <wikimetrics-visualizer params="projects: selectedProjects,
+                                        metric: selectedMetric">
+        </wikimetrics-visualizer>
     </section>
 </section>

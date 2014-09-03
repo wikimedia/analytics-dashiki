@@ -1,15 +1,10 @@
 define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], function (ko, templateMarkup, wikimetricsApi) {
     'use strict';
 
-    /**
-     * Eagerly fetching the available projects to display
-     * in the project-selector.
-     * TODO make sure that performance wise this is a suitable
-     * option
-     **/
     function WikimetricsLayout() {
         var self = this;
-        self.selectedMetric = ko.observable();
+
+        // project and language observables
         self.selectedProjects = ko.observableArray([]);
         self.projectOptions = ko.observable([]);
         self.languageOptions = ko.observable([]);
@@ -17,35 +12,27 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], functio
         self.reverseLookup = ko.observable();
         self.prettyProjectNames = ko.observable();
 
-        wikimetricsApi.getProjectAndLanguageChoices(function () {
-            self.languageOptions(wikimetricsApi.languageOptions);
-            self.projectOptions(wikimetricsApi.projectOptions);
-            self.defaultProjects(wikimetricsApi.defaultProjects);
-            self.reverseLookup(wikimetricsApi.reverseLookup);
-            self.prettyProjectNames(wikimetricsApi.prettyProjectNames);
+        // metric observables
+        self.selectedMetric = ko.observable();
+        self.metrics = ko.observable([]);
+        self.defaultMetrics = ko.observable([]);
+
+        // Eagerly fetching the available projects to display in the project-selector
+        wikimetricsApi.getProjectAndLanguageChoices(function (config) {
+            self.languageOptions(config.languageOptions);
+            self.projectOptions(config.projectOptions);
+            self.reverseLookup(config.reverseLookup);
+            self.prettyProjectNames(config.prettyProjectNames);
         });
 
-        /** infer selected projects from defaultProjectSelection object which is taylored for the ui **/
+        wikimetricsApi.getDefaultDashboard(function (config) {
+            self.defaultProjects(config.defaultProjects);
+            self.defaultMetrics(config.defaultMetrics);
+        });
 
-
-        self.metricData = ko.observable();
-        wikimetricsApi.getCategorizedMetrics(self.metricData);
-
-        self.metrics = ko.computed(function () {
-            var configData = this.metricData();
-            if (configData) {
-                return configData.categorizedMetrics;
-            }
-            return [];
-        }, self);
-
-        self.defaultMetrics = ko.computed(function () {
-            var configData = this.metricData();
-            if (configData) {
-                return configData.defaultMetrics;
-            }
-            return [];
-        }, self);
+        wikimetricsApi.getCategorizedMetrics(function (config) {
+            self.metrics(config.categorizedMetrics);
+        });
     }
 
     return {

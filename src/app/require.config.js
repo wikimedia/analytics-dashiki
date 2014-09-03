@@ -6,7 +6,9 @@ var require = {
     baseUrl: '.',
     paths: {
         'jquery'                : 'bower_modules/jquery/dist/jquery',
-        'knockout'              : 'bower_modules/knockout/dist/knockout',
+        // NOTE: the minified ko build is broken in 3.2.0
+        // (Issue reported https://github.com/knockout/knockout/issues/1528)
+        'knockout'              : 'bower_modules/knockout/dist/knockout.debug',
         'knockout-projections'  : 'bower_modules/knockout-projections/dist/knockout-projections',
         'text'                  : 'bower_modules/requirejs-text/text',
         'd3'                    : 'bower_modules/d3/d3',
