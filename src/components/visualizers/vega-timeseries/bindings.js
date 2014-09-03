@@ -35,9 +35,9 @@ define(['knockout', 'vega'], function (ko, vega) {
             updateDuration: 300,
             padding: {
                 top: 30,
-                right: 40,
+                right: 108,
                 bottom: 30,
-                left: 35
+                left: 65
             },
             strokeWidth: 2
         });
@@ -132,6 +132,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                 type: 'y',
                 scale: 'y',
                 grid: true,
+                format: '4s',
                 properties: {
                     ticks: {
                         stroke: {
