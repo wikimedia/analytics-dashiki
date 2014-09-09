@@ -253,6 +253,10 @@ define(['knockout', 'vega'], function (ko, vega) {
         // Parameters: element, valueAccessor, allBindings, viewModel, bindingContext
         update: function (element, valueAccessor) {
             var value = parseValue(valueAccessor);
+            if (!value.data) {
+                return;
+            }
+
             var dimensions = processAutosize(value, element);
             if (dimensions !== value) {
                 $.extend(value, dimensions);

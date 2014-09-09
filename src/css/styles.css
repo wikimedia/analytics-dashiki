@@ -96,6 +96,7 @@ section.main-container {
     position: absolute!important;
     z-index: 100!important;
     display: none!important;
+    margin-top: -6px!important;
 }
 .target.open {
     display: block!important;

@@ -68,21 +68,19 @@ define(function (require) {
                 submetric: 'rolling_active_editor'
             });
             selectedProjects.push(cohort);
-
             expect(visualizer.mergedData().length).toEqual(2);
 
-            // change projects observable and make sure the merged data reflects it
-            var anotherCohort = 'another-cohort';
-            response.parameters.Cohort = anotherCohort;
-            selectedProjects.push(anotherCohort);
-
-            // this data is here from the first push (cohort)
             expect(visualizer.mergedData()[0].date).toEqual(new Date('2014-08-18 00:00:00').getTime());
             expect(visualizer.mergedData()[0].label).toEqual(cohort);
             expect(visualizer.mergedData()[0].value).toEqual(v1);
             expect(visualizer.mergedData()[1].date).toEqual(new Date('2014-08-19 00:00:00').getTime());
             expect(visualizer.mergedData()[1].label).toEqual(cohort);
             expect(visualizer.mergedData()[1].value).toEqual(v2);
+
+            // change projects observable and make sure the merged data reflects it
+            var anotherCohort = 'another-cohort';
+            response.parameters.Cohort = anotherCohort;
+            selectedProjects.push(anotherCohort);
 
             // this data is here from the second push (another-cohort)
             expect(visualizer.mergedData()[2].date).toEqual(new Date('2014-08-18 00:00:00').getTime());

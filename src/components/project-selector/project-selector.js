@@ -14,8 +14,6 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
         this.selectedOption = ko.observable();
         this.suboptions = ko.observable([]);
 
-        this.open = ko.observable(false);
-
         var self = this,
             updateDefault = function () {
                 self.selectedProjects(ko.unwrap(params.defaultProjects));
@@ -39,7 +37,6 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
                 if (!projects.hasOwnProperty(info.project)) {
                     projects[info.project] = {
                         name: pretty[info.project] || info.project,
-                        open: ko.observable(false),
                         languages: []
                     };
                 }
@@ -53,12 +50,6 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
                 return projects[p];
             });
         }, this);
-
-        this.toggle = function (data) {
-            var _open = data.open();
-            data.open(!_open);
-
-        };
     }
 
     function makeOptions(obj, prettyNames) {
@@ -105,7 +96,14 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
         }
     };
 
-    ProjectSelector.prototype.removeCategory = function (data) {
+    /**
+     * Parameters
+     *   removeOthers   : if true, remove all *other* categories besides this one
+     *   data           : category data, passed by default
+     *
+     * NOTE: call this with the ProjectSelector as the context
+     **/
+    ProjectSelector.prototype.removeCategory = function (removeOthers, data) {
         // change the whole selectedProjects array at once
         // so as to send updates only once
         var _selectedProjects = ko.utils.arrayFilter(this.selectedProjects(), function (item) {
@@ -113,10 +111,16 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
                 i, keep;
 
             for (i = 0; i < languages.length; i++) {
-                //remove them if they are equal
-                keep = item !== languages[i].projectCode;
-                if (!keep) {
-                    break;
+                if (removeOthers) {
+                    keep = item === languages[i].projectCode;
+                    if (keep) {
+                        break;
+                    }
+                } else {
+                    keep = item !== languages[i].projectCode;
+                    if (!keep) {
+                        break;
+                    }
                 }
             }
             return keep;

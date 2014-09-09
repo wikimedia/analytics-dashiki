@@ -1,17 +1,10 @@
-<div class="ui dropdown orange label" data-bind="click: toggle">
+<div class="ui dropdown orange label" data-bind="toggle: 'open'">
     <i class="add sign box icon"></i>
     <!-- ko ifnot: selectedMetric -->
     <div class="text" data-bind="text: open() ? 'Close' : 'Add Metric'"></div>
     <!-- /ko -->
     <i class="dropdown icon vertically" data-bind="css: {flipped: open}"></i>
 </div>
-
-<!-- ko foreach: addedMetrics -->
-<div class="ui large label" data-bind="css: {teal: $data === $parent.selectedMetric()}">
-    <a data-bind="click: $parent.selectMetric, metricName: $data"></a>
-    <i class="delete icon" data-bind="click: $parent.removeMetric"></i>
-</div>
-<!-- /ko -->
 
 <div class="ui two column grid target" data-bind="css: {open: open}">
     <div class="column">
@@ -28,6 +21,11 @@
     <div class="column">
         <div class="ui vertical menu">
         <!-- ko if: selectedCategory -->
+        <!-- ko foreach: categories -->
+            <!-- ko if: $data.name < $parent.selectedCategory().name -->
+            <div class="item">&nbsp;</div>
+            <!-- /ko -->
+        <!-- /ko -->
         <!-- ko foreach: selectedCategory().metrics -->
             <a class="item" data-bind="metricName: $data, click: $parent.addMetric"></a>
         <!-- /ko -->
@@ -35,3 +33,10 @@
         </div>
     </div>
 </div>
+
+<!-- ko foreach: addedMetrics -->
+<div class="ui large label" data-bind="css: {teal: $data === $parent.selectedMetric()}">
+    <a data-bind="click: $parent.selectMetric, metricName: $data"></a>
+    <i class="delete icon" data-bind="click: $parent.removeMetric"></i>
+</div>
+<!-- /ko -->

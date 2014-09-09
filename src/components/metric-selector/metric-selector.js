@@ -35,11 +35,6 @@ define(function(require) {
     function MetricSelector(params) {
         var self = this;
 
-        this.open = ko.observable(false);
-        this.toggle = function () {
-            this.open(!this.open());
-        };
-
         this.metricsByCategory = params.metrics;
         this.selectedMetric = params.selectedMetric;
         this.selectedCategory = ko.observable();
