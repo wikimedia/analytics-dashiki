@@ -43,8 +43,19 @@
 <div class="ui secondary orange inverted vertical fluid menu">
 <!-- ko foreach: selectedProjectsByCategory -->
     <div class="header item">
-        <span data-bind="text: name"></span>
-        <i class="down arrow icon" data-bind="click: $parent.removeCategory.bind($parent)"></i>
+        <span class="default text" data-bind="text: $data.name"></span>
+        <!-- menu goes here -->
+        <div class="ui floating dropdown" data-bind="css: {visible: $data.open }">
+             <i class="dropdown icon" data-bind="click: $parent.toggle.bind($parent)"></i>
+             <div class="menu ui" >
+
+                <div class="item small" data-bind="click: $parent.removeCategory.bind($parent)">
+                 <i class="remove sign icon" > </i>  Remove Entire Project
+                </div>
+             </div>
+      </div>
+
+        <!-- menu goes here -->
     </div>
     <div class="menu">
     <!-- ko foreach: languages -->

@@ -5,6 +5,7 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
     function ProjectSelector(params) {
         this.selectedProjects = params.selectedProjects;
 
+        this.selectedProjects = params.selectedProjects;
         this.projectOptions = params.projectOptions();
         this.languageOptions = params.languageOptions();
         this.reverseLookup = params.reverseLookup;
@@ -14,6 +15,8 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
         this.selectedOption = ko.observable();
         this.suboptions = ko.observable([]);
 
+        this.open = ko.observable(false);
+
         var self = this,
             updateDefault = function () {
                 self.selectedProjects(ko.unwrap(params.defaultProjects));
@@ -21,6 +24,9 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
         params.defaultProjects.subscribe(updateDefault);
         updateDefault();
 
+        /**
+         * This is purely a UI object
+         **/
         this.selectedProjectsByCategory = ko.computed(function () {
             var projects = {},
                 reverse = ko.unwrap(self.reverseLookup) || {},
@@ -34,6 +40,7 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
                 if (!projects.hasOwnProperty(info.project)) {
                     projects[info.project] = {
                         name: pretty[info.project] || info.project,
+                        open: ko.observable(false),
                         languages: []
                     };
                 }
@@ -47,6 +54,12 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
                 return projects[p];
             });
         }, this);
+
+        this.toggle = function (data) {
+            var _open = data.open();
+            data.open(!_open);
+
+        };
     }
 
     function makeOptions(obj, prettyNames) {
@@ -96,11 +109,19 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
     ProjectSelector.prototype.removeCategory = function (data) {
         // change the whole selectedProjects array at once
         // so as to send updates only once
-        this.selectedProjects(ko.unwrap(this.selectedProjects()).filter(function (p) {
-            return !data.languages.find(function (language) {
-                return language.projectCode === p;
-            });
-        }));
+        var _selectedProjects = ko.utils.arrayFilter(this.selectedProjects(), function (item) {
+            var languages = data.languages;
+            for (var i = 0; i < languages.length; i++) {
+                //remove them if they are equal
+                var keep = true;
+                if (item === languages[i].projectCode) {
+                    keep = false;
+                    break;
+                }
+            }
+            return keep;
+        });
+        this.selectedProjects(_selectedProjects);
     };
 
     return {
