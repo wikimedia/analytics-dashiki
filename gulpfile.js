@@ -14,7 +14,25 @@ var gulp = require('gulp'),
     replace = require('gulp-replace'),
     uglify = require('gulp-uglify'),
     htmlreplace = require('gulp-html-replace'),
-    jshint = require('gulp-jshint');
+    rev = require('gulp-rev'),
+    jshint = require('gulp-jshint'),
+    fs = require('fs'),
+    rename = require('gulp-rename'),
+    replace = require('gulp-replace');
+
+// gulp-replace versions the files in the stream appending a hash
+// so dist/scripts.js becomes dist/scripts-7926a17b.js
+// creates also a manifest file like:
+/*
+{
+  "project-selector.js": "project-selector-8c4e0fe3.js",
+  "vega-timeseries.js": "vega-timeseries-ec0bf85c.js",
+  "scripts.js": "scripts-7926a17b.js"
+}
+that we use later to replace js (and css files) on index.html
+and in the main requirejs bundle
+*/
+var rev = require('gulp-rev');
 
 // Config
 var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require.config.js') + '; require;'),
@@ -29,8 +47,6 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
             'requireLib',
             'components/wikimetrics-visualizer/wikimetrics-visualizer',
             'components/wikimetrics-layout/wikimetrics-layout',
-            'components/visualizers/vega-timeseries/vega-timeseries',
-            'components/wikimetrics-layout/wikimetrics-layout',
             'components/metric-selector/metric-selector',
             'components/time-selector/time-selector'
         ],
@@ -38,7 +54,9 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
         bundles: {
             // If you want parts of the site to load on demand, remove them from the 'include' list
             // above, and group them into bundles here.
-            'project-selector': ['components/project-selector/project-selector']
+            'project-selector': ['components/project-selector/project-selector'],
+            'vega-timeseries': ['components/visualizers/vega-timeseries/vega-timeseries']
+
         }
     });
 
@@ -57,18 +75,24 @@ gulp.task('js', function () {
         .pipe(uglify({
             preserveComments: 'some'
         }))
+        .pipe(rev())
+        .pipe(gulp.dest('./dist/'))
+        .pipe(rev.manifest())
+        .pipe(rename('js.manifest.json'))
         .pipe(gulp.dest('./dist/'));
 });
-
-
-var jsfilesToLint = ['src/app/*.js', 'src/components/*/*.js', 'src/lib/*.js'];
 
 
 gulp.task('css', function () {
     return gulp.src(['src/css/*.css'])
-        .pipe(concat('style.css'))
+        .pipe(concat('style.css')).pipe(rev()).pipe(gulp.dest('./dist/'))
+        // Add rev-manifest.json as a new src to prevent rev'ing rev-manifest.json
+        .pipe(rev.manifest())
+        .pipe(rename('css.manifest.json'))
         .pipe(gulp.dest('./dist/'));
 });
+
+
 
 /** Copies semantic fonts where the css expects them to be**/
 gulp.task('fonts', function () {
@@ -77,16 +101,59 @@ gulp.task('fonts', function () {
         .pipe(gulp.dest('./fonts/'));
 });
 
-
 // Copies index.html, replacing <script> and <link> tags to reference production URLs
-gulp.task('html', function () {
+// with their versioned counterpart
+// updates the main require.js file bundle configuration (scripts.js, see above)
+// with references to versioned bundles
+gulp.task('replace', ['css', 'js'], function () {
+
+    // these manifests have been created by task rev.manifest before
+    var jsManifest = JSON.parse(fs.readFileSync('./dist/js.manifest.json', 'utf8'));
+    var cssManifest = JSON.parse(fs.readFileSync('./dist/css.manifest.json', 'utf8'));
+
+    // figure out what bundles do we have setup on requirejs
+    var bundles = Object.getOwnPropertyNames(jsManifest).filter(function (p) {
+        return p !== 'scripts.js';
+    });
+
+    var regex = '';
+    bundles.forEach(function (element, index, array) {
+        var l = element.length;
+        // we are trying to match  "project-selector" (quotes-included)
+        regex = regex + '\"(' + element.substr(0, element.length - 3) + ')\"\:|';
+
+    });
+
+    //remove last '|', out come should be like: "(project-selector)"|"(vega-timeseries)"
+    regex = regex.substring(0, regex.length - 1);
+
+    // this build system is so inflexible that makes me want to cry
+    function replaceByVersion(match) {
+        // remove quotes from match and add ".js"
+        // so we can key on the manifest with versions
+        match = match.substring(1, match.length - 2);
+        match = match + ".js";
+        var version = jsManifest[match];
+
+        version = '\"' + version + '\":';
+        return version;
+    }
+
+    var regexObj = new RegExp(regex, "g");
+
+    gulp.src(['./dist/' + jsManifest['scripts.js']])
+        .pipe(replace(regexObj, replaceByVersion))
+        .pipe(gulp.dest('./dist/'));
+
     return gulp.src('./src/index.html')
         .pipe(htmlreplace({
-            'css': 'style.css',
-            'js': 'scripts.js'
+            'css': cssManifest['style.css'],
+            'js': jsManifest['scripts.js']
         }))
         .pipe(gulp.dest('./dist/'));
 });
+
+
 
 // Removes all files from ./dist/
 gulp.task('clean', function () {
@@ -96,7 +163,7 @@ gulp.task('clean', function () {
         .pipe(clean());
 });
 
-gulp.task('default', ['html', 'lint', 'js', 'css', 'fonts'], function (callback) {
+gulp.task('default', ['replace', 'lint', 'fonts'], function (callback) {
     callback();
     console.log('\nPlaced optimized files in ' + chalk.magenta('dist/\n'));
     console.log('\nPlaced font files in ' + chalk.magenta('fonts/\n'));

@@ -39,6 +39,4 @@ var require = {
         }
     }
 
-    // TODO: figure out cache busting.  This causes errors in testing:
-    // urlArgs: 'bust=' +  (new Date()).getTime()
 };
