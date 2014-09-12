@@ -12,9 +12,9 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
                 metricB = {name: 'b', submetric: 'b_1'},
                 metricC = {name: 'c', submetric: 'c_1'},
                 metricsConfig = [
-                {name: 'Something', metrics: [metricA, metricB]},
-                {name: 'Else', metrics: [metricC]},
-            ];
+                    {name: 'Something', metrics: [metricA, metricB]},
+                    {name: 'Else', metrics: [metricC]},
+                ];
             var params = {
                 metrics: metricsConfig,
                 selectedMetric: ko.observable()
@@ -40,6 +40,9 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
             instance = new MetricSelector(params);
             params.defaultSelection(['b']);
             expect(instance.addedMetrics()).toEqual([metricB]);
+
+            // changing the defaults with delay still selects a metric
+            expect(instance.selectedMetric()).toEqual(metricB);
 
             // metrics can be observable
             params.metrics = ko.observableArray(metricsConfig);

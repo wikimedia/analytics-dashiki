@@ -21,6 +21,9 @@ define(function (require) {
 
         this.codeOptions = ko.computed(function () {
             var reverse = ko.unwrap(this.reverseLookup);
+            if (!reverse) {
+                return [];
+            }
             return Object.getOwnPropertyNames(reverse).map(function (code) {
                 return {name: code, description: ''};
             });

@@ -22,7 +22,8 @@
         <div class="ui vertical menu">
         <!-- ko if: selectedCategory -->
         <!-- ko foreach: categories -->
-            <!-- ko if: $data.name < $parent.selectedCategory().name -->
+            <!-- ko if: $parent.selectedCategory().name !== 'All metrics' &&
+                        (name === 'All metrics' || name < $parent.selectedCategory().name) -->
             <div class="item">&nbsp;</div>
             <!-- /ko -->
         <!-- /ko -->

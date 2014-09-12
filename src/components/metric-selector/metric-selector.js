@@ -75,6 +75,7 @@ define(function(require) {
         // functions
         this.setDefault = function () {
             self.addedMetrics(self.defaultSelection() || []);
+            self.reassignSelected();
         };
 
         this.selectCategory = function (category) {
