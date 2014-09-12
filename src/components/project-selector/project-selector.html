@@ -6,24 +6,15 @@
            data-bind="projectAutocomplete: {
                           projectOptions: projectOptions,
                           languageOptions: languageOptions,
-                          select: displaySecondLevel
-                      }, event: {
-                          blur: function(data,event){
-                              // TODO: this has to be in the binding, not here
-                              setTimeout(hideSecondLevel.bind($data), 500)
-                          }
-                      }"/>
+                          codeOptions: codeOptions,
+                          select: displaySecondLevel,
+                          blur: hideSecondLevel
+                     }"/>
     <i class="search icon"></i>
 </div>
 
 <span class="tt-dropdown-menu"
-      data-bind="css: {open: displaySuboptions},
-                 event: {
-                     blur: function(data,event){
-                         // TODO: this has to be in the binding, not here
-                         setTimeout(hideSecondLevel.bind($data),200);
-                     }
-                 }">
+      data-bind="css: {open: displaySuboptions}">
     <div class="tt-dataset-suboptions">
         <span class="header" data-bind="text: selectedOption"></span>
         <hr/>

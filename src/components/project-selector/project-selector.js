@@ -1,6 +1,11 @@
 /* jshint -W098 */
-define(['knockout', 'text!./project-selector.html', './bindings'], function (ko, templateMarkup) {
+define(function (require) {
     'use strict';
+
+    var ko              = require('knockout'),
+        templateMarkup  = require('text!./project-selector.html'),
+        utils           = require('utils');
+    require('./bindings');
 
     function ProjectSelector(params) {
         this.selectedProjects = params.selectedProjects;
@@ -13,6 +18,13 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
         this.displaySuboptions = ko.observable(false);
         this.selectedOption = ko.observable();
         this.suboptions = ko.observable([]);
+
+        this.codeOptions = ko.computed(function () {
+            var reverse = ko.unwrap(this.reverseLookup);
+            return Object.getOwnPropertyNames(reverse).map(function (code) {
+                return {name: code, description: ''};
+            });
+        }, this);
 
         var self = this,
             updateDefault = function () {
@@ -66,11 +78,18 @@ define(['knockout', 'text!./project-selector.html', './bindings'], function (ko,
 
         this.displaySuboptions(true);
         this.selectedOption(selection.name);
-        if (datasetName === 'projects') {
-            options = makeOptions(selection.languages);
-        } else {
-            options = makeOptions(selection.projects, ko.unwrap(this.prettyProjectNames));
+        switch (datasetName) {
+            case 'projects':
+                options = makeOptions(selection.languages);
+                break;
+            case 'languages':
+                options = makeOptions(selection.projects, ko.unwrap(this.prettyProjectNames));
+                break;
+            case 'codes':
+                this.addProject({project: selection.name});
+                return;
         }
+        options.sort(utils.sortByNameIgnoreCase);
         this.suboptions(options);
     };
 

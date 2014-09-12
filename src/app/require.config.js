@@ -24,7 +24,8 @@ var require = {
         'logger'                : 'lib/logger',
         'wikimetricsApi'        : 'app/apis/wikimetrics',
         'typeahead'             : 'bower_modules/typeahead.js/dist/typeahead.bundle',
-        'ajaxWrapper'           : 'lib/ajaxWrapper'
+        'ajaxWrapper'           : 'lib/ajaxWrapper',
+        'utils'                 : 'lib/utils'
     },
     shim: {
         'ajaxWrapper': {

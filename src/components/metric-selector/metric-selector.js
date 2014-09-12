@@ -22,15 +22,10 @@ define(function(require) {
     'use strict';
 
     var ko              = require('knockout'),
-        templateMarkup  = require('text!./metric-selector.html');
+        templateMarkup  = require('text!./metric-selector.html'),
+        utils           = require('utils');
 
     require('./bindings');
-
-    /* helper to sort named objects */
-    function sortByName (a, b) {
-        return a.name === b.name ?
-            0 : a.name > b.name ? 1 : -1;
-    }
 
     function MetricSelector(params) {
         var self = this;
@@ -62,13 +57,13 @@ define(function(require) {
         this.categories = ko.computed(function(){
             var unwrap = ko.unwrap(this.metricsByCategory) || [],
                 copy = unwrap.slice(),
-                categories = copy.sort(sortByName);
+                categories = copy.sort(utils.sortByNameIgnoreCase);
 
             categories.splice(0, 0, {
                 name: 'All metrics',
                 metrics: [].concat.apply([], categories.map(function(c) {
                     return c.metrics;
-                })).sort(sortByName)
+                })).sort(utils.sortByNameIgnoreCase)
             });
 
             if (categories.length) {
