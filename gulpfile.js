@@ -163,7 +163,7 @@ gulp.task('clean', function () {
         .pipe(clean());
 });
 
-gulp.task('default', ['replace', 'lint', 'fonts'], function (callback) {
+gulp.task('default', ['clean', 'replace', 'lint', 'fonts'], function (callback) {
     callback();
     console.log('\nPlaced optimized files in ' + chalk.magenta('dist/\n'));
     console.log('\nPlaced font files in ' + chalk.magenta('fonts/\n'));
