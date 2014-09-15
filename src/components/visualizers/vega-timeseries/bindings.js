@@ -9,7 +9,10 @@ define(['knockout', 'vega'], function (ko, vega) {
      *                        in 'from' and values represent defaults for those keys
      * Returns:
      *  object with all the keys of 'from', unwrapped out of any knockout observables;
-     *  defaults will be grabbed from 'keysWithDefaults' for undefined values
+     *  defaults will be grabbed from 'keysWithDefaults' for undefined values.
+     *
+     *  NOTE: values that callers are expecting this binding to set are not unwrapped:
+     *      colorScale
      */
     function setOrDefault(from, keysWithDefaults) {
         var to = {};
@@ -17,7 +20,9 @@ define(['knockout', 'vega'], function (ko, vega) {
         $.extend(to, from);
 
         Object.keys(to).forEach(function (key) {
-            to[key] = ko.unwrap(to[key]);
+            if (key !== 'colorScale') {
+                to[key] = ko.unwrap(to[key]);
+            }
         });
 
         return to;
@@ -39,7 +44,8 @@ define(['knockout', 'vega'], function (ko, vega) {
                 bottom: 30,
                 left: 65
             },
-            strokeWidth: 2
+            strokeWidth: 2,
+            colorScale: undefined
         });
     }
 
@@ -117,6 +123,9 @@ define(['knockout', 'vega'], function (ko, vega) {
                     grid: {
                         stroke: {
                             value: '#cacaca'
+                        },
+                        strokeDash: {
+                            value: [15, 15]
                         }
                     },
                     axis: {
@@ -147,6 +156,9 @@ define(['knockout', 'vega'], function (ko, vega) {
                     grid: {
                         stroke: {
                             value: '#cacaca'
+                        },
+                        strokeDash: {
+                            value: [15, 15]
                         }
                     },
                     axis: {
@@ -253,7 +265,7 @@ define(['knockout', 'vega'], function (ko, vega) {
         // Parameters: element, valueAccessor, allBindings, viewModel, bindingContext
         update: function (element, valueAccessor) {
             var value = parseValue(valueAccessor);
-            if (!value.data) {
+            if (!value || !value.data || !value.data.length) {
                 return;
             }
 
@@ -261,17 +273,30 @@ define(['knockout', 'vega'], function (ko, vega) {
             if (dimensions !== value) {
                 $.extend(value, dimensions);
             }
+
+            function updateColor() {
+                if (value.colorScale && element.view) {
+                    // the user of the binding wants the color scale updated
+                    var newScale = element.view.model().scene().items[0].scales.color;
+                    if (value.colorScale() !== newScale) {
+                        value.colorScale(newScale);
+                    }
+                }
+            }
+
             if (element.view) {
                 var parsed = vega.parse.data(vegaData(value.data)).load;
                 element.view.data(parsed).update({
                     duration: value.updateDuration
                 });
+                updateColor();
             } else {
                 vega.parse.spec(vegaDefinition(value), function (graph) {
                     element.view = graph({
                         el: element
                     }).update();
                     $(window).trigger('resize');
+                    updateColor();
                 });
             }
         }

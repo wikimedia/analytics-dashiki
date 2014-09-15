@@ -42,7 +42,7 @@ define(['knockout', 'utils', 'typeahead'], function (ko, utils) {
             var value = ko.unwrap(valueAccessor());
             var projectOptions = ko.unwrap(value.projectOptions);
             var languageOptions = ko.unwrap(value.languageOptions);
-            var codeOptions = ko.unwrap(value.codeOptions);
+            var databaseOptions = ko.unwrap(value.databaseOptions);
 
             // to destroy typeaheads: $('.typeahead').typeahead('destroy');
             if (projectOptions.length > 0 && languageOptions.length > 0) {
@@ -62,10 +62,10 @@ define(['knockout', 'utils', 'typeahead'], function (ko, utils) {
                         templates: makeTemplate('Languages'),
                         source: substringMatcher(languageOptions)
                     }, {
-                        name: 'codes',
+                        name: 'databases',
                         displayKey: 'value',
-                        templates: makeTemplate('Codes'),
-                        source: substringMatcher(codeOptions, 5)
+                        templates: makeTemplate('Databases'),
+                        source: substringMatcher(databaseOptions, 5)
                     }
 
                 ).bind('typeahead:selected', value.select.bind(viewModel));

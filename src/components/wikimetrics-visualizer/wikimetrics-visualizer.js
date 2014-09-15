@@ -25,6 +25,16 @@ define(function (require) {
         this.metric = params.metric;
         this.projects = params.projects;
         this.mergedData = ko.observable();
+        this.colorScale = ko.observable();
+
+        this.applyColors = function (projects, color) {
+            var scale = color || this.colorScale();
+            if (scale) {
+                projects.forEach(function (project) {
+                    project.color(scale(project.database));
+                });
+            }
+        };
 
         this.datasets = ko.computed(function () {
             var projects = ko.unwrap(this.projects),
@@ -42,15 +52,21 @@ define(function (require) {
                 // For a more optimal, but perhaps prematurely optimized, version see:
                 //     https://gerrit.wikimedia.org/r/#/c/158244/8/src/components/wikimetrics-visualizer/wikimetrics-visualizer.js
                 promises = projects.map(function (project) {
-                    return api.getData(metric.name, project).pipe(configuredConverter);
+                    return api.getData(metric.name, project.database).pipe(configuredConverter);
                 });
                 $.when.apply(this, promises).then(function () {
                     visualizer.mergedData([].concat.apply([], arguments));
+                    visualizer.applyColors(projects);
                 });
             } else {
                 visualizer.mergedData([]);
             }
 
+        }, this);
+
+        this.colorScale.subscribe(function (color) {
+            var projects = ko.unwrap(this.projects);
+            this.applyColors(projects, color);
         }, this);
     }
 

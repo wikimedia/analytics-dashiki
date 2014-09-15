@@ -32,6 +32,12 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
         this.shortName = data.shortName;
     }
 
+    function ProjectLanguage(data) {
+        this.database = data.database;
+        this.project = data.project;
+        this.language = data.language;
+    }
+
     /**
      * Parameters
      *   metric  : a Wikimetrics metric
@@ -61,18 +67,38 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
             promiseLanguagesAndProjects = this._getJSON(this.urlProjectLanguageChoices)
                 .pipe(function (json) {
                     var map = Array.prototype.map;
-                    var self = this;
+                    var self = this,
+                        databases = Object.getOwnPropertyNames(json.reverse),
+                        projectOptions = {},
+                        languageOptions = {};
 
                     self.defaultProjects = json.defaultProjects;
-                    self.prettyProjectNames = json.prettyProjectNames;
-                    self.reverseLookup = json.reverse;
+                    self.reverseLookup = {};
+
+                    // keep track of objects created below so we can make the reverse
+                    // lookup a unified object with minimal memory footprint.  Ultimately,
+                    // grouping by languages and projects may be useful, enwiki may
+                    // inherit color shades from the wiki project or english language, etc
 
                     self.projectOptions = map.call(json.projects, function (data) {
-                        return new ProjectOption(data, self.prettyProjectNames);
+                        var option = new ProjectOption(data, json.prettyProjectNames);
+                        projectOptions[option.code] = option;
+                        return option;
                     });
 
                     self.languageOptions = map.call(json.languages, function (data) {
-                        return new LanguageOption(data);
+                        var option = new LanguageOption(data);
+                        languageOptions[option.name] = option;
+                        return option;
+                    });
+
+                    databases.forEach(function (database) {
+                        var reverse = json.reverse[database];
+                        self.reverseLookup[database] = new ProjectLanguage ({
+                            database: database,
+                            project: projectOptions[reverse.project],
+                            language: languageOptions[reverse.language],
+                        });
                     });
 
                     return self;

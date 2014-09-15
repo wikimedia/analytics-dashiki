@@ -6,7 +6,7 @@
            data-bind="projectAutocomplete: {
                           projectOptions: projectOptions,
                           languageOptions: languageOptions,
-                          codeOptions: codeOptions,
+                          databaseOptions: databaseOptions,
                           select: displaySecondLevel,
                           blur: hideSecondLevel
                      }"/>
@@ -49,11 +49,11 @@
         </div>
         <!-- menu goes here -->
     </div>
-    <div class="menu">
+    <div class="colored menu">
     <!-- ko foreach: languages -->
         <div class="item">
             <span>
-                <i class="sign large icon" data-bind="style: {color: 'white'}"></i>
+                <i class="swatch" data-bind="style: {color: color}"></i>
                 <a data-bind="text: name"></a>
             </span>
             <a data-bind="click: $parents[1].removeProject.bind($parents[1])">

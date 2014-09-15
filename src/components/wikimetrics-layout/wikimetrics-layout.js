@@ -10,7 +10,6 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], functio
         self.languageOptions = ko.observable([]);
         self.defaultProjects = ko.observable([]);
         self.reverseLookup = ko.observable();
-        self.prettyProjectNames = ko.observable();
 
         // metric observables
         self.selectedMetric = ko.observable();
@@ -22,7 +21,6 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], functio
             self.languageOptions(config.languageOptions);
             self.projectOptions(config.projectOptions);
             self.reverseLookup(config.reverseLookup);
-            self.prettyProjectNames(config.prettyProjectNames);
         });
 
         wikimetricsApi.getDefaultDashboard(function (config) {

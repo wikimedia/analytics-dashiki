@@ -9,63 +9,82 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
             expect(ko.bindingHandlers.projectAutocomplete).not.toBe(undefined);
         });
 
-        it('project selection updates category display on ui', function () {
+        it('should react to defaults and changes', function () {
 
 
-            var projectOptions = [{
-                code: "wiki",
-                name: "Wikipedia",
-                languages: {
-                    Abkhazian: "abwiki",
-                    Achinese: "acewiki",
-                    Afar: "aawiki",
-                    Afrikaans: "afwiki",
-                    Spanish: "eswiki"
+            var wikipedia = {
+                    code: 'wiki',
+                    name: 'Wikipedia',
+                    languages: {
+                        Afar: 'aawiki',
+                        Spanish: 'eswiki'
 
+                    },
+                    description: ['287 languages"']
                 },
-                description: ['287 languages"']
-            }];
-            var languageOptions = [{
-                name: "Afar",
-                projects: {
-                    wiki: "aawiki",
-                    wiktionary: "aawiktionary"
+                wikibooks = {
+                    code: 'wikibooks',
+                    name: 'Wikibooks',
+                    languages: {
+                        Spanish: 'eswikibooks'
+                    }
                 },
-                description: ['blah'],
-                shortName: "aa"
-            }, {
-                name: "Spanish",
-                projects: {
-                    wiki: "eswiki",
-                    wiktionary: "eswiktionary"
-                },
-                description: ['blah'],
-                shortName: "es"
-            }];
 
-            var params = {};
+                afar = {
+                    name: 'Afar',
+                    projects: {
+                        wiki: 'aawiki',
+                        wiktionary: 'aawiktionary'
+                    },
+                    description: ['blah'],
+                    shortName: 'aa'
+                },
+                spanish = {
+                    name: 'Spanish',
+                    projects: {
+                        wiki: 'eswiki',
+                        wikibooks: 'eswikibooks'
+                    },
+                    description: ['blah'],
+                    shortName: 'es'
+                },
+
+                aawiki = {
+                    database: 'aawiki',
+                    language: afar,
+                    project: wikipedia
+                },
+                eswiki = {
+                    database: 'eswiki',
+                    language: spanish,
+                    project: wikipedia
+                },
+                eswikibooks = {
+                    database: 'eswikibooks',
+                    language: spanish,
+                    project: wikibooks
+                },
+
+                projectOptions = [wikipedia],
+                languageOptions = [afar, spanish],
+                params = {};
+
+
             params.reverseLookup = {
-                'aawiki': {
-                    'language': "Afar",
-                    'project': "wiki"
-                },
-                'eswiki': {
-                    'language': 'Spanish',
-                    'project': 'wiki'
-                }
-
+                aawiki: aawiki,
+                eswiki: eswiki
             };
 
             params.prettyProjectNames = {
-                wiki: "Wikipedia",
-                wikibooks: "Wikibooks",
-                wiktionary: "Pretty Wiki"
+                wiki: 'Wikipedia',
+                wikibooks: 'Wikibooks',
+                wiktionary: 'Pretty Wiki'
             };
 
             params.projectOptions = ko.observable(projectOptions);
             params.languageOptions = ko.observable(languageOptions);
-            params.defaultProjects = ko.observable(["eswiki"]);
-            params.selectedProjects = ko.observableArray(["eswiki"]);
+            params.defaultProjects = ko.observable(['eswiki']);
+            params.selectedProjects = ko.observableArray();
 
             // testing initialization
             var instance = new ProjectSelector(params);
@@ -74,11 +93,11 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
 
 
             function doesSelectedProjectsByCategoryContainProject(project) {
-                var found = false;
+                var found = false, i;
                 // testing, assuming just 1 element
                 var languages = instance.selectedProjectsByCategory()[0].languages;
-                for (var i = 0; i < languages.length; i++) {
-                    if (languages[i].projectCode === project) {
+                for (i = 0; i < languages.length; i++) {
+                    if (languages[i].database === project.database) {
                         found = true;
                         break;
                     }
@@ -86,31 +105,47 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
                 return found;
             }
 
-            // is ui what it should be?
-            expect(doesSelectedProjectsByCategoryContainProject('eswiki')).toBe(true);
-
+            // are the defaults reflected in the selected projects and dependents
+            expect(instance.selectedProjects.indexOf(eswiki) >= 0).toBe(true);
+            expect(doesSelectedProjectsByCategoryContainProject(eswiki)).toBe(true);
 
             // add a project see it gets added
-            instance.addProject({
-                'project': 'aawiki'
-            });
+            instance.addProject(aawiki);
 
-            expect(instance.selectedProjects.indexOf('aawiki') > 0).toBe(true);
+            // both selected projects and dependents update
+            expect(instance.selectedProjects.indexOf(aawiki) >= 0).toBe(true);
+            expect(doesSelectedProjectsByCategoryContainProject(aawiki)).toBe(true);
 
-            // make sure ui list is updated
-            expect(doesSelectedProjectsByCategoryContainProject('aawiki')).toBe(true);
+            // a color observable should've been added to all selected projects
+            expect(eswiki.color).not.toBeUndefined();
+            expect(aawiki.color).not.toBeUndefined();
+
+            // remove everything but Wikipedia
+            instance.removeCategory(true, instance.selectedProjectsByCategory()[0]);
+
+            // nothing changes
+            expect(instance.selectedProjects()).toEqual([eswiki, aawiki]);
 
             // now remove project
-            instance.removeProject({
-                'projectCode': 'eswiki'
-            });
+            instance.removeProject(eswiki);
 
-            // is ui what it should be?
-            expect(doesSelectedProjectsByCategoryContainProject('eswiki')).toBe(false);
+            // both selected projects and dependents update
+            expect(instance.selectedProjects.indexOf(eswiki) >= 0).toBe(false);
+            expect(doesSelectedProjectsByCategoryContainProject(eswiki)).toBe(false);
 
+            // adding a project from a different category is categorized
+            instance.addProject(eswikibooks);
+
+            expect(instance.selectedProjects.indexOf(eswikibooks) >= 0).toBe(true);
+            expect(doesSelectedProjectsByCategoryContainProject(eswikibooks)).toBe(false);
+
+            // remove both categories
+            instance.removeCategory(false, instance.selectedProjectsByCategory()[0]);
+            instance.removeCategory(false, instance.selectedProjectsByCategory()[0]);
+
+            // all projects are gone
+            expect(instance.selectedProjects()).toEqual([]);
 
         });
-
     });
-
 });

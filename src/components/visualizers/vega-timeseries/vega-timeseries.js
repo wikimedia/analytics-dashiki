@@ -17,6 +17,7 @@
             updateDuration  : 300,
             padding         : {top: 30, right: 40, bottom: 30, left: 35},
             strokeWidth     : 2
+            colorScale      : undefined (pass a ko.observable to monitor color)
         "/>
  */
 define([ 'text!./vega-timeseries.html', './bindings'], function( templateMarkup) {

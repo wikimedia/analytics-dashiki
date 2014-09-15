@@ -1,3 +1,9 @@
+/* patches to semantic */
+.delete.icon {
+    cursor: pointer;
+}
+
+/* our styles */
 section.projects-container {
     background-color: #fef0ed;
     padding: 18px;
@@ -17,6 +23,30 @@ section.main-container {
     width: 100%;
     height: 100%;
     padding: 0;
+}
+.colored i.swatch {
+    font-size: 1.5em;
+    vertical-align: middle;
+
+    display: inline-block;
+    margin: 0 .35em 0 0;
+    /*width: 1.23em;*/
+    height: 1.03em;
+    font-family: Icons;
+    font-style: normal;
+    line-height: 0.89em;
+    font-weight: 400;
+    text-decoration: inherit;
+    text-align: center;
+    speak: none;
+    box-sizing: border-box;
+
+    border: 2px solid white;
+    border-radius: 4px;
+    opacity: 1;
+}
+.colored i.swatch:before {
+    content: "\f0c8";
 }
 
 /**
