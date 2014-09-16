@@ -7,7 +7,7 @@ define([], function () {
      * but it could also do a post request to a known endpoint
      * where we collect logs.
      *
-     * Since logging does not alter ourcodepath and it is a dependency of the
+     * Since logging does not alter our code path and it is a dependency of the
      * whole codebase the logger is a static function available site wide.
      *
      * Sample usage:

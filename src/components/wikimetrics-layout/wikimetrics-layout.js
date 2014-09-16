@@ -1,4 +1,4 @@
-define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], function (ko, templateMarkup, wikimetricsApi) {
+define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi', 'stateManager'], function (ko, templateMarkup, wikimetricsApi, stateManagerFactory) {
     'use strict';
 
     function WikimetricsLayout() {
@@ -23,10 +23,12 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi'], functio
             self.reverseLookup(config.reverseLookup);
         });
 
-        wikimetricsApi.getDefaultDashboard(function (config) {
-            self.defaultProjects(config.defaultProjects);
-            self.defaultMetrics(config.defaultMetrics);
-        });
+
+        // state manager should be observing the selections of project and metric
+        // returns a statemanager obj if you need it
+        stateManagerFactory.getManager(this.selectedProjects, this.selectedMetric,
+            this.defaultProjects, this.defaultMetrics);
+
 
         wikimetricsApi.getCategorizedMetrics(function (config) {
             self.metrics(config.categorizedMetrics);

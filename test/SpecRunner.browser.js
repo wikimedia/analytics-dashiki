@@ -7,6 +7,7 @@
         'components/project-selector',
         'app/data-converters',
         'app/apis',
+        'lib/state-manager'
     ];
 
     // After the 'jasmine-boot' module creates the Jasmine environment, load all test modules then run them

@@ -5,27 +5,29 @@
 var require = {
     baseUrl: '.',
     paths: {
-        'jquery'                : 'bower_modules/jquery/dist/jquery',
+        'jquery': 'bower_modules/jquery/dist/jquery',
         // NOTE: the minified ko build is broken in 3.2.0
         // (Issue reported https://github.com/knockout/knockout/issues/1528)
-        'knockout'              : 'bower_modules/knockout/dist/knockout.debug',
-        'knockout-projections'  : 'bower_modules/knockout-projections/dist/knockout-projections',
-        'text'                  : 'bower_modules/requirejs-text/text',
-        'd3'                    : 'bower_modules/d3/d3',
-        'vega'                  : 'bower_modules/vega/vega',
-        'topojson'              : 'bower_modules/topojson/topojson',
-        'moment'                : 'bower_modules/moment/moment',
-        'semantic-dropdown'     : 'bower_modules/semantic/build/uncompressed/modules/dropdown',
+        'knockout': 'bower_modules/knockout/dist/knockout.debug',
+        'knockout-projections': 'bower_modules/knockout-projections/dist/knockout-projections',
+        'text': 'bower_modules/requirejs-text/text',
+        'd3': 'bower_modules/d3/d3',
+        'vega': 'bower_modules/vega/vega',
+        'topojson': 'bower_modules/topojson/topojson',
+        'moment': 'bower_modules/moment/moment',
+        'semantic-dropdown': 'bower_modules/semantic/build/uncompressed/modules/dropdown',
         // NOTE: if you want functions like uri.expand, you must include both
         // URI and URITemplate like define(['uri/URI', 'uri/URITemplate'] ...
         // because URITemplate modifies URI when it's parsed
-        'uri'                   : 'bower_modules/URIjs/src',
-        'config'                : 'app/config',
-        'logger'                : 'lib/logger',
-        'wikimetricsApi'        : 'app/apis/wikimetrics',
-        'typeahead'             : 'bower_modules/typeahead.js/dist/typeahead.bundle',
-        'ajaxWrapper'           : 'lib/ajaxWrapper',
-        'utils'                 : 'lib/utils'
+        'uri': 'bower_modules/URIjs/src',
+        'config': 'app/config',
+        'logger': 'lib/logger',
+        'wikimetricsApi': 'app/apis/wikimetrics',
+        'typeahead': 'bower_modules/typeahead.js/dist/typeahead.bundle',
+        'ajaxWrapper': 'lib/ajaxWrapper',
+        'utils': 'lib/utils',
+        'window': 'lib/window',
+        'stateManager': 'lib/stateManager'
     },
     shim: {
         'ajaxWrapper': {
