@@ -1,5 +1,5 @@
-<div class="ui icon input">
-    <input placeholder="by project or language"
+<div class="ui icon inverted input">
+    <input placeholder="add project or language"
            class="typeahead search_box"
            autocomplete="off"
            size="20"
@@ -31,8 +31,8 @@
 
 <hr/>
 
-<div class="ui secondary orange inverted vertical fluid menu">
 <!-- ko foreach: selectedProjectsByCategory -->
+<div class="ui secondary inverted vertical fluid menu">
     <div class="header item">
         <span class="default text" data-bind="text: name"></span>
         <!-- menu goes here -->
@@ -57,10 +57,11 @@
                 <a data-bind="text: name"></a>
             </span>
             <a data-bind="click: $parents[1].removeProject.bind($parents[1])">
-                <i class="delete icon"></i>
+                <i class="faded delete icon"></i>
             </a>
         </div>
     <!-- /ko -->
     </div>
-<!-- /ko -->
 </div>
+<hr/>
+<!-- /ko -->

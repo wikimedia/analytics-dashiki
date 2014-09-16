@@ -58,7 +58,7 @@ define(['knockout', 'vega'], function (ko, vega) {
             height: value.height
         };
         var p = value.padding;
-        var parent = $(element).parents(value.parentSelector);
+        var parent = $(element).closest(value.parentSelector);
 
         if (autoWidth) {
             newDimensions.width = parent.innerWidth() - (p.left + p.right);
@@ -107,67 +107,48 @@ define(['knockout', 'vega'], function (ko, vega) {
             axes: [{
                 type: 'x',
                 scale: 'x',
+                ticks: 6,
                 tickSizeEnd: 0,
                 grid: true,
+                layer: 'back',
                 properties: {
                     ticks: {
-                        stroke: {
-                            value: '#666666'
-                        }
+                        stroke: { value: '#e6e6e6' }
                     },
                     labels: {
-                        fill: {
-                            value: '#666666'
-                        }
+                        fill: { value: '#999999' },
+                        strokeWidth: { value: 2 }
                     },
                     grid: {
-                        stroke: {
-                            value: '#cacaca'
-                        },
-                        strokeDash: {
-                            value: [15, 15]
-                        }
+                        stroke: { value: '#e6e6e6' },
+                        strokeDash: { value: [15, 15] }
                     },
                     axis: {
-                        stroke: {
-                            value: '#666666'
-                        },
-                        strokeWidth: {
-                            value: 2
-                        }
+                        stroke: { value: '#cccccc' },
+                        strokeWidth: { value: 2 }
                     }
                 }
             }, {
                 type: 'y',
                 scale: 'y',
                 grid: true,
+                layer: 'back',
                 format: '4s',
                 properties: {
                     ticks: {
-                        stroke: {
-                            value: '#666666'
-                        }
+                        stroke: { value: '#e6e6e6' }
                     },
                     labels: {
-                        fill: {
-                            value: '#666666'
-                        }
+                        fill: { value: '#999999' },
+                        strokeWidth: { value: 2 }
                     },
                     grid: {
-                        stroke: {
-                            value: '#cacaca'
-                        },
-                        strokeDash: {
-                            value: [15, 15]
-                        }
+                        stroke: { value: '#e6e6e6' },
+                        strokeDash: { value: [15, 15] }
                     },
                     axis: {
-                        stroke: {
-                            value: '#666666'
-                        },
-                        strokeWidth: {
-                            value: 2
-                        }
+                        stroke: { value: '#cccccc' },
+                        strokeWidth: { value: 2 }
                     }
                 }
             }],

@@ -2,23 +2,48 @@
 .delete.icon {
     cursor: pointer;
 }
+.ui.label.navy {
+    background-color: #347BFE;
+    color: white;
+}
+.ui.inverted.input input {
+    background-color: #7C7C7C;
+    color: #232323;
+}
+.icon.faded {
+    opacity: 0.1;
+}
+.item:hover .icon.faded {
+    opacity: 1;
+}
+.target {
+    position: absolute!important;
+    z-index: 100!important;
+    display: none!important;
+    margin-top: -6px!important;
+}
+.target.open {
+    display: block!important;
+}
+.ui.dropdown.label {
+    height: 30.75px;
+}
+.separate.icon {
+    margin: 0 -4px 0 4px;
+}
 
 /* our styles */
 section.projects-container {
-    background-color: #fef0ed;
-    padding: 18px;
-    left: 30px;
-    top: 30px;
-    bottom: 30px;
+    background-color: #6D6D6D;
+    min-width: 254px;
 }
 section.main-container {
-    background-color: #f9f9f9;
-    padding: 30px;
-    right: 30px;
-    top: 30px;
-    bottom: 30px;
+    background-color: #EEEEEE;
 }
-
+.graph .parent-of-resizable{
+    min-height: 600px;
+    min-width: 800px;
+}
 .parent-of-resizable {
     width: 100%;
     height: 100%;
@@ -124,13 +149,3 @@ section.main-container {
     z-index: 100;
 }
 /* End Twitter Typeahead stuff */
-
-.target {
-    position: absolute!important;
-    z-index: 100!important;
-    display: none!important;
-    margin-top: -6px!important;
-}
-.target.open {
-    display: block!important;
-}

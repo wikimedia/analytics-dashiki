@@ -1,4 +1,4 @@
-<div class="ui dropdown orange label" data-bind="toggle: 'open'">
+<div class="ui dropdown navy label" data-bind="toggle: 'open'">
     <i class="add sign box icon"></i>
     <!-- ko ifnot: selectedMetric -->
     <div class="text" data-bind="text: open() ? 'Close' : 'Add Metric'"></div>
@@ -8,7 +8,7 @@
 
 <div class="ui two column grid target" data-bind="css: {open: open}">
     <div class="column">
-        <div class="ui vertical pointing teal menu">
+        <div class="ui vertical pointing black menu">
         <!-- ko foreach: categories -->
             <a class="item" data-bind="
                 css: {active: name === $parent.selectedCategory().name},
@@ -36,8 +36,9 @@
 </div>
 
 <!-- ko foreach: addedMetrics -->
-<div class="ui large label" data-bind="css: {teal: $data === $parent.selectedMetric()}">
+<div class="ui large label" data-bind="css: {black: $data === $parent.selectedMetric()}">
     <a data-bind="click: $parent.selectMetric, metricName: $data"></a>
+    <i class="separate icon">|</i>
     <i class="delete icon" data-bind="click: $parent.removeMetric"></i>
 </div>
 <!-- /ko -->
