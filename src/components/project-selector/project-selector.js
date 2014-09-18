@@ -95,14 +95,20 @@ define(function (require) {
     }
 
     /*jslint unparam: true */
-    ProjectSelector.prototype.displaySecondLevel = function (event, selection, datasetName) {
+    ProjectSelector.prototype.displaySecondLevel = function (event, element, selection, datasetName) {
         var options = [],
-            reverse = this.reverseLookup() || {};
+            reverse = ko.unwrap(this.reverseLookup) || {};
 
         this.displaySuboptions(true);
         this.selectedOption(selection.name);
         switch (datasetName) {
             case 'projects':
+                var choices = Object.getOwnPropertyNames(selection.languages);
+                if (choices.length === 1) {
+                    this.addProject({project: selection.languages[choices[0]]});
+                    $(element).trigger('blur');
+                    return;
+                }
                 options = makeOptions(selection.languages);
                 break;
             case 'languages':

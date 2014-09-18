@@ -53,7 +53,7 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
             // adding a metric
             instance.addMetric(metricC);
             expect(instance.addedMetrics()).toEqual([metricB, metricC]);
-            expect(instance.selectedMetric()).toEqual(metricB);
+            expect(instance.selectedMetric()).toEqual(metricC);
 
             // removing an un-selected metric
             instance.removeMetric(metricC);

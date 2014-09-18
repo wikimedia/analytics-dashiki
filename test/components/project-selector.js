@@ -72,7 +72,8 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
 
             params.reverseLookup = {
                 aawiki: aawiki,
-                eswiki: eswiki
+                eswiki: eswiki,
+                eswikibooks: eswikibooks,
             };
 
             params.prettyProjectNames = {
@@ -93,13 +94,16 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
 
 
             function doesSelectedProjectsByCategoryContainProject(project) {
-                var found = false, i;
-                // testing, assuming just 1 element
-                var languages = instance.selectedProjectsByCategory()[0].languages;
-                for (i = 0; i < languages.length; i++) {
-                    if (languages[i].database === project.database) {
-                        found = true;
-                        break;
+                var found = false, c, i, languages,
+                    categories = instance.selectedProjectsByCategory();
+
+                for (c = 0; c < categories.length; c++) {
+                    languages = categories[c].languages;
+                    for (i = 0; i < languages.length; i++) {
+                        if (languages[i].database === project.database) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 return found;
@@ -137,7 +141,7 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
             instance.addProject(eswikibooks);
 
             expect(instance.selectedProjects.indexOf(eswikibooks) >= 0).toBe(true);
-            expect(doesSelectedProjectsByCategoryContainProject(eswikibooks)).toBe(false);
+            expect(doesSelectedProjectsByCategoryContainProject(eswikibooks)).toBe(true);
 
             // remove both categories
             instance.removeCategory(false, instance.selectedProjectsByCategory()[0]);
@@ -146,6 +150,12 @@ define(['components/project-selector/project-selector', 'knockout'], function (c
             // all projects are gone
             expect(instance.selectedProjects()).toEqual([]);
 
+            // select a project with only one language
+            instance.displaySecondLevel.bind(instance, null, null)(wikibooks, 'projects');
+
+            // the language is selected directly
+            expect(instance.selectedProjects.indexOf(eswikibooks) >= 0).toBe(true);
+            expect(doesSelectedProjectsByCategoryContainProject(eswikibooks)).toBe(true);
         });
     });
 });

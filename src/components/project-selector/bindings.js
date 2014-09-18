@@ -4,6 +4,7 @@ define(['knockout', 'utils', 'typeahead'], function (ko, utils) {
     // Data is an array of option objects
     function substringMatcher(data, minLength) {
         return function findMatches(query, callback) {
+            var unwrapped = ko.unwrap(data);
             var matches, substrRegex;
 
             if (minLength && query.length < minLength) {
@@ -15,7 +16,7 @@ define(['knockout', 'utils', 'typeahead'], function (ko, utils) {
             substrRegex = new RegExp(query, 'i');
 
             // an array that will be populated with substring matches
-            matches = data.filter(function (item) {
+            matches = unwrapped.filter(function (item) {
                 return substrRegex.test(item.name);
             }).sort(utils.sortByName);
 
@@ -37,46 +38,42 @@ define(['knockout', 'utils', 'typeahead'], function (ko, utils) {
      **/
     ko.bindingHandlers.projectAutocomplete = {
 
-        update: function (element, valueAccessor, allBindings, viewModel) {
+        init: function (element, valueAccessor, allBindings, viewModel) {
 
             var value = ko.unwrap(valueAccessor());
-            var projectOptions = ko.unwrap(value.projectOptions);
-            var languageOptions = ko.unwrap(value.languageOptions);
-            var databaseOptions = ko.unwrap(value.databaseOptions);
+            var projectOptions = value.projectOptions;
+            var languageOptions = value.languageOptions;
+            var databaseOptions = value.databaseOptions;
 
-            // to destroy typeaheads: $('.typeahead').typeahead('destroy');
-            if (projectOptions.length > 0 && languageOptions.length > 0) {
+            $(element).typeahead({
+                    hint: false,
+                    highlight: true,
+                    minLength: 1
+                }, {
+                    name: 'projects',
+                    displayKey: 'value',
+                    templates: makeTemplate('Projects'),
+                    source: substringMatcher(projectOptions)
+                }, {
+                    name: 'languages',
+                    displayKey: 'value',
+                    templates: makeTemplate('Languages'),
+                    source: substringMatcher(languageOptions)
+                }, {
+                    name: 'databases',
+                    displayKey: 'value',
+                    templates: makeTemplate('Databases'),
+                    source: substringMatcher(databaseOptions, 5)
+                }
 
-                $(element).typeahead({
-                        hint: false,
-                        highlight: true,
-                        minLength: 1
-                    }, {
-                        name: 'projects',
-                        displayKey: 'value',
-                        templates: makeTemplate('Projects'),
-                        source: substringMatcher(projectOptions)
-                    }, {
-                        name: 'languages',
-                        displayKey: 'value',
-                        templates: makeTemplate('Languages'),
-                        source: substringMatcher(languageOptions)
-                    }, {
-                        name: 'databases',
-                        displayKey: 'value',
-                        templates: makeTemplate('Databases'),
-                        source: substringMatcher(databaseOptions, 5)
-                    }
+            ).bind('typeahead:selected', value.select.bind(viewModel, element));
 
-                ).bind('typeahead:selected', value.select.bind(viewModel));
-
-                $(element).on('blur', function () {
-                    // Without this timeout, blur will happen before the click
-                    // that selects the project, so the click will happen after
-                    // the close and therefore miss the target.
-                    setTimeout(value.blur.bind(viewModel), 100);
-                });
-            } //end update
+            $(element).on('blur', function () {
+                // Without this timeout, blur will happen before the click
+                // that selects the project, so the click will happen after
+                // the close and therefore miss the target.
+                setTimeout(value.blur.bind(viewModel), 100);
+            });
         } // end projectAutocomplete
     };
 });

@@ -83,11 +83,10 @@ define(function(require) {
         };
 
         this.addMetric = function (metric) {
-            if ($.inArray(metric, self.addedMetrics()) >= 0) {
-                return;
+            if ($.inArray(metric, self.addedMetrics()) < 0) {
+                self.addedMetrics.push(metric);
             }
-            self.addedMetrics.push(metric);
-            self.reassignSelected();
+            self.selectedMetric(metric);
         };
 
         this.removeMetric = function (metric) {
