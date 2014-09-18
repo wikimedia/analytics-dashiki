@@ -1,3 +1,8 @@
+/* site-wide styles */
+body {
+    font-family: "Nimbus Sans L","Liberation Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
+    }
+
 /* patches to semantic */
 .delete.icon {
     cursor: pointer;
