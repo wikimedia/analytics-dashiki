@@ -69,11 +69,33 @@ define(['knockout', 'utils', 'typeahead'], function (ko, utils) {
             ).bind('typeahead:selected', value.select.bind(viewModel, element));
 
             $(element).on('blur', function () {
-                // Without this timeout, blur will happen before the click
-                // that selects the project, so the click will happen after
-                // the close and therefore miss the target.
-                setTimeout(value.blur.bind(viewModel), 100);
+                // This is complicated and needs explanation
+                // This is the order of events when someone clicks a choice:
+                //  * mousedown on the choice
+                //  * blur away from the typeahead input box
+                //  * mouseup on the choice
+                //  * click on the choice (requires mousedown + mouseup)
+                // The blur handler needs to run only if we're not clicking on
+                // an option in the typeahead.  This is the reason for the event
+                // handler below and tracking where the last mousedown was.
+                if (ko.bindingHandlers.projectAutocomplete.mouseDownNotImportant) {
+                    value.blur.call(viewModel);
+                }
             });
+
+            // set up a single mousedown / mouseup handler that informs the blur handler above
+            if (ko.bindingHandlers.projectAutocomplete.mouseDownNotImportant === undefined) {
+                ko.bindingHandlers.projectAutocomplete.mouseDownNotImportant = null;
+
+                $(document).on('mousedown', function (event) {
+                    ko.bindingHandlers.projectAutocomplete.mouseDownNotImportant =
+                        $(event.target).closest('.tt-suggestion').length === 0;
+                });
+
+                $(document).on('mouseup', function () {
+                    ko.bindingHandlers.projectAutocomplete.mouseDownNotImportant = null;
+                });
+            }
         } // end projectAutocomplete
     };
 });
