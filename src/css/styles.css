@@ -41,6 +41,9 @@ body {
 }
 
 /* our styles */
+input.typeahead {
+    color: white!important;
+}
 a.header {
     color: #112233;
     text-decoration: none;
