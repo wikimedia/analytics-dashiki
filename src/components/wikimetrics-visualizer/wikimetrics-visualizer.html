@@ -1,4 +1,6 @@
 <!-- ko if: metric -->
-<div class="header" data-bind="metricName: metric"></div>
+<a class="header"
+   data-bind="metricName: metric, attr: {href: metric().definition}"
+   title="view metric definition" target="_blank"></a>
 <!-- /ko -->
 <vega-timeseries params="data: mergedData, colorScale: colorScale"></vega-timeseries>

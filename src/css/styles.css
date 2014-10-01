@@ -11,6 +11,9 @@ body {
     background-color: #347BFE;
     color: white;
 }
+.ui.label {
+    text-transform: none;
+}
 .ui.inverted.input input {
     background-color: #7C7C7C;
     color: #232323;
@@ -38,6 +41,13 @@ body {
 }
 
 /* our styles */
+a.header {
+    color: #112233;
+    text-decoration: none;
+}
+a.header:hover {
+    text-decoration: underline;
+}
 section.projects-container {
     background-color: #6D6D6D;
     min-width: 254px;
