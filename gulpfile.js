@@ -74,7 +74,7 @@ gulp.task('lint', function () {
 });
 
 // Discovers all AMD dependencies, concatenates together all required .js files, minifies them
-gulp.task('js', function () {
+gulp.task('js', ['clean'], function () {
     return rjs(requireJsOptimizerConfig)
         .pipe(uglify({
             preserveComments: 'some'
@@ -87,7 +87,7 @@ gulp.task('js', function () {
 });
 
 
-gulp.task('css', function () {
+gulp.task('css', ['clean'], function () {
     return gulp.src(['src/css/*.css'])
         .pipe(concat('style.css')).pipe(rev()).pipe(gulp.dest('./dist/'))
         // Add rev-manifest.json as a new src to prevent rev'ing rev-manifest.json
@@ -99,7 +99,7 @@ gulp.task('css', function () {
 
 
 /** Copies semantic fonts where the css expects them to be**/
-gulp.task('fonts', function () {
+gulp.task('fonts', ['clean'], function () {
     var semantic_fonts = 'src/fonts';
     return gulp.src([semantic_fonts + '/icons.svg', semantic_fonts + '/icons.ttf', semantic_fonts + '/icons.woff'])
         .pipe(gulp.dest('./fonts/'));
@@ -170,7 +170,7 @@ gulp.task('clean', function (callback) {
     ], callback);
 });
 
-gulp.task('default', ['clean', 'replace', 'lint', 'fonts'], function (callback) {
+gulp.task('default', ['replace', 'lint', 'fonts'], function (callback) {
     callback();
     console.log('\nPlaced optimized files in ' + chalk.magenta('dist/\n'));
     console.log('\nPlaced font files in ' + chalk.magenta('fonts/\n'));
