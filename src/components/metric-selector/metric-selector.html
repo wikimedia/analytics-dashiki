@@ -1,4 +1,4 @@
-<div class="ui dropdown navy label" data-bind="toggle: 'open'">
+<div class="ui dropdown navy label metric" data-bind="toggle: 'open'">
     <i class="add sign box icon"></i>
     <div class="text">Add Metric</div>
     <i class="dropdown icon vertically" data-bind="css: {flipped: open}"></i>
@@ -36,7 +36,7 @@
 </div>
 
 <!-- ko foreach: addedMetrics -->
-<div class="ui large label" data-bind="css: {black: $data === $parent.selectedMetric()}">
+<div class="ui large label metric" data-bind="css: {black: $data === $parent.selectedMetric()}">
     <a data-bind="click: $parent.selectMetric, metricName: $data"></a>
     <i class="separate icon">|</i>
     <i class="delete icon" data-bind="click: $parent.removeMetric"></i>

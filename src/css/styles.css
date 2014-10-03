@@ -37,6 +37,12 @@ body {
 }
 
 /* our styles */
+.ui.segment.metric {
+    padding: 0.5em;
+}
+.ui.label.metric {
+    margin: 0.25em;
+}
 .subtext {
     color: #929292;
     font-size: x-small;
