@@ -54,10 +54,11 @@
         <div class="item">
             <span>
                 <i class="swatch" data-bind="style: {'background-color': color}"></i>
-                <a data-bind="text: name"></a>
+                <span data-bind="text: name"></span>
+                <span class="subtext" data-bind="text: shortName"></span>
             </span>
             <a data-bind="click: $parents[1].removeProject.bind($parents[1])">
-                <i class="faded delete icon"></i>
+                <i class="faded destructive delete icon"></i>
             </a>
         </div>
     <!-- /ko -->

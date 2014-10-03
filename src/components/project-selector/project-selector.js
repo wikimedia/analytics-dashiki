@@ -75,6 +75,7 @@ define(function (require) {
                 projects[info.project.code].languages.push({
                     name: info.language.name,
                     database: info.database,
+                    shortName: info.language.shortName,
                     color: info.color
                 });
             });
