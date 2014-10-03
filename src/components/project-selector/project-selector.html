@@ -53,7 +53,7 @@
     <!-- ko foreach: languages -->
         <div class="item">
             <span>
-                <i class="swatch" data-bind="style: {color: color}"></i>
+                <i class="swatch" data-bind="style: {'background-color': color}"></i>
                 <a data-bind="text: name"></a>
             </span>
             <a data-bind="click: $parents[1].removeProject.bind($parents[1])">
