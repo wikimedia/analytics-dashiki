@@ -1,0 +1,48 @@
+{
+    "categorizedMetrics": [{
+            "metrics": [{
+                "definition": "https://meta.wikimedia.org/wiki/Research:Rolling_surviving_new_active_editor",
+                "defaultSubmetric": "rolling_surviving_new_active_editor",
+                "name": "RollingSurvivingNewActiveEditor"
+            }, {
+                "definition": "https://meta.wikimedia.org/wiki/Research:Rolling_active_editor",
+                "defaultSubmetric": "rolling_active_editor",
+                "name": "RollingActiveEditor"
+            }, {
+                "definition": "https://meta.wikimedia.org/wiki/Research:Rolling_new_active_editor",
+                "defaultSubmetric": "rolling_new_active_editor",
+                "name": "RollingNewActiveEditor"
+            }],
+            "name": "Community"
+        }, {
+            "metrics": [{
+                "definition": "https://meta.wikimedia.org/wiki/Research:Daily_pages_created",
+                "defaultSubmetric": "pages_created",
+                "name": "PagesCreated"
+            }, {
+                "definition": "https://meta.wikimedia.org/wiki/Research:Daily_edits",
+                "defaultSubmetric": "edits",
+                "name": "NamespaceEdits"
+            }],
+            "name": "Content"
+        },
+
+        {
+            "metrics": [{
+                "definition": "https://meta.wikimedia.org/wiki/Research:Pageviews",
+        "name": "DailyPageviews",
+                "api": "pageviewApi"
+            }],
+            "name": "Readers"
+        },
+
+        {
+            "metrics": [{
+                "definition": "https://meta.wikimedia.org/wiki/Research:Newly_registered_user",
+                "defaultSubmetric": "newly_registered",
+                "name": "NewlyRegistered"
+            }],
+            "name": "New users"
+        }
+    ]
+}

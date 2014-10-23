@@ -1,10 +1,73 @@
-define(['app/data-converters/wikimetrics-timeseries', 'moment'], function(converter, moment) {
-    // pass the configuration to the converter
-    var configuredConverter = converter.bind(null, {
-        'RollingActiveEditor': 'rolling_active_editor'
+define(function (require) {
+
+    var moment = require('moment'),
+        factory = require('dataConverterFactory');
+
+    describe('sv converter', function () {
+        var converterCSV = factory.getDataConverter('csv');
+        var converterTSV = factory.getDataConverter('tsv');
+
+
+
+        var sample = 'h1,h2,h3\n2014-08-19,1,2\n2014-08-18,3,4';
+
+        it('should convert comma separated', function () {
+
+            var options = {
+                label: 'arwiki',
+                columnToUse: 'h3'
+            };
+            var converted = converterCSV(options, sample);
+
+            expect(converted[0].date).toEqual(moment('2014-08-18 00:00:00').toDate().getTime());
+            expect(converted[0].label).toEqual('arwiki');
+            expect(converted[1].value).toEqual(2);
+        });
+
+
+        it('bad records do not break parser', function () {
+
+            var sample = 'h1,h2,h3\ngarbage,1,2\n2014-08-18,3,4';
+
+            var options = {
+                label: 'arwiki',
+                columnToUse: 'h3'
+            };
+            var converted = converterCSV(options, sample);
+            // there is only 1 good record
+            expect(converted.length).toEqual(1);
+
+            expect(converted[0].date).toEqual(moment('2014-08-18 00:00:00').toDate().getTime());
+            expect(converted[0].label).toEqual('arwiki');
+            expect(converted[0].value).toEqual(4);
+        });
+
+        it('should convert tab separated unix lines', function () {
+            sample = sample.replace(/,/g, '\t').replace(/\n/g, '\r\n');
+
+            var options = {
+                label: 'arwiki',
+                columnToUse: 'h3',
+                lineSeparator: '\r\n'
+            };
+
+
+            var converted = converterTSV(options, sample);
+            expect(converted[0].date).toEqual(moment('2014-08-18 00:00:00').toDate().getTime());
+            expect(converted[0].label).toEqual('arwiki');
+            expect(converted[1].value).toEqual(2);
+        });
     });
 
-    describe('wikimetrics-timeseries converter', function() {
+    describe('wikimetrics-timeseries wikimetricsConverter', function () {
+        var converterWikimetrics = factory.getDataConverter('json');
+        // pass the configuration to the wikimetricsConverter
+        var options = {
+            defaultSubmetrics: {
+                'RollingActiveEditor': 'rolling_active_editor'
+            }
+        };
+
         // test new wikimetrics format
         var sample = {
             'result': {
@@ -48,13 +111,14 @@ define(['app/data-converters/wikimetrics-timeseries', 'moment'], function(conver
             }
         };
 
-        it('should convert', function() {
-            var converted = configuredConverter(sample);
+        it('should convert', function () {
+            var converted = converterWikimetrics(options, sample);
+
             expect(converted[0].date).toEqual(moment('2014-08-18 00:00:00').toDate().getTime());
             expect(converted[0].label).toEqual('arwiki');
             expect(converted[1].value).toEqual(1120.0);
 
-            converted = configuredConverter(sample2);
+            converted = converterWikimetrics(options, sample);
             expect(converted[0].date).toEqual(moment('2014-08-18 00:00:00').toDate().getTime());
             expect(converted[0].label).toEqual('arwiki');
             expect(converted[1].value).toEqual(1120.0);

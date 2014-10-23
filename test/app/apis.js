@@ -1,21 +1,26 @@
-define(['wikimetricsApi', 'jquery'], function (wikimetrics, $) {
+define(['config', 'wikimetricsApi', 'configApi', 'jquery'], function (siteConfig, wikimetrics, configApi, $) {
 
-    describe('Wikimetrics API', function() {
+    describe('Wikimetrics API', function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             sinon.stub($, 'ajax').returns(deferred);
+
+
         });
         afterEach(function () {
             $.ajax.restore();
         });
 
         it('should fetch the correct URL', function () {
+            sinon.stub(wikimetrics, 'getDataConverter').returns(function () {});
             wikimetrics.root = 'something';
             var expected = 'https://something/static/public/datafiles/metric/project.json';
-
-            wikimetrics.getData('metric', 'project');
+            var metric = {
+                name: 'metric'
+            };
+            wikimetrics.getData(metric, 'project');
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
@@ -37,9 +42,9 @@ define(['wikimetricsApi', 'jquery'], function (wikimetrics, $) {
             getJSONStub.restore();
         });
 
-        it('should get metrics configuration', function() {
-            wikimetrics.getCategorizedMetrics();
-            expect($.ajax.getCalls()[0].args[0].url).toBe(wikimetrics.urlCategorizedMetrics);
+        it('should get metrics configuration', function () {
+            configApi.getCategorizedMetrics();
+            expect($.ajax.getCalls()[0].args[0].url).toBe(siteConfig.configApi.urlCategorizedMetrics);
         });
     });
 });

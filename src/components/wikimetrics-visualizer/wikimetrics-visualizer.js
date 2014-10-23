@@ -16,8 +16,9 @@ define(function (require) {
 
     var ko = require('knockout'),
         templateMarkup = require('text!./wikimetrics-visualizer.html'),
-        api = require('wikimetricsApi'),
-        converter = require('app/data-converters/wikimetrics-timeseries');
+        wikimetricsApi = require('wikimetricsApi'),
+        pageviewApi = require('pageviewApi');
+
 
     function WikimetricsVisualizer(params) {
         var visualizer = this;
@@ -38,21 +39,18 @@ define(function (require) {
 
         this.datasets = ko.computed(function () {
             var projects = ko.unwrap(this.projects),
-                metric = ko.unwrap(this.metric),
-                configuredConverter;
+                metric = ko.unwrap(this.metric);
 
             if (metric && projects && projects.length) {
-                var submetrics = {},
-                    promises;
+                var promises;
 
-                submetrics[metric.name] = metric.submetric || metric.defaultSubmetric;
-                configuredConverter = converter.bind(null, submetrics);
+                var api = getAPIFromMetric(metric);
 
                 // NOTE: this is fetching all datafiles each time and relies on the cache
                 // For a more optimal, but perhaps prematurely optimized, version see:
                 //     https://gerrit.wikimedia.org/r/#/c/158244/8/src/components/wikimetrics-visualizer/wikimetrics-visualizer.js
                 promises = projects.map(function (project) {
-                    return api.getData(metric.name, project.database).pipe(configuredConverter);
+                    return api.getData(metric, project.database);
                 });
                 $.when.apply(this, promises).then(function () {
                     visualizer.mergedData([].concat.apply([], arguments));
@@ -68,6 +66,32 @@ define(function (require) {
             var projects = ko.unwrap(this.projects);
             this.applyColors(projects, color);
         }, this);
+    }
+
+    // TODO, still WIP
+    // finalize when pageview API is active
+    // is there a better place for this function
+    function getAPIFromMetric(metric) {
+        // Now the metric has to carry the notion of the API that holds its data
+        // we want the metric configuration file be backwards compatible
+        // so we add a new attribute to metric called api
+        // the default (if API not specified) is the wikimetrics API
+        // example:
+        // {
+        //  "definition": "https://meta.wikimedia.org/wiki/Research:Rolling_blah_editor",
+        //  "defaultSubmetric": "rolling_blah_editor",
+        //  "name": "RollingBlahEditor",
+        //  "api": "blahAPI"
+        // },
+
+        if (metric.api) {
+            if (metric.api.match('pageview')) {
+                return pageviewApi;
+            }
+
+        } else {
+            return wikimetricsApi;
+        }
     }
 
     return {

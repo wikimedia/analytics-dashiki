@@ -2,11 +2,13 @@
  * This module returns a method that knows how to translate json data from
  *   wikimetrics to the canonical timeseries format understood by dashiki
  */
-define(['moment'], function(moment) {
+define(['moment'], function (moment) {
 
     /**
      * Parameters
-     *   defaultSubmetrics  : keys: metric names, values: default submetric to use
+     *   options    : a dictionary of options.  Required options:
+     *     defaultSubmetrics - dictionary of metric names to default submetrics to use
+     *
      *   rawData            : Wikimetrics json data, as fetched from a Wikimetrics
      *                        public report result file
      *
@@ -25,36 +27,44 @@ define(['moment'], function(moment) {
      *       all data updates.  Also, it will mutate the property which has caused
      *       some unexpected knockout dependency triggering in some cases.
      */
-    return function (defaultSubmetrics, rawData){
-        var aggregate = 'Sum',
-            normalized = [],
-            keys = Object.keys(rawData),
-            parameters = rawData.parameters,
-            metricName = parameters.Metric,
-            submetric = defaultSubmetrics[metricName],
-            i;
 
-        keys.splice(keys.indexOf('parameters'), 1);
-        if (keys.indexOf('result') >= 0){
-            keys = Object.keys(rawData.result[aggregate][submetric]);
-            for (i=0; i<keys.length; i++) {
-                normalized.push({
-                    date: moment(keys[i]).toDate().getTime(),
-                    label: parameters.Cohort,
-                    value: rawData.result[aggregate][submetric][keys[i]]
-                });
+    return function () {
+
+        return function (options, rawData) {
+
+            // from underscore, if not object
+            if (!rawData === Object(rawData)) return;
+
+            var aggregate = 'Sum',
+                normalized = [],
+                keys = Object.keys(rawData),
+                parameters = rawData.parameters,
+                metricName = parameters.Metric,
+                submetric = options.defaultSubmetrics[metricName],
+                i;
+
+            keys.splice(keys.indexOf('parameters'), 1);
+            if (keys.indexOf('result') >= 0) {
+                keys = Object.keys(rawData.result[aggregate][submetric]);
+                for (i = 0; i < keys.length; i++) {
+                    normalized.push({
+                        date: moment(keys[i]).toDate().getTime(),
+                        label: parameters.Cohort,
+                        value: rawData.result[aggregate][submetric][keys[i]]
+                    });
+                }
+            } else {
+                for (i = 0; i < keys.length; i++) {
+                    normalized.push({
+                        date: moment(keys[i]).toDate().getTime(),
+                        label: parameters.Cohort,
+                        value: rawData[keys[i]][aggregate][submetric]
+                    });
+                }
             }
-        } else {
-            for (i=0; i<keys.length; i++) {
-                normalized.push({
-                    date: moment(keys[i]).toDate().getTime(),
-                    label: parameters.Cohort,
-                    value: rawData[keys[i]][aggregate][submetric]
-                });
-            }
-        }
-        return normalized.sort(function(a, b){
-            return a.date - b.date;
-        });
-    };
+            return normalized.sort(function (a, b) {
+                return a.date - b.date;
+            });
+        };
+    }
 });

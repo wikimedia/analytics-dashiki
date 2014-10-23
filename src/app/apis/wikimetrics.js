@@ -1,13 +1,16 @@
 /**
  * This module returns an instance of an object that knows how to get
- *   reports run by WikimetricsBot on wikimetrics.  Methods commented inline
+ * reports run by WikimetricsBot on wikimetrics.  Methods commented inline
  */
-define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
+define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], function (siteConfig, dataConverterFactory, uri) {
     'use strict';
 
     function WikimetricsApi(config) {
-        $.extend(this, config);
-        this.root = config.wikimetricsDomain;
+        this.root = config.wikimetricsApi.endpoint;
+        this.config = config;
+        // note that dataCoverter is a function that will need to be executed
+        // in the context of the metric
+        this.dataConverter = dataConverterFactory.getDataConverter(config.wikimetricsApi.format);
     }
 
     // only fetch certain things once per app life and keep their promise
@@ -40,21 +43,32 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
 
     /**
      * Parameters
-     *   metric  : a Wikimetrics metric
+     *   metric  : an object representing a Wikimetrics metric
      *   project : a Wiki project (English Wikipedia is 'enwiki', Commons is 'commonswiki', etc.)
      *
      * Returns
-     *   a jquery promise that is fetching the correct URL for the parameters passed in
+     *  A promise with that wraps data for the metric/project transformed via the converter
      */
     WikimetricsApi.prototype.getData = function (metric, project) {
 
+        var metricName = metric.name;
         var address = uri.expand('https://{root}/static/public/datafiles/{metric}/{project}.json', {
             root: this.root,
-            metric: metric,
+            metric: metricName,
             project: project,
         }).toString();
 
-        return this._getJSON(address);
+        var submetrics = {};
+
+        submetrics[metric.name] = metric.submetric || metric.defaultSubmetric;
+
+        var opt = {
+            defaultSubmetrics: submetrics
+        };
+
+        var converter = this.getDataConverter().bind(null, opt);
+
+        return this._getJSON(address).then(converter);
     };
 
     /**
@@ -64,7 +78,8 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
     WikimetricsApi.prototype.getProjectAndLanguageChoices = function (callback) {
 
         if (!promiseLanguagesAndProjects) {
-            promiseLanguagesAndProjects = this._getJSON(this.urlProjectLanguageChoices)
+            var url = this.config.wikimetricsApi.urlProjectLanguageChoices;
+            promiseLanguagesAndProjects = this._getJSON(url)
                 .pipe(function (json) {
                     var map = Array.prototype.map;
                     var self = this,
@@ -94,7 +109,7 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
 
                     databases.forEach(function (database) {
                         var reverse = json.reverse[database];
-                        self.reverseLookup[database] = new ProjectLanguage ({
+                        self.reverseLookup[database] = new ProjectLanguage({
                             database: database,
                             project: projectOptions[reverse.project],
                             language: languageOptions[reverse.language],
@@ -109,35 +124,6 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
     };
 
     /**
-     * Retrieves the default selections for metrics and projects
-     **/
-    WikimetricsApi.prototype.getDefaultDashboard = function (callback) {
-
-        if (!promiseDefaults) {
-            promiseDefaults = this._getJSON(this.urlDefaultDashboard);
-        }
-        return promiseDefaults.done(callback);
-    };
-
-    /**
-     * Parameters
-     *   callback : a function to pass returned data to
-     *              (note you can just pass an observable here)
-     *
-     * Returns
-     *   a jquery promise to an array of available metrics, formatted like this:
-     *
-     *      {category: 'some category', name: 'some metric'}
-     **/
-    WikimetricsApi.prototype.getCategorizedMetrics = function (callback) {
-
-        if (!promiseMetrics) {
-            promiseMetrics = this._getJSON(this.urlCategorizedMetrics);
-        }
-        return promiseMetrics.done(callback);
-    };
-
-    /**
      * Returns
      *   a promise to the url passed in
      **/
@@ -146,6 +132,10 @@ define(['config', 'uri/URI', 'uri/URITemplate'], function (siteConfig, uri) {
             dataType: 'json',
             url: url
         });
+    };
+
+    WikimetricsApi.prototype.getDataConverter = function () {
+        return this.dataConverter;
     };
 
     return new WikimetricsApi(siteConfig);

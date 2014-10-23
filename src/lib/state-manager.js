@@ -6,13 +6,13 @@
  * We are not trying to support back/forwards functionallity client side
  * but rather easy bookmarking on dashboard state.
  *
- * If the url is 'plain' (no state) it falls back to wikimetrics api to retrieve
+ * If the url is 'plain' (no state) it falls back to config api to retrieve
  * the default settings for bootstrap.
  *
  * State urls are of the form:
  * http: //dashiki.com/something#projects=enwiki,dewiki/metrics=newlyregister,rollingactive
  **/
-define(['knockout', 'wikimetricsApi', 'uri/URI', 'window'], function (ko, wikimetricsApi, URI, window) {
+define(['knockout', 'configApi', 'uri/URI', 'window'], function (ko, configApi, URI, window) {
     'use strict';
 
     /**
@@ -143,7 +143,7 @@ define(['knockout', 'wikimetricsApi', 'uri/URI', 'window'], function (ko, wikime
         var _state;
 
         if (!hash) {
-            wikimetricsApi.getDefaultDashboard(function (config) {
+            configApi.getDefaultDashboard(function (config) {
                 _state = new State(config.defaultProjects, config.defaultMetrics);
                 this.defaultProjects(config.defaultProjects);
                 this.defaultMetrics(config.defaultMetrics);

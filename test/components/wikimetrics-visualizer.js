@@ -10,26 +10,31 @@ define(function (require) {
         visualizer,
         cohort = 'cohort',
         anotherCohort = 'another-cohort',
-        cohortOption = {code: cohort},
-        anotherCohortOption = {code: anotherCohort},
+        cohortOption = {
+            code: cohort
+        },
+        anotherCohortOption = {
+            code: anotherCohort
+        },
         v1 = 12,
         v2 = 1,
-        metric = {name: 'RollingActiveEditor', submetric: 'rolling_active_editor'},
-        response = {
-            'result': {
-                'Sum': {
-                    'rolling_active_editor': {
-                        '2014-08-19 00:00:00': v2,
-                        '2014-08-18 00:00:00': v1
-                    }
-                }
-            },
-            'parameters': {
-                'Cohort': cohort,
-                'Metric': metric.name
-            }
+        metric = {
+            name: 'RollingActiveEditor',
+            submetric: 'rolling_active_editor'
         },
-        deferred = $.Deferred();
+
+        deferred = $.Deferred(),
+
+        transformedResponse = [{
+            date: 1408690800000,
+            label: 'cohort',
+            value: v1
+
+        }, {
+            date: 1408777200000,
+            label: 'cohort',
+            value: v2
+        }];
 
 
     describe('WikimetricsVisualizer view model', function () {
@@ -45,7 +50,7 @@ define(function (require) {
                 metric: selectedMetric,
                 projects: selectedProjects,
             });
-            deferred.resolveWith(this, [response]);
+            deferred.resolveWith(this, [transformedResponse]);
         });
 
         afterEach(function () {
@@ -73,22 +78,24 @@ define(function (require) {
             selectedProjects.push(cohortOption);
             expect(visualizer.mergedData().length).toEqual(2);
 
-            expect(visualizer.mergedData()[0].date).toEqual(new Date('2014-08-18 00:00:00').getTime());
+            expect(visualizer.mergedData()[0].date).toEqual(1408690800000);
             expect(visualizer.mergedData()[0].label).toEqual(cohort);
             expect(visualizer.mergedData()[0].value).toEqual(v1);
-            expect(visualizer.mergedData()[1].date).toEqual(new Date('2014-08-19 00:00:00').getTime());
+            expect(visualizer.mergedData()[1].date).toEqual(1408777200000);
             expect(visualizer.mergedData()[1].label).toEqual(cohort);
             expect(visualizer.mergedData()[1].value).toEqual(v2);
 
             // change projects observable and make sure the merged data reflects it
-            response.parameters.Cohort = anotherCohort;
+            transformedResponse.map(function (item) {
+                item.label = anotherCohort;
+            })
             selectedProjects.push(anotherCohortOption);
 
             // this data is here from the second push (another-cohort)
-            expect(visualizer.mergedData()[2].date).toEqual(new Date('2014-08-18 00:00:00').getTime());
+            expect(visualizer.mergedData()[2].date).toEqual(1408690800000);
             expect(visualizer.mergedData()[2].label).toEqual(anotherCohort);
             expect(visualizer.mergedData()[2].value).toEqual(v1);
-            expect(visualizer.mergedData()[3].date).toEqual(new Date('2014-08-19 00:00:00').getTime());
+            expect(visualizer.mergedData()[3].date).toEqual(1408777200000);
             expect(visualizer.mergedData()[3].label).toEqual(anotherCohort);
             expect(visualizer.mergedData()[3].value).toEqual(v2);
         });

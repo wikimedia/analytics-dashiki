@@ -1,4 +1,4 @@
-define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi', 'stateManager'], function (ko, templateMarkup, wikimetricsApi, stateManagerFactory) {
+define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi', 'configApi', 'stateManager'], function (ko, templateMarkup, wikimetricsApi, configApi, stateManagerFactory) {
     'use strict';
 
     function WikimetricsLayout() {
@@ -30,7 +30,7 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi', 'stateMa
             this.defaultProjects, this.defaultMetrics);
 
 
-        wikimetricsApi.getCategorizedMetrics(function (config) {
+        configApi.getCategorizedMetrics(function (config) {
             self.metrics(config.categorizedMetrics);
         });
     }

@@ -12,7 +12,6 @@
         'stateManager': {
             'uri': '../test/mocks/URIProxy',
             'window': '../test/mocks/window'
-
         }
     }
     // It's not obvious, but this is a way of making Jasmine load and run in an AMD environment
