@@ -162,7 +162,7 @@ define(['knockout', 'wikimetricsApi', 'uri/URI', 'window'], function (ko, wikime
                 projects = ko.unwrap(self.selectedProjects),
                 metricName, projectNames;
 
-            if (metric || projects) {
+            if (metric || (projects && projects.length)) {
                 if (metric) {
                     metricName = metric.name;
                 }

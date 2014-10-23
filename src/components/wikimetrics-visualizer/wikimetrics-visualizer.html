@@ -1,6 +1,10 @@
-<!-- ko if: metric -->
+<!-- ko if: mergedData && mergedData() && mergedData().length -->
 <a class="header"
    data-bind="metricName: metric, attr: {href: metric().definition}"
    title="view metric definition" target="_blank"></a>
-<!-- /ko -->
 <vega-timeseries params="data: mergedData, colorScale: colorScale"></vega-timeseries>
+<!-- /ko -->
+<!-- ko ifnot: mergedData && mergedData() && mergedData().length -->
+<p>Please select a metric above <i class="up icon"/><p>
+<p><i class="left icon"/> And projects from the left</p>
+<!-- /ko -->
