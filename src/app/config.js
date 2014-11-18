@@ -9,8 +9,8 @@ define([], function () {
         // Temporarily we are getting config from wikimetrics
         // but the confiApi will be switched to mediawiki in the future
         configApi: {
-            endpoint: 'localhost',
-            urlCategorizedMetrics: '/stubs/available-metrics-stub.json',
+            endpoint: 'metrics-staging.wmflabs.org',
+            urlCategorizedMetrics: 'https://metrics-staging.wmflabs.org/static/public/datafiles/available-metrics.json',
             //using stubs to iron any blockers with pageviews
             //urlCategorizedMetrics: 'https://metrics.wmflabs.org/static/public/datafiles/available-metrics.json',
             urlDefaultDashboard: 'https://metrics.wmflabs.org/static/public/datafiles/defaultDashboard.json'
@@ -29,7 +29,7 @@ define([], function () {
 
         //placeholder for now, note this is coming from a temporary domain
         pageviewApi: {
-            endpoint: 'qchris-worker3.wmflabs.org', // needs to support https
+            endpoint: 'metrics-staging.wmflabs.org', // needs to support https
             format: 'csv'
 
         },

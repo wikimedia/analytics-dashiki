@@ -40,7 +40,7 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], functio
 
         //using christian's endpoint
         //  http://quelltextlich.at/wmf/projectcounts/daily/enwiki.csv
-        var address = uri.expand('http://{root}/wmf/projectcounts/daily/{project}.csv', {
+        var address = uri.expand('https://{root}/static/public/datafiles/DailyPageviews/{project}.csv', {
             root: this.root,
             //  metric: metricName,
             project: project
