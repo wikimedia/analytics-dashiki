@@ -32,12 +32,14 @@ define(['knockout', 'vega'], function (ko, vega) {
         var unwrap = ko.unwrap(valueAccessor());
 
         // override defaults with any changed values
-        return setOrDefault(unwrap, {
+        var withDefaults = setOrDefault(unwrap, {
             data: [],
             width: 'auto',
             height: 'auto',
             parentSelector: '.parent-of-resizable',
-            updateDuration: 300,
+            updateOptions: {
+                duration: 300
+            },
             padding: {
                 top: 30,
                 right: 108,
@@ -47,6 +49,12 @@ define(['knockout', 'vega'], function (ko, vega) {
             strokeWidth: 2,
             colorScale: undefined
         });
+
+        // don't animate if there's a ton of data
+        if (withDefaults.data.length >= 1000) {
+            withDefaults.updateOptions = null;
+        }
+        return withDefaults;
     }
 
     function processAutosize(value, element) {
@@ -233,9 +241,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                         element.view
                             .height(dimensions.height)
                             .width(dimensions.width)
-                            .update({
-                                duration: value.updateDuration
-                            });
+                            .update(value.updateOptions);
                     }
                 }
             });
@@ -267,9 +273,7 @@ define(['knockout', 'vega'], function (ko, vega) {
 
             if (element.view) {
                 var parsed = vega.parse.data(vegaData(value.data)).load;
-                element.view.data(parsed).update({
-                    duration: value.updateDuration
-                });
+                element.view.data(parsed).update(value.updateOptions);
                 updateColor();
             } else {
                 vega.parse.spec(vegaDefinition(value), function (graph) {

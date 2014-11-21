@@ -14,7 +14,7 @@
             width           : 'auto',
             height          : 'auto',
             parentSelector  : '.parent-of-resizable',
-            updateDuration  : 300,
+            updateOptions   : {duration: 300},
             padding         : {top: 30, right: 40, bottom: 30, left: 35},
             strokeWidth     : 2
             colorScale      : undefined (pass a ko.observable to monitor color)
