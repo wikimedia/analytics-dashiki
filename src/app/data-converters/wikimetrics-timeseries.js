@@ -53,14 +53,6 @@ define(['moment'], function (moment) {
                         value: rawData.result[aggregate][submetric][keys[i]]
                     });
                 }
-            } else {
-                for (i = 0; i < keys.length; i++) {
-                    normalized.push({
-                        date: moment(keys[i]).toDate().getTime(),
-                        label: parameters.Cohort,
-                        value: rawData[keys[i]][aggregate][submetric]
-                    });
-                }
             }
             return normalized.sort(function (a, b) {
                 return a.date - b.date;
