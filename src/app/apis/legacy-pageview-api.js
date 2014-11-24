@@ -28,15 +28,13 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], functio
     };
     /**
      * Parameters
-     *   metric  : an object representing  metric
-     *   project : a Wiki project (English Wikipedia is 'enwiki', Commons is 'commonswiki', etc.)
-     *
+     *   metric         : an object representing a metric
+     *   project        : a Wiki project database name (enwiki, commonswiki, etc.)     *
+     *   showBreakdown  : whether to materialize breakdowns
      * Returns
      *  A promise with that wraps data for the metric/project transformed via the converter
      */
-    PageviewApi.prototype.getData = function (metric, project) {
-
-        var metricName = metric.name;
+    PageviewApi.prototype.getData = function (metric, project, showBreakdown) {
 
         //using christian's endpoint
         //  http://quelltextlich.at/wmf/projectcounts/daily/enwiki.csv
@@ -46,10 +44,13 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], functio
             project: project
         }).toString();
 
-        var opt = {
-            label: project
-        };
 
+        var opt = {
+            label: project,
+            showBreakdown: showBreakdown,
+            breakdownColumns: metric.breakdown.columns
+
+        };
 
         var converter = this.getDataConverter().bind(null, opt);
 

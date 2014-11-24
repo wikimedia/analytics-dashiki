@@ -12,6 +12,7 @@ define(['knockout', 'jquery', 'ajaxWrapper', 'logger', './global-bindings'], fun
     ko.components.register('project-selector', { require: 'components/project-selector/project-selector' });
     ko.components.register('metric-selector', { require: 'components/metric-selector/metric-selector' });
     ko.components.register('time-selector', { require: 'components/time-selector/time-selector' });
+    ko.components.register('breakdown-toggle', { require: 'components/breakdown-toggle/breakdown-toggle' });
     ko.components.register('vega-timeseries', { require: 'components/visualizers/vega-timeseries/vega-timeseries' });
 
     // Start the application

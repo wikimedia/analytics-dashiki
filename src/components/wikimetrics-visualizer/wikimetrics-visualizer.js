@@ -42,7 +42,8 @@ define(function (require) {
                 metric = ko.unwrap(this.metric);
 
             if (metric && projects && projects.length) {
-                var promises;
+                var promises,
+                    showBreakdown = ko.unwrap(metric.showBreakdown);
 
                 var api = getAPIFromMetric(metric);
 
@@ -50,7 +51,7 @@ define(function (require) {
                 // For a more optimal, but perhaps prematurely optimized, version see:
                 //     https://gerrit.wikimedia.org/r/#/c/158244/8/src/components/wikimetrics-visualizer/wikimetrics-visualizer.js
                 promises = projects.map(function (project) {
-                    return api.getData(metric, project.database);
+                    return api.getData(metric, project.database, showBreakdown);
                 });
                 $.when.apply(this, promises).then(function () {
                     visualizer.mergedData([].concat.apply([], arguments));

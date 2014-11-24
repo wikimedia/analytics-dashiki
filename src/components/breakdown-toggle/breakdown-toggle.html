@@ -1,0 +1,25 @@
+<div class="ui secondary inverted vertical fluid menu">
+    <a class="header item" data-bind="css: {'off': !metric().showBreakdown()}, click: toggle">
+        <span class="default text">
+            <i class="block layout icon"></i>
+            Data Breakdowns
+        </span>
+    </a>
+    <!-- ko if: metric().showBreakdown -->
+    <div class="colored menu">
+    <!-- ko foreach: metric().breakdown.columns -->
+        <div class="item">
+            <span>
+                <i class="circle icon"></i>
+                <span data-bind="text: $data"></span>
+                <svg height="10" width="80">
+                    <path stroke="white"
+                          data-bind="attr: {'stroke-dasharray': $parent.dashes($index)}"
+                          d="M6 5 l215 0" />
+                </svg>
+            </span>
+        </div>
+    <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</div>

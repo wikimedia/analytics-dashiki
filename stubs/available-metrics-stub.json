@@ -30,8 +30,11 @@
         {
             "metrics": [{
                 "definition": "https://meta.wikimedia.org/wiki/Research:Pageviews",
-        "name": "DailyPageviews",
-                "api": "pageviewApi"
+                "name": "DailyPageviews",
+                "api": "pageviewApi",
+                "breakdown": {
+                    "columns": ["Desktop site", "Mobile site"]
+                }
             }],
             "name": "Readers"
         },

@@ -141,6 +141,27 @@ project-selector .ui.vertical.menu.fluid {
     width: 94%!important;
 }
 
+breakdown-toggle {
+    display: block;
+    margin-top: 60px;
+}
+breakdown-toggle .ui.vertical.menu.fluid {
+    width: 94%!important;
+}
+breakdown-toggle .ui.menu a.header.item {
+    opacity: 1!important;
+}
+breakdown-toggle .ui.menu a.header.item,
+breakdown-toggle .ui.menu a.header.item:hover {
+    background-color: #4D4D4D;
+    color: #BDBDBD;
+}
+breakdown-toggle .ui.menu a.header.item.off,
+breakdown-toggle .ui.menu a.header.item.off:hover {
+    background-color: #808080;
+    color: #454545;
+}
+
 /**
  * Twitter typeahead stuff
  */

@@ -37,9 +37,7 @@ define(['knockout', 'vega'], function (ko, vega) {
             width: 'auto',
             height: 'auto',
             parentSelector: '.parent-of-resizable',
-            updateOptions: {
-                duration: 300
-            },
+            animate: false,
             padding: {
                 top: 30,
                 right: 108,
@@ -50,9 +48,9 @@ define(['knockout', 'vega'], function (ko, vega) {
             colorScale: undefined
         });
 
-        // don't animate if there's a ton of data
-        if (withDefaults.data.length >= 1000) {
-            withDefaults.updateOptions = null;
+        // don't animate unless requested, animations cause performance problems
+        if (withDefaults.data.length < 1000 && withDefaults.animate) {
+            withDefaults.updateOptions = { duration: 300 };
         }
         return withDefaults;
     }
@@ -81,6 +79,14 @@ define(['knockout', 'vega'], function (ko, vega) {
         return [{
             name: 'timeseries',
             values: dataInCanonicalForm
+        },{
+            name: 'dashes',
+            values: [
+                {spacing: []},
+                {spacing: [2, 5]},
+                {spacing: [15, 15]},
+                {spacing: [30, 5]},
+            ]
         }];
     }
 
@@ -111,6 +117,17 @@ define(['knockout', 'vega'], function (ko, vega) {
                 name: 'color',
                 type: 'ordinal',
                 range: 'category10'
+            }, {
+                name: 'dash',
+                type: 'ordinal',
+                domain: {
+                    data: 'sub-metrics',
+                    field: 'data.type'
+                },
+                range: {
+                    data: 'dashes',
+                    field: 'data.spacing'
+                }
             }],
             axes: [{
                 type: 'x',
@@ -166,7 +183,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                     data: 'timeseries',
                     transform: [{
                         type: 'facet',
-                        keys: ['data.label']
+                        keys: ['data.label', 'data.type']
                     }]
                 },
                 marks: [{
@@ -188,7 +205,11 @@ define(['knockout', 'vega'], function (ko, vega) {
                             },
                             stroke: {
                                 scale: 'color',
-                                field: 'data.label'
+                                field: 'data.color'
+                            },
+                            strokeDash: {
+                                scale: 'dash',
+                                field: 'data.type'
                             }
                         }
                     }
@@ -210,7 +231,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                             x: {
                                 scale: 'x',
                                 field: 'data.date',
-                                offset: 2
+                                offset: 3
                             },
                             y: {
                                 scale: 'y',
@@ -218,7 +239,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                             },
                             fill: {
                                 scale: 'color',
-                                field: 'data.label'
+                                field: 'data.color'
                             },
                             text: {
                                 field: 'data.label'

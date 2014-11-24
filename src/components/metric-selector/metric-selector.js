@@ -18,12 +18,12 @@
             defaultSelection    : (optional) array of pre-added metric names
         "/>
  */
-define(function(require) {
+define(function (require) {
     'use strict';
 
-    var ko              = require('knockout'),
-        templateMarkup  = require('text!./metric-selector.html'),
-        utils           = require('utils');
+    var ko = require('knockout'),
+        templateMarkup = require('text!./metric-selector.html'),
+        utils = require('utils');
 
     require('./bindings');
 
@@ -54,14 +54,14 @@ define(function(require) {
             return defaultMetrics;
         }, this);
 
-        this.categories = ko.computed(function(){
+        this.categories = ko.computed(function () {
             var unwrap = ko.unwrap(this.metricsByCategory) || [],
                 copy = unwrap.slice(),
                 categories = copy.sort(utils.sortByNameIgnoreCase);
 
             categories.splice(0, 0, {
                 name: 'All metrics',
-                metrics: [].concat.apply([], categories.map(function(c) {
+                metrics: [].concat.apply([], categories.map(function (c) {
                     return c.metrics;
                 })).sort(utils.sortByNameIgnoreCase)
             });

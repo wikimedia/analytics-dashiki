@@ -29,8 +29,20 @@ define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi', 'configA
         stateManagerFactory.getManager(this.selectedProjects, this.selectedMetric,
             this.defaultProjects, this.defaultMetrics);
 
-
         configApi.getCategorizedMetrics(function (config) {
+            if (config.categorizedMetrics) {
+                config.categorizedMetrics.forEach(function (category) {
+                    if (!category.metrics) {
+                        return;
+                    }
+                    category.metrics.forEach(function (metric) {
+                        // whether the metric was configured to be broken down
+                        metric.breakdown = metric.breakdown || false;
+                        // whether to graph the available breakdowns
+                        metric.showBreakdown = ko.observable(false);
+                    });
+                });
+            }
             self.metrics(config.categorizedMetrics);
         });
     }

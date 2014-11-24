@@ -49,8 +49,11 @@ define(['moment'], function (moment) {
                 for (i = 0; i < keys.length; i++) {
                     normalized.push({
                         date: moment(keys[i]).toDate().getTime(),
+                        color: parameters.Cohort,
                         label: parameters.Cohort,
-                        value: rawData.result[aggregate][submetric][keys[i]]
+                        value: rawData.result[aggregate][submetric][keys[i]],
+                        type: 'Total',
+                        main: true,
                     });
                 }
             }

@@ -8,6 +8,9 @@
                                       selectedProjects: selectedProjects">
 
             </project-selector>
+            <!-- ko if: selectedMetric() && selectedMetric().breakdown -->
+            <breakdown-toggle params="metric: selectedMetric"></breakdown-toggle>
+            <!-- /ko -->
         </section>
         <section class="page column main">
             <div class="ui segment metric">
