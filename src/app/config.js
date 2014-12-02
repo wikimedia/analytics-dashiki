@@ -6,13 +6,12 @@ define([], function () {
 
     return {
 
-        // Temporarily we are getting config from wikimetrics
-        // but the confiApi will be switched to mediawiki in the future
+        // indicates which mediawiki host and pages contain the configuration
         configApi: {
-            endpoint: 'metrics-staging.wmflabs.org',
-            //urlCategorizedMetrics: 'https://metrics-staging.wmflabs.org/static/public/datafiles/available-metrics.json',
-            urlCategorizedMetrics: '/stubs/available-metrics-stub.json',
-            urlDefaultDashboard: 'https://metrics.wmflabs.org/static/public/datafiles/defaultDashboard.json'
+            endpoint: 'meta.wikimedia.org',
+            // next two fields are mediawiki page names
+            categorizedMetricsPage: 'Dashiki:CategorizedMetrics',
+            defaultDashboardPage: 'Dashiki:DefaultDashboard'
         },
 
         // format are specified per API for now, in the future they can be specified per metric if needed

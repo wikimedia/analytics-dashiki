@@ -2,17 +2,14 @@
  * This module returns an instance of an object that knows how to
  * Talk to the configurationAPI.
  *
- * Configuration files now reside in wikimetrics but we are planning to move them
- * to mediawiki.
- * Encapsulating configuration requests on this object separates the wikimetricsAPI
- * as a data provider and the wikimetricsAPI as a (temporary) config provider.
+ * Configuration files now reside in mediawiki.
+ * To get them, this module uses mediawiki-storage library.
  */
-define(['config'], function (siteConfig) {
+define(['config', 'mediawiki-storage'], function (siteConfig, mediawikiStorage) {
     'use strict';
 
     function ConfigApi(config) {
-        this.root = config.configApi.endpoint;
-        this.config = config;
+        this.config = config.configApi;
     }
 
     // only fetch certain things once per app life and keep their promise
@@ -21,16 +18,28 @@ define(['config'], function (siteConfig) {
 
     /**
      * Retrieves the default selections for metrics and projects
+     *
+     * Parameters
+     *   callback : a function to pass returned data to
+     *              (note you can just pass an observable here)
+     *
+     * Returns
+     *   a jquery promise to the default project and metric config
      **/
     ConfigApi.prototype.getDefaultDashboard = function (callback) {
 
         if (!promiseDefaults) {
-            promiseDefaults = this._getJSON(this.config.configApi.urlDefaultDashboard);
+            promiseDefaults = mediawikiStorage.get({
+                host: this.config.endpoint,
+                pageName: this.config.defaultDashboardPage
+            });
         }
         return promiseDefaults.done(callback);
     };
 
     /**
+     * Retrieves the available metrics configuration
+     *
      * Parameters
      *   callback : a function to pass returned data to
      *              (note you can just pass an observable here)
@@ -43,20 +52,12 @@ define(['config'], function (siteConfig) {
     ConfigApi.prototype.getCategorizedMetrics = function (callback) {
 
         if (!promiseMetrics) {
-            promiseMetrics = this._getJSON(this.config.configApi.urlCategorizedMetrics);
+            promiseMetrics = mediawikiStorage.get({
+                host: this.config.endpoint,
+                pageName: this.config.categorizedMetricsPage
+            });
         }
         return promiseMetrics.done(callback);
-    };
-
-    /**
-     * Returns
-     *   a promise to the url passed in
-     **/
-    ConfigApi.prototype._getJSON = function (url) {
-        return $.ajax({
-            dataType: 'json',
-            url: url
-        });
     };
 
     return new ConfigApi(siteConfig);
