@@ -43,7 +43,7 @@ define(['moment'], function (moment) {
 
                 if (date && value && !isNaN(date) && !isNaN(value)) {
                     // NOTE: for demos until we add a time-selector, uncomment this line:
-                    //if (date < 1413836239592) return [];
+                    if (date < 1388534400000) return [];
                     return allColumns.map(function (column) {
                         return {
                             date: date,
