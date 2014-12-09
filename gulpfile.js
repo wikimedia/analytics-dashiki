@@ -59,7 +59,8 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
             // If you want parts of the site to load on demand, remove them from the 'include' list
             // above, and group them into bundles here.
             'project-selector': ['components/project-selector/project-selector'],
-            'vega-timeseries': ['components/visualizers/vega-timeseries/vega-timeseries']
+            'vega-timeseries': ['components/visualizers/vega-timeseries/vega-timeseries'],
+            'breakdown-toggle': ['components/breakdown-toggle/breakdown-toggle']
 
         }
     });
