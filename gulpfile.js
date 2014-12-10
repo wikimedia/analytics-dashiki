@@ -89,6 +89,8 @@ gulp.task('js', ['clean'], function () {
 
 
 gulp.task('css', ['clean'], function () {
+    // css filenames make concatenation order deterministic
+    // as it matters for css rules
     return gulp.src(['src/css/*.css'])
         .pipe(concat('style.css')).pipe(rev()).pipe(gulp.dest('./dist/'))
         // Add rev-manifest.json as a new src to prevent rev'ing rev-manifest.json
