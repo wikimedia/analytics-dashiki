@@ -93,7 +93,7 @@ a.header {
     text-decoration: none;
 }
 a.header:hover {
-    text-decoration: underline;
+    border-bottom: 2px solid #112233;
 }
 section.page.column {
     position: absolute;

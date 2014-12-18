@@ -1,7 +1,10 @@
 <!-- ko if: mergedData && mergedData() && mergedData().length -->
 <a class="header"
-   data-bind="metricName: metric, attr: {href: metric().definition}"
-   title="view metric definition" target="_blank"></a>
+   data-bind="attr: {href: metric().definition}"
+   title="view metric definition" target="_blank">
+    <span data-bind="metricName: metric"></span>
+    <i class="external url icon"></i>
+</a>
 <vega-timeseries params="data: mergedData, colorScale: colorScale"></vega-timeseries>
 <!-- /ko -->
 <!-- ko ifnot: mergedData && mergedData() && mergedData().length -->
