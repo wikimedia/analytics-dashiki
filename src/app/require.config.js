@@ -24,6 +24,7 @@ var require = {
         'config'                : 'app/config',
         'logger'                : 'lib/logger',
         'wikimetricsApi'        : 'app/apis/wikimetrics',
+        'annotationsApi'        : 'app/apis/annotations-api',
         'pageviewApi'           : 'app/apis/legacy-pageview-api',
         'configApi'             : 'app/apis/config-api',
         'dataConverterFactory'  : 'app/data-converters/factory',

@@ -23,7 +23,7 @@ define([], function () {
     window.logger = {
 
         error: function (message) {
-            console.log(this._getTimestamp() + message);
+            console.log(this._getTimestamp() + ' ' + message);
         },
         _getTimestamp: function () {
             return new Date().toUTCString();

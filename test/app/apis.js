@@ -1,6 +1,6 @@
 define([
-    'config', 'wikimetricsApi', 'configApi', 'mediawiki-storage', 'jquery'
-], function (siteConfig, wikimetrics, configApi, mediawikiStorage, $) {
+    'config', 'wikimetricsApi', 'configApi', 'annotationsApi', 'mediawiki-storage', 'jquery'
+], function (siteConfig, wikimetrics, configApi, annotationsApi,  mediawikiStorage, $) {
 
     describe('Wikimetrics API', function () {
 
@@ -8,9 +8,8 @@ define([
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             sinon.stub($, 'ajax').returns(deferred);
-
-
         });
+
         afterEach(function () {
             $.ajax.restore();
         });
@@ -79,6 +78,157 @@ define([
 
             configApi.getDefaultDashboard(function (returned) {
                 expect(returned).toBe(result);
+                mediawikiStorage.get.restore();
+                done();
+            });
+        });
+
+        it('should get metric annotations', function (done) {
+            var mediawikiHost = 'some.mediawiki.host',
+                annotationsPage = 'SomeMediawikiPageName',
+                startDate = '2014-01-01 00:00:00',
+                endDate = '2014-01-01 00:00:00',
+                note = 'Some text.';
+                annotations = [{start: startDate, end: endDate, note: note}];
+
+            sinon.stub(mediawikiStorage, 'get', function (options) {
+                expect(options.host).toBe(mediawikiHost);
+                expect(options.pageName).toBe(annotationsPage);
+
+                var deferred = new $.Deferred();
+                deferred.resolve(annotations);
+                return deferred.promise();
+            });
+
+            var metric = {
+                annotations: {
+                    host: mediawikiHost,
+                    pageName: annotationsPage
+                }
+            };
+            annotationsApi.get(metric, function (returned) {
+                expect(returned instanceof Array).toBe(true);
+                expect(returned.length).toBe(1);
+                expect(typeof returned[0]).toBe('object');
+                expect(returned[0].start).toBe(startDate);
+                expect(returned[0].end).toBe(endDate);
+                expect(returned[0].note).toBe(note);
+                mediawikiStorage.get.restore();
+                done();
+            });
+        });
+
+        it('should trigger error callback when annotation page is not a list', function (done) {
+            var mediawikiHost = 'some.mediawiki.host',
+                annotationsPage = 'SomeMediawikiPageName';
+
+            sinon.stub(mediawikiStorage, 'get', function () {
+                var deferred = new $.Deferred();
+                deferred.resolve({});
+                return deferred.promise();
+            });
+
+            var metric = {
+                annotations: {
+                    host: mediawikiHost,
+                    pageName: annotationsPage
+                }
+            };
+            annotationsApi.get(
+                metric,
+                function (result) {  // success callback
+                    expect(true).toBe(false);  // should not get here
+                },
+                function (error) {  // error callback
+                    expect(error instanceof TypeError).toBe(true);
+                    mediawikiStorage.get.restore();
+                    done();
+                }
+            );
+        });
+
+        it('should return empty list when metric has no annotations info', function (done) {
+            sinon.stub(mediawikiStorage, 'get', function (options) {
+                expect(true).toBe(false);  // should not get here
+            });
+
+            var metric = {};  // metric has no annotations information
+            annotationsApi.get(metric, function (returned) {
+                expect(returned instanceof Array).toBe(true);
+                expect(returned.length).toBe(0);
+                mediawikiStorage.get.restore();
+                done();
+            });
+        });
+
+        it('should filter out annotations with invalid dates', function (done) {
+            sinon.stub(mediawikiStorage, 'get', function (options) {
+                var deferred = new $.Deferred();
+                deferred.resolve([
+                    {start: 'Bad date', note: 'Some note.'},
+                    {start: '2014-01-01 00:00:00', note: 'Some note.'}
+                ]);
+                return deferred.promise();
+            });
+
+            var metric = {
+                annotations: {
+                    host: 'some.mediawiki.host',
+                    pageName: 'SomeMediawikiPageName'
+                }
+            };
+            annotationsApi.get(metric, function (returned) {
+                expect(returned instanceof Array).toBe(true);
+                expect(returned.length).toBe(1);
+                mediawikiStorage.get.restore();
+                done();
+            });
+        });
+
+        it('should filter out annotations with no note', function (done) {
+            sinon.stub(mediawikiStorage, 'get', function (options) {
+                var deferred = new $.Deferred();
+                deferred.resolve([
+                    {start: '2014-01-01 00:00:00'},
+                    {start: '2014-01-01 00:00:00', note: 'Some note.'}
+                ]);
+                return deferred.promise();
+            });
+
+            var metric = {
+                annotations: {
+                    host: 'some.mediawiki.host',
+                    pageName: 'SomeMediawikiPageName'
+                }
+            };
+            annotationsApi.get(metric, function (returned) {
+                expect(returned instanceof Array).toBe(true);
+                expect(returned.length).toBe(1);
+                mediawikiStorage.get.restore();
+                done();
+            });
+        });
+
+        it('should filter out annotations with bad time interval', function (done) {
+            sinon.stub(mediawikiStorage, 'get', function (options) {
+                var deferred = new $.Deferred();
+                deferred.resolve([
+                    // end date before start date
+                    {start: '2014-01-01', end: '2013-01-01', note: 'Some note.'},
+                    {start: '2014-01-01', end: '2014-01-02', note: 'Some note.'}
+                ]);
+                return deferred.promise();
+            });
+
+            var metric = {
+                annotations: {
+                    host: 'some.mediawiki.host',
+                    pageName: 'SomeMediawikiPageName'
+                }
+            };
+            annotationsApi.get(metric, function (returned) {
+                expect(returned instanceof Array).toBe(true);
+                expect(returned.length).toBe(1);
                 mediawikiStorage.get.restore();
                 done();
             });
