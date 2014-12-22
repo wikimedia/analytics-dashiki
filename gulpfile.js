@@ -60,8 +60,8 @@ var requireJsRuntimeConfig = vm.runInNewContext(fs.readFileSync('src/app/require
             // above, and group them into bundles here.
             'project-selector': ['components/project-selector/project-selector'],
             'vega-timeseries': ['components/visualizers/vega-timeseries/vega-timeseries'],
-            'breakdown-toggle': ['components/breakdown-toggle/breakdown-toggle']
-
+            'breakdown-toggle': ['components/breakdown-toggle/breakdown-toggle'],
+            'annotation-list': ['components/annotation-list/annotation-list']
         }
     });
 

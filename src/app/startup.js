@@ -14,6 +14,7 @@ define(['knockout', 'jquery', 'ajaxWrapper', 'logger', './global-bindings'], fun
     ko.components.register('time-selector', { require: 'components/time-selector/time-selector' });
     ko.components.register('breakdown-toggle', { require: 'components/breakdown-toggle/breakdown-toggle' });
     ko.components.register('vega-timeseries', { require: 'components/visualizers/vega-timeseries/vega-timeseries' });
+    ko.components.register('annotation-list', { require: 'components/annotation-list/annotation-list' });
 
     // Start the application
     ko.applyBindings();

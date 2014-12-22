@@ -14,6 +14,8 @@
     "URIjs": "~1.13.2",
     "typeahead.js": "~0.10.5",
     "semantic": "~0.19.0",
-    "mediawiki-storage": "latest"
+    "mediawiki-storage": "latest",
+    "marked": "~0.3.2",
+    "twix": "~0.5.1"
   }
 }

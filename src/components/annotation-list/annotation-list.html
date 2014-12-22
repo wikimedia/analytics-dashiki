@@ -1,0 +1,6 @@
+<!-- ko if: annotations && annotations() && annotations().length -->
+	<span class="annotation-list-title">Notes</span>
+	<!-- ko foreach: annotations -->
+	<div class="ui small label annotation" data-bind="text: $data.dateRange, popup: $data.htmlNote"></div>
+	<!-- /ko -->
+<!-- /ko -->

@@ -16,7 +16,10 @@ var require = {
         'topojson'              : 'bower_modules/topojson/topojson',
         'moment'                : 'bower_modules/moment/moment',
         'semantic-dropdown'     : 'bower_modules/semantic/build/uncompressed/modules/dropdown',
+        'semantic-popup'        : 'bower_modules/semantic/build/uncompressed/modules/popup',
         'mediawiki-storage'     : 'bower_modules/mediawiki-storage/dist/mediawiki-storage',
+        'marked'                : 'bower_modules/marked/lib/marked',
+        'twix'                  : 'bower_modules/twix/bin/twix',
         // NOTE: if you want functions like uri.expand, you must include both
         // URI and URITemplate like define(['uri/URI', 'uri/URITemplate'] ...
         // because URITemplate modifies URI when it's parsed

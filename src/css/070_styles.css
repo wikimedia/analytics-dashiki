@@ -111,12 +111,13 @@ section.main {
     left: 300px;
 }
 .graph {
-    height: 90vh;
+    height: 87vh;
 }
 .graph .parent-of-resizable {
     height: 100%;
-    min-height: 600px;
+    min-height: 300px;
     min-width: 800px;
+    max-height: 76vh;
 }
 .parent-of-resizable {
     width: 100%;
@@ -160,6 +161,16 @@ breakdown-toggle .ui.menu a.header.item.off,
 breakdown-toggle .ui.menu a.header.item.off:hover {
     background-color: #808080;
     color: #454545;
+}
+
+.annotation.label {
+    cursor: pointer;
+    margin: 5px 3px 3px 3px;
+}
+.annotation-list-title {
+    margin-left: 10px;
+    vertical-align: -2px;
+    font-size: 14px;
 }
 
 /**
