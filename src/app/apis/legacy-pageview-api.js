@@ -5,7 +5,7 @@
  * Please note that as long as data abides to this format dashiki
  * can retrieve pageview counts from anywhere.
  */
-define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], function (siteConfig, dataConverterFactory, uri) {
+define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'], function (siteConfig, dataConverterFactory, uri) {
     'use strict';
 
     function PageviewApi(config) {
@@ -35,6 +35,7 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], functio
      *  A promise with that wraps data for the metric/project transformed via the converter
      */
     PageviewApi.prototype.getData = function (metric, project, showBreakdown) {
+        var deferred = $.Deferred();
 
         //using christian's endpoint
         //  http://quelltextlich.at/wmf/projectcounts/daily/enwiki.csv
@@ -44,17 +45,25 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], functio
             project: project
         }).toString();
 
+        this._getData(address)
+            .done(function (data) {
+                var converter = this.getDataConverter(),
+                    opt = {
+                        label: project,
+                        showBreakdown: showBreakdown,
+                        breakdownColumns: metric.breakdown.columns
+                    };
 
-        var opt = {
-            label: project,
-            showBreakdown: showBreakdown,
-            breakdownColumns: metric.breakdown.columns
+                deferred.resolve(converter(opt, data));
+            }.bind(this))
+            .fail(function (error) {
+                // resolve as done with empty results and log the error
+                // to avoid crashing the ui when a metric has problems
+                deferred.resolve([]);
+                logger.error(error);
+            });
 
-        };
-
-        var converter = this.getDataConverter().bind(null, opt);
-
-        return this._getData(address).then(converter);
+        return deferred.promise();
     };
 
     PageviewApi.prototype.getDataConverter = function () {

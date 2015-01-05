@@ -1,21 +1,15 @@
 define([
-    'config', 'wikimetricsApi', 'configApi', 'annotationsApi', 'mediawiki-storage', 'jquery'
-], function (siteConfig, wikimetrics, configApi, annotationsApi,  mediawikiStorage, $) {
+    'config', 'wikimetricsApi', 'pageviewApi', 'configApi', 'annotationsApi', 'mediawiki-storage', 'jquery'
+], function (siteConfig, wikimetrics, pageviewApi, configApi, annotationsApi,  mediawikiStorage, $) {
 
     describe('Wikimetrics API', function () {
 
-        beforeEach(function () {
+        it('should fetch the correct URL', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             sinon.stub($, 'ajax').returns(deferred);
-        });
-
-        afterEach(function () {
-            $.ajax.restore();
-        });
-
-        it('should fetch the correct URL', function () {
             sinon.stub(wikimetrics, 'getDataConverter').returns(function () {});
+
             wikimetrics.root = 'something';
             var expected = 'https://something/static/public/datafiles/metric/project.json';
             var metric = {
@@ -23,6 +17,22 @@ define([
             };
             wikimetrics.getData(metric, 'project');
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
+
+            wikimetrics.getDataConverter.restore();
+            $.ajax.restore();
+        });
+
+        it('should return empty list if getting data fails', function (done) {
+            var deferred = new $.Deferred();
+            deferred.reject(new Error('SomeError'));
+            sinon.stub($, 'ajax').returns(deferred);
+
+            var metric = {name: 'metric'};
+            wikimetrics.getData(metric, 'project').done(function (data) {
+                expect(data).toEqual([]);
+                $.ajax.restore();
+                done();
+            });
         });
 
         it('should not retrieve option file if project choices are already set ', function () {
@@ -42,6 +52,49 @@ define([
 
             getJSONStub.restore();
         });
+
+    });
+
+    describe('Pageview API', function () {
+
+        it('should fetch the correct URL', function () {
+            var deferred = new $.Deferred();
+            deferred.resolveWith(null, ['not important']);
+            sinon.stub($, 'ajax').returns(deferred);
+            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {});
+
+            pageviewApi.root = 'something';
+            var expected = 'https://something/static/public/datafiles/DailyPageviews/project.csv';
+            var metric = {
+                name: 'metric',
+                breakdown: {}
+            };
+            pageviewApi.getData(metric, 'project');
+            expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
+
+            pageviewApi.getDataConverter.restore();
+            $.ajax.restore();
+        });
+
+        it('should return empty list if getting data fails', function (done) {
+            var deferred = new $.Deferred();
+            deferred.reject(new Error('SomeError'));
+            sinon.stub($, 'ajax').returns(deferred);
+
+            var metric = {
+                name: 'metric',
+                breakdown: {}
+            };
+            pageviewApi.getData(metric, 'project').done(function (data) {
+                expect(data).toEqual([]);
+                $.ajax.restore();
+                done();
+            });
+        });
+
+    });
+
+    describe('Config API', function () {
 
         it('should get metrics configuration', function (done) {
             var config = siteConfig.configApi;
@@ -82,6 +135,10 @@ define([
                 done();
             });
         });
+
+    });
+
+    describe('Annotations API', function () {
 
         it('should get metric annotations', function (done) {
             var mediawikiHost = 'some.mediawiki.host',

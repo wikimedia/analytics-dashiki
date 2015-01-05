@@ -2,7 +2,7 @@
  * This module returns an instance of an object that knows how to get
  * reports run by WikimetricsBot on wikimetrics.  Methods commented inline
  */
-define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], function (siteConfig, dataConverterFactory, uri) {
+define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'], function (siteConfig, dataConverterFactory, uri) {
     'use strict';
 
     function WikimetricsApi(config) {
@@ -50,25 +50,34 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate'], functio
      *  A promise with that wraps data for the metric/project transformed via the converter
      */
     WikimetricsApi.prototype.getData = function (metric, project) {
+        var deferred = $.Deferred();
 
-        var metricName = metric.name;
         var address = uri.expand('https://{root}/static/public/datafiles/{metric}/{project}.json', {
             root: this.root,
-            metric: metricName,
+            metric: metric.name,
             project: project,
         }).toString();
 
-        var submetrics = {};
+        this._getJSON(address)
+            .done(function (data) {
+                var converter = this.getDataConverter(),
+                    submetrics = {};
 
-        submetrics[metric.name] = metric.submetric || metric.defaultSubmetric;
+                submetrics[metric.name] = metric.submetric || metric.defaultSubmetric;
+                var opt = {
+                    defaultSubmetrics: submetrics
+                };
 
-        var opt = {
-            defaultSubmetrics: submetrics
-        };
+                deferred.resolve(converter(opt, data));
+            }.bind(this))
+            .fail(function (error) {
+                // resolve as done with empty results and log the error
+                // to avoid crashing the ui when a metric has problems
+                deferred.resolve([]);
+                logger.error(error);
+            });
 
-        var converter = this.getDataConverter().bind(null, opt);
-
-        return this._getJSON(address).then(converter);
+        return deferred.promise();
     };
 
     /**
