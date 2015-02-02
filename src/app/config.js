@@ -27,7 +27,7 @@ define([], function () {
 
         //placeholder for now, note this is coming from a temporary domain
         pageviewApi: {
-            endpoint: 'metrics-staging.wmflabs.org', // needs to support https
+            endpoint: 'metrics.wmflabs.org', // needs to support https
             format: 'csv'
 
         },
