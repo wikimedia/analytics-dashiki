@@ -1,0 +1,7 @@
+<div class="ui small buttons" data-bind="foreach: selectOne.options">
+    <div class="ui button"
+         data-bind="
+            text: $data,
+            click: $parent.select,
+            css: {active: $data === $parent.selectOne.selected()}"></div>
+</div>

@@ -1,0 +1,9 @@
+<div class="ui compact small menu">
+    <div class="ui simple dropdown item">
+        <span data-bind="text: selectOne.selected"></span>
+        <i class="dropdown icon"></i>
+        <div class="menu" data-bind="foreach: selectOne.options">
+            <div class="item" data-bind="text: $data, click: $parent.select"></div>
+        </div>
+    </div>
+</div>

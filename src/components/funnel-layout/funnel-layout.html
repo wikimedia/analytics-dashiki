@@ -1,0 +1,19 @@
+<section>
+    <filters class="ui grid">
+        <div class="left aligned three wide column">
+            <dropdown params="selectOne: wiki"/>
+        </div>
+        <div class="eight wide column">
+            <label>from: <dropdown params="selectOne: fromDate"/></label>
+            <label>to: <dropdown params="selectOne: toDate"/></label>
+        </div>
+        <div class="right aligned five wide column">
+            <button-group params="selectOne: editor"/>
+        </div>
+    </filters>
+    <graphs class="ui attached segment">
+        <graph class="ui raised segment">graph goes here</graph>
+        <graph style="height: 499px" class="ui raised segment">graph goes here</graph>
+        <graph class="ui raised segment">graph goes here</graph>
+    </graphs>
+</section>

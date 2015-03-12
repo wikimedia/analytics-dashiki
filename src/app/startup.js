@@ -16,6 +16,12 @@ define(['knockout', 'jquery', 'ajaxWrapper', 'logger', './global-bindings'], fun
     ko.components.register('vega-timeseries', { require: 'components/visualizers/vega-timeseries/vega-timeseries' });
     ko.components.register('annotation-list', { require: 'components/annotation-list/annotation-list' });
 
+
+    // separate layout, TODO: make multiple layouts coexist
+    ko.components.register('funnel-layout', { require: 'components/funnel-layout/funnel-layout' });
+    ko.components.register('dropdown', { require: 'components/dropdown/dropdown' });
+    ko.components.register('button-group', { require: 'components/button-group/button-group' });
+
     // Start the application
     ko.applyBindings();
 });
