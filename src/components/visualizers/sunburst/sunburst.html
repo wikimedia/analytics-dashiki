@@ -1,0 +1,36 @@
+<div class="resizable container sunburst">
+    <div class="sequence">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+            data-bind="attr: {width: width}" height="50">
+
+            <g data-bind="foreach: steps">
+                <g data-bind="attr: {transform: $parent.getTransform($index)}">
+                    <polygon data-bind="
+                        attr: {points: $parent.getPoints($index)},
+                        style: {fill: $parent.colors[name]}">
+                    </polygon>
+                    <text data-bind="text: name.replace('save', '').toLowerCase(), attr: $parent.crumb">
+                    </text>
+                </g>
+            </g>
+            <g data-bind="attr: {transform: getTransform(steps().length)}">
+            <text data-bind="text: percentage, attr: crumb, style: {fill: 'black'}"></text>
+            </g>
+        </svg>
+    </div>
+    <div>
+        <div data-bind="visible: percentage, style: {
+                top: (height/2 - radius()/4) + 'px',
+                left: (width()/2 - radius()/4) + 'px',
+                width: (radius()/1.8) + 'px',
+            }" class="explanation">
+            <span data-bind="text: percentage" class="percentage"></span>
+            <br/>
+            of sessions
+            <span data-bind="text: ratio"></span>
+        </div>
+        <svg data-bind="sunburst: {hierarchy: hierarchy, colors: colors}"
+             xmlns="http://www.w3.org/2000/svg" version="1.1">
+        </svg>
+    </div>
+</div>

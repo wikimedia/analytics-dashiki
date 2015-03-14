@@ -21,6 +21,9 @@ define(['knockout', 'jquery', 'ajaxWrapper', 'logger', './global-bindings'], fun
     ko.components.register('funnel-layout', { require: 'components/funnel-layout/funnel-layout' });
     ko.components.register('dropdown', { require: 'components/dropdown/dropdown' });
     ko.components.register('button-group', { require: 'components/button-group/button-group' });
+    ko.components.register('sunburst', { require: 'components/visualizers/sunburst/sunburst' });
+    //ko.components.register('rickshaw-timeseries', { require: 'components/visualizers/rickshaw-timeseries' });
+    //ko.components.register('stacked-bar', { require: 'components/visualizers/stacked-bar' });
 
     // Start the application
     ko.applyBindings();

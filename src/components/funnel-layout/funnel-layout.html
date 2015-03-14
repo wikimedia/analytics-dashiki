@@ -12,7 +12,16 @@
         </div>
     </filters>
     <graphs class="ui attached segment">
-        <graph class="ui raised segment">graph goes here</graph>
+        <graph class="ui raised segment grid">
+            <div class="row">
+                <div data-bind="if: editor.selected() !== 'WT'" class="eight wide column">
+                    <sunburst params="height: 350"/>
+                </div>
+                <div data-bind="if: editor.selected() !== 'VE'" class="eight wide column">
+                    <sunburst params="height: 350"/>
+                </div>
+            </div>
+        </graph>
         <graph style="height: 499px" class="ui raised segment">graph goes here</graph>
         <graph class="ui raised segment">graph goes here</graph>
     </graphs>

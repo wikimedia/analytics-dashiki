@@ -2,7 +2,7 @@ define(function (require) {
     'use strict';
 
     var templateMarkup = require('text!./button-group.html'),
-        SingleSelect = require('components/dropdown/dropdown').viewModel;
+        SingleSelect = require('app/common-viewmodels/single-select');
 
     return {
         viewModel: SingleSelect,
