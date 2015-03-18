@@ -12,6 +12,14 @@ define([], function () {
         },
         sortByNameIgnoreCase: function (a, b) {
             return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+        },
+        getBounds: function (element, parentSelector) {
+            var container = $(element).parents(parentSelector);
+
+            return {
+                width: container.innerWidth() || 0,
+                height: container.innerHeight() || 0,
+            };
         }
     };
 });
