@@ -5,9 +5,9 @@ define(function (require) {
         templateMarkup = require('text!./annotation-list.html'),
         annotationsApi = require('annotationsApi'),
         marked = require('marked'),
-        moment = require('moment');
+        moment = require('moment'),
+        utils = require('utils');
 
-    require('twix');  // adds twix functionalities to moment lib
     require('./bindings');
 
     function AnnotationList(params) {
@@ -56,8 +56,7 @@ define(function (require) {
                 return formattedStart + ' - ' + formattedEnd;
             }
 
-            // if both dates are defined, let twix do the magic
-            return moment(start).twix(end, {allDay: true}).format();
+            return utils.timespan(start, end);
         };
 
         this.annotations = ko.computed(function () {

@@ -20,6 +20,8 @@ var require = {
         'mediawiki-storage'     : 'bower_modules/mediawiki-storage/dist/mediawiki-storage',
         'marked'                : 'bower_modules/marked/lib/marked',
         'twix'                  : 'bower_modules/twix/bin/twix',
+        'dygraphs'              : 'bower_modules/dygraphs/dygraph-combined',
+        'nvd3'                  : 'bower_modules/nvd3/build/nv.d3',
         'rickshaw'              : 'bower_modules/rickshaw/rickshaw',
         // NOTE: if you want functions like uri.expand, you must include both
         // URI and URITemplate like define(['uri/URI', 'uri/URITemplate'] ...
@@ -30,6 +32,7 @@ var require = {
         'wikimetricsApi'        : 'app/apis/wikimetrics',
         'annotationsApi'        : 'app/apis/annotations-api',
         'pageviewApi'           : 'app/apis/legacy-pageview-api',
+        'datasetsApi'           : 'app/apis/datasets-api',
         'configApi'             : 'app/apis/config-api',
         'dataConverterFactory'  : 'app/data-converters/factory',
         'typeahead'             : 'bower_modules/typeahead.js/dist/typeahead.bundle',
@@ -48,7 +51,15 @@ var require = {
             //These script dependencies should be loaded before loading
             //typeahead
             deps: ['jquery']
-        }
+        },
+        d3: { exports: 'd3' },
+        nvd3: {
+          exports: 'nv',
+          deps: ['d3']
+        },
+        'semantic-popup': {
+          deps: ['jquery']
+        },
     }
 
 };

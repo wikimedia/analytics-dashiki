@@ -1,7 +1,8 @@
 /**
  * This module returns a method that knows how to parse rows of the form:
- *      ['path-separated-by-dashes', 123],
- *      ['path-separated-by-dashes-next-step', 234]
+ *      ['2015-01-01', 'path-separated-by-dashes', 123],
+ *      ['2015-01-01', 'path-separated-by-dashes-next-step', 234]
+ *      ['2015-01-02', 'path-separated-by-dashes', 12]
  *
  *   into a hierarcy that can be laid out in partitions
  */
@@ -11,8 +12,8 @@ define(function () {
 
         var root = {name: 'root', children: []};
         tsv.forEach(function (row) {
-            var parts = row[0].split('-'),
-                size = +row[1],
+            var parts = row[1].split('-'),
+                size = +row[2],
                 currentNode = root;
 
             if (isNaN(size)) { return; }

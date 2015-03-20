@@ -1,32 +1,28 @@
 <section>
+    <!-- TODO: move filters and comparisons into components -->
     <filters class="ui tight grid">
         <div class="left aligned three wide column">
             <dropdown params="selectOne: wiki"/>
         </div>
-        <div class="eight wide column">
+        <div class="six wide column">
             <label>from: <dropdown params="selectOne: fromDate"/></label>
             <label>to: <dropdown params="selectOne: toDate"/></label>
         </div>
-        <div class="right aligned five wide column">
+        <div class="right aligned seven wide column">
             <button-group params="selectOne: editor"/>
         </div>
     </filters>
-    <graphs class="ui attached segment">
-        <div class="ui top attached header">Sequence of Actions, by proportion</div>
-        <div class="ui attached raised segment">
-            <div class="ui grid">
-                <div data-bind="if: editor.selected() !== 'WT'" class="eight wide column">
-                    <sunburst params="height: 450"/>
-                </div>
-                <div data-bind="if: editor.selected() !== 'VE'" class="eight wide column">
-                    <sunburst params="height: 450"/>
-                </div>
-            </div>
+    <comparisons class="ui attached scrolling segment">
+        <!-- ko foreach: comparisons -->
+        <div class="ui top attached header">
+            <span data-bind="popup: {inline: true}, text: title, attr: {'data-content': desc}"
+                  data-position="bottom center"
+                  data-variation="inverted"></span>
+            <span class="ui small label" data-bind="text: $parent.timespan"></span>
         </div>
-
-        <div class="ui top attached header">Rates over time</div>
         <div class="ui attached raised segment">
-            <rickshaw-timeseries params="height: 500"/>
+            <a-b-compare params="type: type, data: data, colors: $data.colors, annotations: $data.annotations"/>
         </div>
-    </graphs>
+        <!-- /ko -->
+    </comparisons>
 </section>

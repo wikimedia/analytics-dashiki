@@ -20,11 +20,12 @@
             colorScale      : undefined (pass a ko.observable to monitor color)
         "/>
  */
-define([ 'text!./vega-timeseries.html', './bindings'], function( templateMarkup) {
+define(function(require) {
 
-    function VegaTimeseries(params) {
-        $.extend(this, params);
-    }
+    var templateMarkup = require('text!./vega-timeseries.html'),
+        CopyParams = require('app/common-viewmodels/copy-params');
 
-    return { viewModel: VegaTimeseries, template: templateMarkup };
+    require('./bindings');
+
+    return { viewModel: CopyParams, template: templateMarkup };
 });

@@ -8,28 +8,29 @@
 define(function(require) {
 
     var ko = require('knockout'),
+        d3 = require('d3'),
         templateMarkup = require('text!./sunburst.html'),
         buildHierarchy = require('app/data-converters/funnel-data');
 
     require('./bindings');
 
+    /**
+     * Graphs sequences of steps as proportional concentric arcs
+     *
+     * Parameters
+     *      data: rows that look like this:
+                ['init', 5],
+                ['init-ready-saveAttempt-saveSuccess', 75],
+                ['init-ready-saveAttempt-saveFailure', 10],
+                ['init-ready-abort', 10],
+            colors: a function that takes a step name and returns its color
+     */
     function Sunburst(params) {
-        this.hierarchy = buildHierarchy(params.tsv || [
-            ['init', 5],
-            ['init-ready-saveAttempt-saveSuccess', 75],
-            ['init-ready-saveAttempt-saveFailure', 10],
-            ['init-ready-abort', 10],
-        ]);
-        this.colors = params.colors || {
-            'init': '#5687d1',
-            'ready': '#7b615c',
-            'saveIntent': '#de783b',
-            'saveAttempt': '#17becf',
-            'saveSuccess': '#6ab975',
-            'saveFailure': '#a173d1',
-            'abort': '#bcbd22',
-            'end': '#bbbbbb'
-        };
+        this.rawData = params.data;
+        this.hierarchy = ko.computed(function() {
+            return buildHierarchy(ko.unwrap(this.rawData));
+        }, this);
+        this.colors = params.colors || d3.scale.category10();
 
         this.height = params.height || 500;
         // width set by child once it renders
@@ -47,9 +48,9 @@ define(function(require) {
             w: 75, h: 30, s: 3, t: 10
         };
         this.b = b;
-        this.getTransform = function (index) {
+        this.getTransform = function (index, dx) {
             var i = ko.unwrap(index);
-            return 'translate('+(i * (b.w + b.s))+', 0)';
+            return 'translate('+(i * (b.w + b.s) + (dx || 0))+', 0)';
         };
         this.getPoints = function (index) {
             var i = ko.unwrap(index),

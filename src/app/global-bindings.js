@@ -1,5 +1,6 @@
-define(['knockout', 'jquery'], function (ko) {
+define(['knockout', 'jquery', 'semantic-popup'], function (ko) {
     'use strict';
+
     /**
      * Convention-based binding that expects html like this:
      *   <div data-bind="toggle: 'observableName'">... style this as the trigger that toggles ...</div>
@@ -60,9 +61,9 @@ define(['knockout', 'jquery'], function (ko) {
         // if a trigger was hit, find it in the cached toggle array and toggle it
         if (hitTrigger && hitTrigger.length) {
 
-            var toggle;
+            var toggle, i;
 
-            for (var i = 0; i < toggles.length; i++) {
+            for (i = 0; i < toggles.length; i++) {
                 if (toggles[i].trigger === hitTrigger[0]) {
                     toggle = toggles[i];
                     break;
@@ -80,4 +81,15 @@ define(['knockout', 'jquery'], function (ko) {
             toggle.observable(false);
         });
     });
+
+    ko.bindingHandlers.popup = {
+        init: function (element, valueAccessor) {
+
+            $(element).popup(ko.unwrap(valueAccessor()));
+
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                $(element).popup('destroy');
+            });
+        }
+    };
 });

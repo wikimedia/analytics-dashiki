@@ -32,6 +32,11 @@ define([], function () {
 
         },
 
+        datasetsApi: {
+            endpoint: '//datasets.wikimedia.org/limn-public-data/metrics',
+            format: 'tsv'
+        },
+
 
         //urlProjectLanguageChoices: '/stubs/fake-wikimetrics/projectLanguageChoices.json',
         //urlCategorizedMetrics: '/stubs/fake-wikimetrics/categorizedMetrics.json',

@@ -17,13 +17,23 @@ define(['knockout', 'jquery', 'ajaxWrapper', 'logger', './global-bindings'], fun
     ko.components.register('annotation-list', { require: 'components/annotation-list/annotation-list' });
 
 
+    // *********** BEGIN Funnel Layout Components ********** //
     // separate layout, TODO: make multiple layouts coexist
     ko.components.register('funnel-layout', { require: 'components/funnel-layout/funnel-layout' });
     ko.components.register('dropdown', { require: 'components/dropdown/dropdown' });
     ko.components.register('button-group', { require: 'components/button-group/button-group' });
     ko.components.register('sunburst', { require: 'components/visualizers/sunburst/sunburst' });
     ko.components.register('rickshaw-timeseries', { require: 'components/visualizers/rickshaw-timeseries/rickshaw-timeseries' });
+    ko.components.register('nvd3-timeseries', { require: 'components/visualizers/nvd3-timeseries/nvd3-timeseries' });
+    ko.components.register('dygraphs-timeseries', { require: 'components/visualizers/dygraphs-timeseries/dygraphs-timeseries' });
     //ko.components.register('stacked-bar', { require: 'components/visualizers/stacked-bar' });
+
+    // comparison components
+    ko.components.register('a-b-compare', { require: 'components/a-b-compare/a-b-compare' });
+    ko.components.register('compare-sunburst', { require: 'components/a-b-compare/compare-sunburst' });
+    ko.components.register('compare-timeseries', { require: 'components/a-b-compare/compare-timeseries' });
+
+    // *********** END Funnel Layout Components ************ //
 
     // Start the application
     ko.applyBindings();

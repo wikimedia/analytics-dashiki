@@ -1,0 +1,11 @@
+<div data-bind="
+    if: data && data().rows && data().rows.length,
+    style: {height: height + 'px'},
+    dygraphs: {
+        data: data,
+        annotations: $data.annotations,
+        colors: colors,
+        graphSelect: '.graph',
+    }">
+    <div class="resizable container graph"></div>
+</div>

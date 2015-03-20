@@ -16,9 +16,7 @@ define(function (require) {
 
     var ko = require('knockout'),
         templateMarkup = require('text!./wikimetrics-visualizer.html'),
-        wikimetricsApi = require('wikimetricsApi'),
-        pageviewApi = require('pageviewApi');
-
+        apiFinder = require('app/apis/api-finder');
 
     function WikimetricsVisualizer(params) {
         var visualizer = this;
@@ -45,7 +43,7 @@ define(function (require) {
                 var promises,
                     showBreakdown = ko.unwrap(metric.showBreakdown);
 
-                var api = getAPIFromMetric(metric);
+                var api = apiFinder(metric);
 
                 // NOTE: this is fetching all datafiles each time and relies on the cache
                 // For a more optimal, but perhaps prematurely optimized, version see:
@@ -67,32 +65,6 @@ define(function (require) {
             var projects = ko.unwrap(this.projects);
             this.applyColors(projects, color);
         }, this);
-    }
-
-    // TODO, still WIP
-    // finalize when pageview API is active
-    // is there a better place for this function
-    function getAPIFromMetric(metric) {
-        // Now the metric has to carry the notion of the API that holds its data
-        // we want the metric configuration file be backwards compatible
-        // so we add a new attribute to metric called api
-        // the default (if API not specified) is the wikimetrics API
-        // example:
-        // {
-        //  "definition": "https://meta.wikimedia.org/wiki/Research:Rolling_blah_editor",
-        //  "defaultSubmetric": "rolling_blah_editor",
-        //  "name": "RollingBlahEditor",
-        //  "api": "blahAPI"
-        // },
-
-        if (metric.api) {
-            if (metric.api.match('pageview')) {
-                return pageviewApi;
-            }
-
-        } else {
-            return wikimetricsApi;
-        }
     }
 
     return {

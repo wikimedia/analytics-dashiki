@@ -1,7 +1,10 @@
-filters, graphs, graph { display: block; }
+body { margin: 0; font-family: sans-serif; }
 
-filters.ui.segment { padding: 0.5em 0.2em 0.5em 1em; box-shadow: none; }
-graphs.ui.attached.segment { background-color: #f7f7f7; margin: 6px; }
+filters, comparisons, graph { display: block; }
+
+filters.ui.segment { padding: 0.5em 0.2em 0.5em 1em; box-shadow: none; height: 10vh; }
+comparisons.ui.attached.segment { background-color: #f7f7f7; height: 90vh; }
+comparisons .ui.top.attached.header { background-color: #ffffff; }
 
 .resizable.container {
     width: 100%;
@@ -33,3 +36,30 @@ div.sunburst span.percentage {
 .ui.tight.grid {
     margin: 0;
 }
+
+.ui.height540 {
+    /* terrible but needed to stabilize
+     * grid while swapping contents */
+    min-height: 540px;
+    max-height: 540px;
+    height: 540px;
+}
+
+/* is there another way to accomplish this?
+ * used in a-b-compare, for the sunburst compare */
+.full.height.column {
+    height: 100%;
+}
+
+.scrolling.menu {
+    max-height: 400px;
+    overflow-y: scroll!important;
+}
+
+.scrolling.segment {
+    overflow-y: scroll!important;
+    overflow-x: hidden!important;
+}
+
+/* dygraphs style fixes */
+div.dygraph-legend span b { display: inline-block; width: 80%; text-align: right; }

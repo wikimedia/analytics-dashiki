@@ -94,21 +94,23 @@ define(function (require) {
 
         update: function (element, valueAccessor) {
             var val = ko.unwrap(valueAccessor()),
-                data = val.hierarchy,
+                data = ko.unwrap(val.hierarchy),
                 colors = val.colors,
                 nodes = element.sunburst.partition.nodes(data).filter(function (node) {
                     return node.dx > 0.005; // 0.29 degrees
                 });
 
-            var path = element.sunburst.container.data([data]).selectAll('path')
-                .data(nodes);
+            // clear out the old sunburst, otherwise new data scales with
+            //   old data
+            element.sunburst.container.selectAll('path').remove();
 
-            path.exit().remove();
-            path.enter().append('path')
+            var path = element.sunburst.container.data([data]).selectAll('path')
+                .data(nodes)
+                .enter().append('path')
                 .attr('display', function(d) { return d.depth ? null : 'none'; })
                 .attr('d', element.sunburst.arc)
                 .attr('fill-rule', 'evenodd')
-                .style('fill', function(d) { return colors[d.name]; })
+                .style('fill', function(d) { return colors(d.name); })
                 .style('opacity', 1)
                 .on('mouseover', hoverPath.bind(element.sunburst));
 

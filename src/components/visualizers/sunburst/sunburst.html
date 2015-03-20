@@ -7,22 +7,22 @@
                 <g data-bind="attr: {transform: $parent.getTransform($index)}">
                     <polygon data-bind="
                         attr: {points: $parent.getPoints($index)},
-                        style: {fill: $parent.colors[name]}">
+                        style: {fill: $parent.colors(name)}">
                     </polygon>
                     <text data-bind="text: name.replace('save', '').toLowerCase(), attr: $parent.crumb">
                     </text>
                 </g>
             </g>
-            <g data-bind="attr: {transform: getTransform(steps().length)}">
+            <g data-bind="attr: {transform: getTransform(steps().length, -10)}">
             <text data-bind="text: percentage, attr: crumb, style: {fill: 'black'}"></text>
             </g>
         </svg>
     </div>
-    <div>
+    <div class="resizable container">
         <div data-bind="visible: percentage, style: {
-                top: (height/2 - radius()/4) + 'px',
+                top: (height/2 - radius()/4.5) + 'px',
                 left: (width()/2 - radius()/4) + 'px',
-                width: (radius()/1.8) + 'px',
+                width: (radius()/2) + 'px',
             }" class="explanation">
             <span data-bind="text: percentage" class="percentage"></span>
             <br/>
