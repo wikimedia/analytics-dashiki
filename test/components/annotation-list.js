@@ -1,5 +1,7 @@
-define(['components/annotation-list/annotation-list', 'knockout', 'annotationsApi'], function (component, ko, annotationsApi) {
-    var AnnotationList = component.viewModel;
+define(function (require) {
+    var component = require('components/annotation-list/annotation-list'),
+        annotationsApi = require('apis.annotations'),
+        AnnotationList = component.viewModel;
 
     describe('AnnotationList view model', function () {
 

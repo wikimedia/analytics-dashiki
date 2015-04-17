@@ -10,7 +10,7 @@ define(function(require) {
     var ko = require('knockout'),
         d3 = require('d3'),
         templateMarkup = require('text!./sunburst.html'),
-        buildHierarchy = require('app/data-converters/funnel-data');
+        buildHierarchy = require('converters.funnel-data');
 
     require('./bindings');
 

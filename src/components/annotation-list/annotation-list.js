@@ -3,7 +3,7 @@ define(function (require) {
 
     var ko = require('knockout'),
         templateMarkup = require('text!./annotation-list.html'),
-        annotationsApi = require('annotationsApi'),
+        annotationsApi = require('apis.annotations'),
         marked = require('marked'),
         moment = require('moment'),
         utils = require('utils');
@@ -29,9 +29,10 @@ define(function (require) {
             a = a.start;
             b = b.start;
 
-            if (!a && b || a && b && a < b) {
+            if ((!a && b) || (a && b && a < b)) {
                 return -1;
-            } else if (a && !b || a && b && a > b) {
+            }
+            if ((a && !b) || (a && b && a > b)) {
                 return 1;
             }
             return 0;
@@ -45,9 +46,8 @@ define(function (require) {
                 var formatDate = function (date, fallback) {
                     if (date) {
                         return moment(date).format('MMM DD, YYYY');
-                    } else {
-                        return fallback;
                     }
+                    return fallback;
                 };
 
                 var formattedStart = formatDate(start, 'Beginning of time'),

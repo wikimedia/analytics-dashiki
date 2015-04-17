@@ -1,5 +1,6 @@
 define(['components/wikimetrics-layout/wikimetrics-layout'], function(component) {
-    var WikimetricsLayout = component.viewModel;
+    var WikimetricsLayout = component.viewModel,
+        wikimetricsApi = require('apis.wikimetrics');
 
     describe('WikimetricsLayout view model', function() {
 
@@ -7,9 +8,11 @@ define(['components/wikimetrics-layout/wikimetrics-layout'], function(component)
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             sinon.stub($, 'ajax').returns(deferred);
+            sinon.stub(wikimetricsApi, 'getProjectAndLanguageChoices');
         });
         afterEach(function () {
             $.ajax.restore();
+            wikimetricsApi.getProjectAndLanguageChoices.restore();
         });
 
         it('should create observables needed by others', function() {

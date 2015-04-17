@@ -2,7 +2,7 @@ define(function (require) {
     'use strict';
 
     var templateMarkup = require('text!./a-b-compare.html'),
-        CopyParams = require('app/common-viewmodels/copy-params');
+        CopyParams = require('viewmodels.copy-params');
 
     return {
         viewModel: CopyParams,

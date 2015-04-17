@@ -1,8 +1,7 @@
 /**
  * This component coordinates between the project, metric, and time selectors
  *   and visualizations.  Currently, it will render a single timeseries graph
- *   and attempt to recompute as infrequently as possible by using knockout
- *   projections.
+ *   and attempt to recompute as infrequently as possible.
  *
  * Example usage:
 

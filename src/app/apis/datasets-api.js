@@ -6,7 +6,7 @@ define(function (require) {
     'use strict';
 
     var siteConfig = require('config'),
-        simpleSeparated = require('app/data-converters/simple-separated-values'),
+        simpleSeparated = require('converters.simple-separated-values'),
         uri = require('uri/URI');
 
     require('uri/URITemplate');

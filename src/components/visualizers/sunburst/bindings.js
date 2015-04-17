@@ -3,7 +3,7 @@ define(function (require) {
     var d3 = require('d3'),
         ko = require('knockout');
 
-    require('lib/polyfills');
+    require('lib.polyfills');
 
     // Given a node in a partition layout, return an array of all of its ancestor
     // nodes, highest first, but excluding the root.

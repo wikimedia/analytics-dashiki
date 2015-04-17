@@ -1,26 +1,34 @@
 # Dashiki
 
-Dashboarding tool.  No server.  Modular.
-Initially, this tool is aimed at dashboarding for Mediawiki universe.
+Dashiki: ***Dash***boards powered by ***wiki*** articles.
+
+* Bring your own server - python, java, c#, ruby, etc.  Dashiki is purely client side
+* Modular - Knockout's component system and observable patterns help you stay DRY
+** use your favorite visualization library: d3, vega, dygraphs, highcharts, etc.
+** use your favorite kind of datasource: flat files, apis, etc.
+* Testable - test your code with pleasure using Karma
 
 ## Use
 
 ```
 git clone https://gerrit.wikimedia.org/r/analytics/dashiki
 cd dashiki
+
+npm install
+bower install
+sudo npm install -g gulp
+
+gulp --layout compare --config VisualEditorAndWikitext
+
 python -m SimpleHTTPServer 5000
 ```
 
-Browse http://localhost:8000/dist to use the latest release.
-Or, browse to http://localhost:5000/src to run against raw files.
+And you can now browse to http://localhost:5000/compare-VisualEditorAndWikitext
 
-To modify and develop:
-
-### Install Bower modules
-`bower install`
-
-### Install npm modules
-`npm install`
+What is this magic?  When you pass `--layout compare` to the gulp build, you're telling it
+to use the layout defined in src/layouts/compare/.  When you pass `--config
+VisualEditorAndWikitext`, you're telling it to configure this layout with the article found
+at http://meta.wikimedia.org/wiki/Config:VisualEditorAndWikitext
 
 ### Build and Dev tools
 
@@ -28,19 +36,8 @@ We're using karma as a test runner and gulp as a build tool.  You may want to
 install these tools globally:
 
 ```
-npm install -g gulp
 npm install -g karma-cli
-```
-
-Running gulp tasks to build, lint, clean, etc:
-```
-gulp (html|lint|js)
-gulp
-```
-
-The karma test runner will watch all files and execute all tests on changes:
-```
-karma start
+npm install -g gulp
 ```
 
 # Debugging dev tools

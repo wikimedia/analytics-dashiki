@@ -1,7 +1,7 @@
 define(function (require) {
     var component = require('components/wikimetrics-visualizer/wikimetrics-visualizer'),
         $ = require('jquery'),
-        api = require('wikimetricsApi'),
+        api = require('apis.wikimetrics'),
         ko = require('knockout');
 
     var WikimetricsVisualizer = component.viewModel,
@@ -88,7 +88,7 @@ define(function (require) {
             // change projects observable and make sure the merged data reflects it
             transformedResponse.map(function (item) {
                 item.label = anotherCohort;
-            })
+            });
             selectedProjects.push(anotherCohortOption);
 
             // this data is here from the second push (another-cohort)

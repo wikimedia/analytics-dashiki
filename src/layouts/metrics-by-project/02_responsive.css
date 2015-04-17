@@ -9,7 +9,7 @@
     section.main {
         /* override space left for section.projects which is hidden */
         left: 0;
-		overflow: auto;
+        overflow: auto;
     }
 
     .ui.vertical.menu {
@@ -17,17 +17,17 @@
         width: auto;
     }
 
-	.graph {
-		width: 100%;
-		overflow-x: hidden;
-	}
+    .graph {
+        width: 100%;
+        overflow-x: hidden;
+    }
 
     .graph .parent-of-resizable {
         height: 75vh;
-		margin-left: -5%; /* effectively reduces margins */
-		width: 120%;
-		min-height: 0;
-		min-width: 0;
+        margin-left: -5%; /* effectively reduces margins */
+        width: 120%;
+        min-height: 0;
+        min-width: 0;
     }
 
 }

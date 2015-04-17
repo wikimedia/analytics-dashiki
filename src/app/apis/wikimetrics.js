@@ -89,44 +89,7 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
         if (!promiseLanguagesAndProjects) {
             var url = this.config.wikimetricsApi.urlProjectLanguageChoices;
             promiseLanguagesAndProjects = this._getJSON(url)
-                .pipe(function (json) {
-                    var map = Array.prototype.map;
-                    var self = this,
-                        databases = Object.getOwnPropertyNames(json.reverse),
-                        projectOptions = {},
-                        languageOptions = {};
-
-                    self.defaultProjects = json.defaultProjects;
-                    self.reverseLookup = {};
-
-                    // keep track of objects created below so we can make the reverse
-                    // lookup a unified object with minimal memory footprint.  Ultimately,
-                    // grouping by languages and projects may be useful, enwiki may
-                    // inherit color shades from the wiki project or english language, etc
-
-                    self.projectOptions = map.call(json.projects, function (data) {
-                        var option = new ProjectOption(data, json.prettyProjectNames);
-                        projectOptions[option.code] = option;
-                        return option;
-                    });
-
-                    self.languageOptions = map.call(json.languages, function (data) {
-                        var option = new LanguageOption(data);
-                        languageOptions[option.name] = option;
-                        return option;
-                    });
-
-                    databases.forEach(function (database) {
-                        var reverse = json.reverse[database];
-                        self.reverseLookup[database] = new ProjectLanguage({
-                            database: database,
-                            project: projectOptions[reverse.project],
-                            language: languageOptions[reverse.language],
-                        });
-                    });
-
-                    return self;
-                }.bind(this));
+                .pipe(this._convertJSON.bind(this));
         }
 
         return promiseLanguagesAndProjects.done(callback);
@@ -141,6 +104,45 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
             dataType: 'json',
             url: url
         });
+    };
+
+    WikimetricsApi.prototype._convertJSON = function (json) {
+        var map = Array.prototype.map;
+        var self = this,
+            databases = Object.getOwnPropertyNames(json.reverse),
+            projectOptions = {},
+            languageOptions = {};
+
+        self.defaultProjects = json.defaultProjects;
+        self.reverseLookup = {};
+
+        // keep track of objects created below so we can make the reverse
+        // lookup a unified object with minimal memory footprint.  Ultimately,
+        // grouping by languages and projects may be useful, enwiki may
+        // inherit color shades from the wiki project or english language, etc
+
+        self.projectOptions = map.call(json.projects, function (data) {
+            var option = new ProjectOption(data, json.prettyProjectNames);
+            projectOptions[option.code] = option;
+            return option;
+        });
+
+        self.languageOptions = map.call(json.languages, function (data) {
+            var option = new LanguageOption(data);
+            languageOptions[option.name] = option;
+            return option;
+        });
+
+        databases.forEach(function (database) {
+            var reverse = json.reverse[database];
+            self.reverseLookup[database] = new ProjectLanguage({
+                database: database,
+                project: projectOptions[reverse.project],
+                language: languageOptions[reverse.language],
+            });
+        });
+
+        return self;
     };
 
     WikimetricsApi.prototype.getDataConverter = function () {

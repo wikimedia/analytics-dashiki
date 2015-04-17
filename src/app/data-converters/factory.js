@@ -5,8 +5,8 @@
 define(function (require) {
     'use strict';
 
-    var separatedValues = require('app/data-converters/separated-values'),
-        wikimetricsTimeseries = require('app/data-converters/wikimetrics-timeseries');
+    var separatedValues = require('converters.separated-values'),
+        wikimetricsTimeseries = require('converters.wikimetrics-timeseries');
 
     function ConverterFactory() {
         return;
@@ -35,6 +35,7 @@ define(function (require) {
             return wikimetricsTimeseries();
 
         }
-    }
+    };
+
     return new ConverterFactory();
 });

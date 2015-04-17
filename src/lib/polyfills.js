@@ -1,8 +1,10 @@
 // Really basic polyfill, consider using modernizr
 define(function() {
+    'use strict';
+
     if (!Array.prototype.find) {
         Array.prototype.find = function(predicate) {
-            if (this == null) {
+            if (this === null) {
                 throw new TypeError('Array.prototype.find called on null or undefined');
             }
             if (typeof predicate !== 'function') {

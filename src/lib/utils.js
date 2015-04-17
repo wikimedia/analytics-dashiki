@@ -5,9 +5,10 @@ define(function (require) {
     'use strict';
 
     var moment = require('moment');
+
     require('twix');
 
-    return {
+    var utils = {
         sortByName: function (a, b) {
             // NOTE: this purposefully sorts uppercase before lowercase
             return a.name === b.name ?
@@ -45,5 +46,19 @@ define(function (require) {
         timespan: function (a, b) {
             return moment(a).twix(b, {allDay: true}).format();
         },
+
+        formatDate: function (d) {
+            return d ? d.format('YYYY-MM-DD') : '(invalid)';
+        },
+
+        /**
+         * Returns an array with "n" undefined values
+         */
+        filler: function (n) {
+            var empty = [];
+            empty.length = n;
+            return Array.apply(null, empty);
+        },
     };
+    return utils;
 });

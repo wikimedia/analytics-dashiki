@@ -1,8 +1,11 @@
 /**
  * Static configuration object
  */
-define([], function () {
+define(function (require) {
     'use strict';
+
+    // load any config files written by the build system
+    var buildConfig = require('./config-from-build');
 
     return {
 
@@ -11,7 +14,8 @@ define([], function () {
             endpoint: 'meta.wikimedia.org',
             // next two fields are mediawiki page names
             categorizedMetricsPage: 'Dashiki:CategorizedMetrics',
-            defaultDashboardPage: 'Dashiki:DefaultDashboard'
+            dashboardPage: buildConfig ? buildConfig.dashboardArticle : null,
+            defaultDashboardPageRoot: 'Dashiki:DefaultDashboard/',
         },
 
         // format are specified per API for now, in the future they can be specified per metric if needed

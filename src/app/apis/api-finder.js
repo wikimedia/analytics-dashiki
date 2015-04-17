@@ -9,9 +9,9 @@
 define(function (require) {
     'use strict';
 
-    var wikimetricsApi = require('wikimetricsApi'),
-        pageviewApi = require('pageviewApi'),
-        datasetsApi = require('datasetsApi');
+    var wikimetricsApi = require('apis.wikimetrics'),
+        pageviewApi = require('apis.pageview'),
+        datasetsApi = require('apis.datasets');
 
     /* matches metric.api to an api instance */
     return function (metric) {

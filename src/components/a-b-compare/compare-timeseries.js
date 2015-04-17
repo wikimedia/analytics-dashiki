@@ -1,8 +1,7 @@
 define(function (require) {
     'use strict';
 
-    var ko = require('knockout'),
-        d3 = require('d3'),
+    var d3 = require('d3'),
         templateMarkup = require('text!./compare-timeseries.html');
 
     function CompareTimeseries (params) {

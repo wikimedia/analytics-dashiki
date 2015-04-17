@@ -1,14 +1,30 @@
-define([
-    'config', 'wikimetricsApi', 'pageviewApi', 'configApi', 'annotationsApi', 'mediawiki-storage', 'jquery'
-], function (siteConfig, wikimetrics, pageviewApi, configApi, annotationsApi,  mediawikiStorage, $) {
+define(function (require) {
+
+    var wikimetrics = require('apis.wikimetrics'),
+        pageviewApi = require('apis.pageview'),
+        configApi = require('apis.config'),
+        annotationsApi = require('apis.annotations'),
+        datasetsApi = require('apis.datasets'),
+        mediawikiStorage = require('mediawiki-storage'),
+        $ = require('jquery');
 
     describe('Wikimetrics API', function () {
+
+        beforeEach(function () {
+            sinon.stub($, 'ajax');
+        });
+
+        afterEach(function () {
+            $.ajax.restore();
+        });
 
         it('should fetch the correct URL', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
-            sinon.stub($, 'ajax').returns(deferred);
-            sinon.stub(wikimetrics, 'getDataConverter').returns(function () {});
+            $.ajax.returns(deferred);
+
+            sinon.stub(wikimetrics, 'getDataConverter')
+                .returns(function () {return;});
 
             wikimetrics.root = 'something';
             var expected = 'https://something/static/public/datafiles/metric/project.json';
@@ -19,49 +35,50 @@ define([
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
 
             wikimetrics.getDataConverter.restore();
-            $.ajax.restore();
         });
 
         it('should return empty list if getting data fails', function (done) {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));
-            sinon.stub($, 'ajax').returns(deferred);
+            $.ajax.returns(deferred);
 
             var metric = {name: 'metric'};
             wikimetrics.getData(metric, 'project').done(function (data) {
                 expect(data).toEqual([]);
-                $.ajax.restore();
                 done();
             });
         });
 
         it('should not retrieve option file if project choices are already set ', function () {
-            var getJSONStub = sinon.stub(wikimetrics, '_getJSON')
-                .returns(new $.Deferred());
+            sinon.stub(wikimetrics, '_getJSON').returns(new $.Deferred());
 
             wikimetrics.root = 'something';
             var callback = sinon.stub();
             wikimetrics.getProjectAndLanguageChoices(callback);
-            expect(getJSONStub.called).toBe(true);
+            expect(wikimetrics._getJSON.called).toBe(true);
 
             wikimetrics.projectOptions = ['some option'];
             wikimetrics.languageOptions = ['some other option'];
             wikimetrics.getProjectAndLanguageChoices(callback);
             // ajax call was not done the second time
-            expect(getJSONStub.calledOnce).toBe(true);
+            expect(wikimetrics._getJSON.calledOnce).toBe(true);
 
-            getJSONStub.restore();
+            wikimetrics._getJSON.restore();
         });
 
     });
 
     describe('Pageview API', function () {
 
+        afterEach(function () {
+            $.ajax.restore();
+        });
+
         it('should fetch the correct URL', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             sinon.stub($, 'ajax').returns(deferred);
-            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {});
+            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {return;});
 
             pageviewApi.root = 'something';
             var expected = 'https://something/static/public/datafiles/DailyPageviews/project.csv';
@@ -73,7 +90,6 @@ define([
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
 
             pageviewApi.getDataConverter.restore();
-            $.ajax.restore();
         });
 
         it('should return empty list if getting data fails', function (done) {
@@ -87,7 +103,6 @@ define([
             };
             pageviewApi.getData(metric, 'project').done(function (data) {
                 expect(data).toEqual([]);
-                $.ajax.restore();
                 done();
             });
         });
@@ -95,57 +110,49 @@ define([
     });
 
     describe('Config API', function () {
+        var saveConfig = configApi.config;
 
-        it('should get metrics configuration', function (done) {
-            var config = siteConfig.configApi;
-            var result = {'metrics': 'configuration'};
-
-            var deferred = new $.Deferred();
-            deferred.resolve(result);
-
-            sinon.stub(mediawikiStorage, 'get', function (options) {
-                expect(options.host).toBe(config.endpoint);
-                expect(options.pageName).toBe(config.categorizedMetricsPage);
-                return deferred.promise();
-            });
-
-            configApi.getCategorizedMetrics(function (returned) {
-                expect(returned).toBe(result);
-                mediawikiStorage.get.restore();
-                done();
-            });
+        beforeEach(function () {
+            configApi.config = {
+                endpoint: 'test',
+                dashboardPage: 'dash',
+                defaultDashboardPageRoot: 'defaultDash/',
+                categorizedMetricsPage: 'metrics',
+            };
+            sinon.stub(mediawikiStorage, 'get').returns(new $.Deferred());
         });
 
-        it('should get dashboard configuration', function (done) {
-            var config = siteConfig.configApi;
-            var result = {'dashboard': 'configuration'};
+        afterEach(function () {
+            configApi.config = saveConfig;
+            mediawikiStorage.get.restore();
+        });
 
-            var deferred = new $.Deferred();
-            deferred.resolve(result);
+        it('should get metrics configuration', function () {
+            configApi.getCategorizedMetrics();
+            expect(mediawikiStorage.get.calledWith({
+                host: configApi.config.endpoint,
+                pageName: configApi.config.categorizedMetricsPage,
+            })).toBeTruthy();
+        });
 
-            sinon.stub(mediawikiStorage, 'get', function (options) {
-                expect(options.host).toBe(config.endpoint);
-                expect(options.pageName).toBe(config.defaultDashboardPage);
-                return deferred.promise();
-            });
-
-            configApi.getDefaultDashboard(function (returned) {
-                expect(returned).toBe(result);
-                mediawikiStorage.get.restore();
-                done();
-            });
+        it('should get dashboard configuration', function () {
+            configApi.getDefaultDashboard();
         });
 
     });
 
     describe('Annotations API', function () {
 
+        afterEach(function () {
+            mediawikiStorage.get.restore();
+        });
+
         it('should get metric annotations', function (done) {
             var mediawikiHost = 'some.mediawiki.host',
                 annotationsPage = 'SomeMediawikiPageName',
                 startDate = '2014-01-01 00:00:00',
                 endDate = '2014-01-01 00:00:00',
-                note = 'Some text.';
+                note = 'Some text.',
                 annotations = [{start: startDate, end: endDate, note: note}];
 
             sinon.stub(mediawikiStorage, 'get', function (options) {
@@ -170,7 +177,6 @@ define([
                 expect(returned[0].start).toBe(startDate);
                 expect(returned[0].end).toBe(endDate);
                 expect(returned[0].note).toBe(note);
-                mediawikiStorage.get.restore();
                 done();
             });
         });
@@ -193,19 +199,18 @@ define([
             };
             annotationsApi.get(
                 metric,
-                function (result) {  // success callback
+                function () {  // success callback
                     expect(true).toBe(false);  // should not get here
                 },
                 function (error) {  // error callback
                     expect(error instanceof TypeError).toBe(true);
-                    mediawikiStorage.get.restore();
                     done();
                 }
             );
         });
 
         it('should return empty list when metric has no annotations info', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function (options) {
+            sinon.stub(mediawikiStorage, 'get', function () {
                 expect(true).toBe(false);  // should not get here
             });
 
@@ -213,13 +218,12 @@ define([
             annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(0);
-                mediawikiStorage.get.restore();
                 done();
             });
         });
 
         it('should filter out annotations with invalid dates', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function (options) {
+            sinon.stub(mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
                 deferred.resolve([
                     {start: 'Bad date', note: 'Some note.'},
@@ -237,13 +241,12 @@ define([
             annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(1);
-                mediawikiStorage.get.restore();
                 done();
             });
         });
 
         it('should filter out annotations with no note', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function (options) {
+            sinon.stub(mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
                 deferred.resolve([
                     {start: '2014-01-01 00:00:00'},
@@ -261,13 +264,12 @@ define([
             annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(1);
-                mediawikiStorage.get.restore();
                 done();
             });
         });
 
         it('should filter out annotations with bad time interval', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function (options) {
+            sinon.stub(mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
                 deferred.resolve([
                     // end date before start date
@@ -286,9 +288,42 @@ define([
             annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(1);
-                mediawikiStorage.get.restore();
                 done();
             });
         });
+    });
+
+    describe('Datasets API', function () {
+
+        afterEach(function () {
+            $.ajax.restore();
+        });
+
+        it('should fetch the correct URL', function () {
+            var deferred = new $.Deferred();
+            deferred.resolveWith(null, ['not important']);
+            sinon.stub($, 'ajax').returns(deferred);
+
+            datasetsApi.root = 'something';
+            var expected = 'something/metric/submetric/project.tsv';
+            datasetsApi.getData('metric', 'submetric', 'project');
+            expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
+        });
+
+        it('should return empty list if getting data fails', function (done) {
+            var deferred = new $.Deferred();
+            deferred.reject(new Error('SomeError'));
+            sinon.stub($, 'ajax').returns(deferred);
+
+            var metric = {
+                name: 'metric',
+                breakdown: {}
+            };
+            datasetsApi.getData(metric, 'project').done(function (data) {
+                expect(data).toEqual([]);
+                done();
+            });
+        });
+
     });
 });

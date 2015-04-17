@@ -10,5 +10,7 @@ bower_modules/
 dashiki.sublime-project
 dashiki.sublime-workspace
 
-# don't ignore anything in the distribution directory so we can push releases
-!dist/*
+# ignore the distribution directory because we are now
+# able to build different configurations
+dist/
+fonts/

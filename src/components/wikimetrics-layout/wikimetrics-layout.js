@@ -1,5 +1,11 @@
-define(['knockout', 'text!./wikimetrics-layout.html', 'wikimetricsApi', 'configApi', 'stateManager'], function (ko, templateMarkup, wikimetricsApi, configApi, stateManagerFactory) {
+define(function (require) {
     'use strict';
+
+    var ko = require('knockout'),
+        wikimetricsApi = require('apis.wikimetrics'),
+        configApi = require('apis.config'),
+        stateManagerFactory = require('stateManager'),
+        templateMarkup = require('text!./wikimetrics-layout.html');
 
     function WikimetricsLayout() {
         var self = this;

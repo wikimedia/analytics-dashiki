@@ -2,9 +2,15 @@
 All requires below live on global scope.
 There is no need to specify them as such
 **/
-define(['knockout', 'jquery', 'ajaxWrapper', 'logger', './global-bindings'], function(ko) {
-
+define(function(require) {
     'use strict';
+
+    var ko = require('knockout');
+
+    require('jquery');
+    require('ajaxWrapper');
+    require('logger');
+    require('app/ko-extensions/global-bindings');
 
     // register components here like
     ko.components.register('wikimetrics-layout', { require: 'components/wikimetrics-layout/wikimetrics-layout' });
@@ -19,7 +25,7 @@ define(['knockout', 'jquery', 'ajaxWrapper', 'logger', './global-bindings'], fun
 
     // *********** BEGIN Funnel Layout Components ********** //
     // separate layout, TODO: make multiple layouts coexist
-    ko.components.register('funnel-layout', { require: 'components/funnel-layout/funnel-layout' });
+    ko.components.register('compare-layout', { require: 'components/compare-layout/compare-layout' });
     ko.components.register('dropdown', { require: 'components/dropdown/dropdown' });
     ko.components.register('button-group', { require: 'components/button-group/button-group' });
     ko.components.register('sunburst', { require: 'components/visualizers/sunburst/sunburst' });

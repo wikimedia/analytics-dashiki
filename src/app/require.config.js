@@ -3,13 +3,12 @@
 'use strict';
 // require.js looks for the following global when initializing
 var require = {
-    baseUrl: '.',
+    baseUrl: '/src',
     paths: {
         'jquery'                : 'bower_modules/jquery/dist/jquery',
         // NOTE: the minified ko build is broken in 3.2.0
         // (Issue reported https://github.com/knockout/knockout/issues/1528)
         'knockout'              : 'bower_modules/knockout/dist/knockout.debug',
-        'knockout-projections'  : 'bower_modules/knockout-projections/dist/knockout-projections',
         'text'                  : 'bower_modules/requirejs-text/text',
         'd3'                    : 'bower_modules/d3/d3',
         'vega'                  : 'bower_modules/vega/vega',
@@ -29,17 +28,37 @@ var require = {
         'uri'                   : 'bower_modules/URIjs/src',
         'config'                : 'app/config',
         'logger'                : 'lib/logger',
-        'wikimetricsApi'        : 'app/apis/wikimetrics',
-        'annotationsApi'        : 'app/apis/annotations-api',
-        'pageviewApi'           : 'app/apis/legacy-pageview-api',
-        'datasetsApi'           : 'app/apis/datasets-api',
-        'configApi'             : 'app/apis/config-api',
+
+        'api-finder'            : 'app/apis/api-finder',
         'dataConverterFactory'  : 'app/data-converters/factory',
         'typeahead'             : 'bower_modules/typeahead.js/dist/typeahead.bundle',
         'ajaxWrapper'           : 'lib/ajax-wrapper',
         'utils'                 : 'lib/utils',
         'window'                : 'lib/window',
-        'stateManager'          : 'lib/state-manager'
+        'stateManager'          : 'lib/state-manager',
+
+        // *** viewmodels
+        'viewmodels.copy-params'    : 'app/ko-extensions/common-viewmodels/copy-params',
+        'viewmodels.single-select'  : 'app/ko-extensions/common-viewmodels/single-select',
+
+        // *** custom observables
+        'observables.async'         : 'app/ko-extensions/async-observables',
+
+        // *** apis
+        'apis.wikimetrics'          : 'app/apis/wikimetrics',
+        'apis.annotations'          : 'app/apis/annotations-api',
+        'apis.pageview'             : 'app/apis/legacy-pageview-api',
+        'apis.datasets'             : 'app/apis/datasets-api',
+        'apis.config'               : 'app/apis/config-api',
+
+        // *** converters
+        'converters.separated-values'       : 'app/data-converters/separated-values',
+        'converters.simple-separated-values': 'app/data-converters/simple-separated-values',
+        'converters.wikimetrics-timeseries' : 'app/data-converters/wikimetrics-timeseries',
+        'converters.funnel-data'            : 'app/data-converters/funnel-data',
+
+        // *** lib
+        'lib.polyfills'             : 'lib/polyfills',
     },
     shim: {
         'ajaxWrapper': {
@@ -61,5 +80,8 @@ var require = {
           deps: ['jquery']
         },
     }
-
 };
+
+if (typeof window === 'undefined') {
+    module.exports = require;
+}

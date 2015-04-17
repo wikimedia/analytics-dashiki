@@ -23,7 +23,7 @@
 define(function(require) {
 
     var templateMarkup = require('text!./vega-timeseries.html'),
-        CopyParams = require('app/common-viewmodels/copy-params');
+        CopyParams = require('viewmodels.copy-params');
 
     require('./bindings');
 

@@ -8,7 +8,7 @@ define(function () {
         }.bind(this);
 
         // let views use a single formatting function
-        this.f = params.selectOne.format || function (d) { return d; };
+        this.format = this.selectOne.format || function (d) { return d; };
     }
 
     return SingleSelect;

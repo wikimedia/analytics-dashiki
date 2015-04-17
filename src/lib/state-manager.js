@@ -12,15 +12,19 @@
  * State urls are of the form:
  * http: //dashiki.com/something#projects=enwiki,dewiki/metrics=newlyregister,rollingactive
  **/
-define(['knockout', 'configApi', 'uri/URI', 'window'], function (ko, configApi, URI, window) {
+define(function (require) {
     'use strict';
+    var ko = require('knockout'),
+        configApi = require('apis.config'),
+        URI = require('uri/URI'),
+        window = require('window');
 
     /**
      * NullObject for the state
      * will represent empty state eventually
      **/
     function EmptyState() {
-
+        return;
     }
 
 
@@ -96,9 +100,9 @@ define(['knockout', 'configApi', 'uri/URI', 'window'], function (ko, configApi, 
         defaults.forEach(function (item) {
             var choice = item.split("=");
             //some translation needed from 'projects' to 'defaultProjects'
-            if (choice[0] == 'projects' && choice.length > 1) {
+            if (choice[0] === 'projects' && choice.length > 1) {
                 projects = choice[1].split(',');
-            } else if (choice[0] == 'metrics' && choice.length > 1) {
+            } else if (choice[0] === 'metrics' && choice.length > 1) {
                 metrics = choice[1].split(',');
             }
         });

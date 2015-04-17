@@ -1,6 +1,6 @@
 define(function(require) {
 
-    var CopyParams = require('app/common-viewmodels/copy-params'),
+    var CopyParams = require('viewmodels.copy-params'),
         templateMarkup = require('text!./dygraphs-timeseries.html');
 
     require('./bindings');

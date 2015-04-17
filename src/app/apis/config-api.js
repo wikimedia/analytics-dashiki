@@ -5,16 +5,15 @@
  * Configuration files now reside in mediawiki.
  * To get them, this module uses mediawiki-storage library.
  */
-define(['config', 'mediawiki-storage'], function (siteConfig, mediawikiStorage) {
+define(function (require) {
     'use strict';
+
+    var siteConfig = require('config'),
+        mediawikiStorage = require('mediawiki-storage');
 
     function ConfigApi(config) {
         this.config = config.configApi;
     }
-
-    // only fetch certain things once per app life and keep their promise
-    var promiseDefaults,
-        promiseMetrics;
 
     /**
      * Retrieves the default selections for metrics and projects
@@ -26,15 +25,19 @@ define(['config', 'mediawiki-storage'], function (siteConfig, mediawikiStorage) 
      * Returns
      *   a jquery promise to the default project and metric config
      **/
-    ConfigApi.prototype.getDefaultDashboard = function (callback) {
+    ConfigApi.prototype.getDefaultDashboard = function (callback, layout) {
 
-        if (!promiseDefaults) {
-            promiseDefaults = mediawikiStorage.get({
-                host: this.config.endpoint,
-                pageName: this.config.defaultDashboardPage
-            });
-        }
-        return promiseDefaults.done(callback);
+        // The dashboard page can either be injected by the build or must be a default
+        var dashboardPage =
+            this.config.dashboardPage ||
+            this.config.defaultDashboardPageRoot + layout;
+
+        // NOTE: don't cache these promises, it makes tests much harder
+        // Instead, rely on cache headers being set up properly
+        return mediawikiStorage.get({
+            host: this.config.endpoint,
+            pageName: dashboardPage,
+        }).done(callback);
     };
 
     /**
@@ -51,13 +54,12 @@ define(['config', 'mediawiki-storage'], function (siteConfig, mediawikiStorage) 
      **/
     ConfigApi.prototype.getCategorizedMetrics = function (callback) {
 
-        if (!promiseMetrics) {
-            promiseMetrics = mediawikiStorage.get({
-                host: this.config.endpoint,
-                pageName: this.config.categorizedMetricsPage
-            });
-        }
-        return promiseMetrics.done(callback);
+        // NOTE: don't cache these promises, it makes tests much harder
+        // Instead, rely on cache headers being set up properly
+        mediawikiStorage.get({
+            host: this.config.endpoint,
+            pageName: this.config.categorizedMetricsPage
+        }).done(callback);
     };
 
     return new ConfigApi(siteConfig);
