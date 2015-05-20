@@ -2,8 +2,15 @@
  * This module returns an instance of an object that knows how to get
  * reports run by WikimetricsBot on wikimetrics.  Methods commented inline
  */
-define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'], function (siteConfig, dataConverterFactory, uri) {
+define(function (require) {
     'use strict';
+
+    var siteConfig = require('config'),
+        dataConverterFactory = require('dataConverterFactory'),
+        uri = require('uri/URI');
+
+    require('uri/URITemplate');
+    require('logger');
 
     function WikimetricsApi(config) {
         this.root = config.wikimetricsApi.endpoint;
@@ -12,12 +19,6 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
         // in the context of the metric
         this.dataConverter = dataConverterFactory.getDataConverter(config.wikimetricsApi.format);
     }
-
-    // only fetch certain things once per app life and keep their promise
-    var promiseDefaults,
-        promiseMetrics,
-        promiseLanguagesAndProjects;
-
 
     function ProjectOption(data, prettyNames) {
         // no need for these to be observables as they are fixed values
@@ -60,15 +61,14 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
 
         this._getJSON(address)
             .done(function (data) {
-                var converter = this.getDataConverter(),
-                    submetrics = {};
+                var submetrics = {};
 
                 submetrics[metric.name] = metric.submetric || metric.defaultSubmetric;
                 var opt = {
                     defaultSubmetrics: submetrics
                 };
 
-                deferred.resolve(converter(opt, data));
+                deferred.resolve(this.dataConverter(opt, data));
             }.bind(this))
             .fail(function (error) {
                 // resolve as done with empty results and log the error
@@ -86,13 +86,10 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
      **/
     WikimetricsApi.prototype.getProjectAndLanguageChoices = function (callback) {
 
-        if (!promiseLanguagesAndProjects) {
-            var url = this.config.wikimetricsApi.urlProjectLanguageChoices;
-            promiseLanguagesAndProjects = this._getJSON(url)
-                .pipe(this._convertJSON.bind(this));
-        }
-
-        return promiseLanguagesAndProjects.done(callback);
+        var url = this.config.wikimetricsApi.urlProjectLanguageChoices;
+        return this._getJSON(url)
+            .pipe(this._convertSiteMap.bind(this))
+            .done(callback);
     };
 
     /**
@@ -106,7 +103,7 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
         });
     };
 
-    WikimetricsApi.prototype._convertJSON = function (json) {
+    WikimetricsApi.prototype._convertSiteMap = function (json) {
         var map = Array.prototype.map;
         var self = this,
             databases = Object.getOwnPropertyNames(json.reverse),
@@ -143,10 +140,6 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
         });
 
         return self;
-    };
-
-    WikimetricsApi.prototype.getDataConverter = function () {
-        return this.dataConverter;
     };
 
     return new WikimetricsApi(siteConfig);

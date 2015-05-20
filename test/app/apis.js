@@ -9,22 +9,23 @@ define(function (require) {
         $ = require('jquery');
 
     describe('Wikimetrics API', function () {
+        var converter;
 
         beforeEach(function () {
             sinon.stub($, 'ajax');
+            converter = wikimetrics.dataConverter;
+            wikimetrics.dataConverter = function () {return;};
         });
 
         afterEach(function () {
             $.ajax.restore();
+            wikimetrics.dataConverter = converter;
         });
 
         it('should fetch the correct URL', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             $.ajax.returns(deferred);
-
-            sinon.stub(wikimetrics, 'getDataConverter')
-                .returns(function () {return;});
 
             wikimetrics.root = 'something';
             var expected = 'https://something/static/public/datafiles/metric/project.json';
@@ -33,8 +34,6 @@ define(function (require) {
             };
             wikimetrics.getData(metric, 'project');
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
-
-            wikimetrics.getDataConverter.restore();
         });
 
         it('should return empty list if getting data fails', function (done) {
@@ -47,23 +46,6 @@ define(function (require) {
                 expect(data).toEqual([]);
                 done();
             });
-        });
-
-        it('should not retrieve option file if project choices are already set ', function () {
-            sinon.stub(wikimetrics, '_getJSON').returns(new $.Deferred());
-
-            wikimetrics.root = 'something';
-            var callback = sinon.stub();
-            wikimetrics.getProjectAndLanguageChoices(callback);
-            expect(wikimetrics._getJSON.called).toBe(true);
-
-            wikimetrics.projectOptions = ['some option'];
-            wikimetrics.languageOptions = ['some other option'];
-            wikimetrics.getProjectAndLanguageChoices(callback);
-            // ajax call was not done the second time
-            expect(wikimetrics._getJSON.calledOnce).toBe(true);
-
-            wikimetrics._getJSON.restore();
         });
 
     });
