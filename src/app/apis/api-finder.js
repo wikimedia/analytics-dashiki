@@ -17,7 +17,7 @@ define(function (require) {
     return function (metric) {
         var mapping = {
             wikimetrics: wikimetricsApi,
-            pageview: pageviewApi,
+            pageviewApi: pageviewApi,
             datasets: datasetsApi,
         };
 
