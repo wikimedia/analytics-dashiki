@@ -50,8 +50,11 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
                 var converter = this.getDataConverter(),
                     opt = {
                         label: project,
-                        showBreakdown: showBreakdown,
-                        breakdownColumns: metric.breakdown.columns
+                        allColumns: showBreakdown,
+                        varyColors: false,
+                        varyPatterns: true,
+                        globalPattern: false,
+                        startDate: '2014-01-01'
                     };
 
                 deferred.resolve(converter(opt, data));

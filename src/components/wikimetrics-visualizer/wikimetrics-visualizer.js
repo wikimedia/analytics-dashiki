@@ -14,6 +14,8 @@ define(function (require) {
     'use strict';
 
     var ko = require('knockout'),
+        _ = require('lodash'),
+        TimeseriesData = require('converters.timeseries'),
         templateMarkup = require('text!./wikimetrics-visualizer.html'),
         apiFinder = require('app/apis/api-finder');
 
@@ -51,11 +53,11 @@ define(function (require) {
                     return api.getData(metric, project.database, showBreakdown);
                 });
                 $.when.apply(this, promises).then(function () {
-                    visualizer.mergedData([].concat.apply([], arguments));
+                    visualizer.mergedData(TimeseriesData.mergeAll(_.toArray(arguments)));
                     visualizer.applyColors(projects);
                 });
             } else {
-                visualizer.mergedData([]);
+                visualizer.mergedData(new TimeseriesData([]));
             }
 
         }, this);

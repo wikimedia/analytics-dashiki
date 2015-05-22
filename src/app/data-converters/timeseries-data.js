@@ -59,6 +59,10 @@ define(function (require) {
      * be merged together efficiently.  It not only merges headers and labels,
      * but also zips up rowsByDate by date, filling date gaps in source or destination
      * with null values
+     *
+     * Adds `this` to the input array and calls mergeAll
+     *
+     * Parameters
      */
     TimeseriesData.prototype.merge = function (from) {
         if (_.isUndefined(from)) {
@@ -67,22 +71,32 @@ define(function (require) {
         if (!_.isArray(from)) {
             from = [from];
         }
+        from.splice(0, 0, this);
 
-        var merged = {
-            header: _.clone(this.header),
-            rowsByDate: _.cloneDeep(this.rowsByDate),
-            colorLabels: _.clone(this.colorLabels),
-            patternLabels: _.clone(this.patternLabels)
-        };
+        return TimeseriesData.mergeAll(from);
+    };
 
-        _.reduce(from, function (dest, src) {
-            console.log('processing: ', src);
+    /**
+     * Merges an array of TimeseriesData objects
+     */
+    TimeseriesData.mergeAll = function (arrayOfTimeseries) {
+
+        var rest = arrayOfTimeseries.splice(1),
+            first = arrayOfTimeseries[0],
+
+            merged = {
+                header: _.clone(first.header),
+                rowsByDate: _.cloneDeep(first.rowsByDate),
+                colorLabels: _.clone(first.colorLabels),
+                patternLabels: _.clone(first.patternLabels)
+            };
+
+        _.reduce(rest, function (dest, src) {
             _.map(src.rowsByDate, function (value, key) {
                 if (!_.has(dest.rowsByDate, key)) {
                     // fill arrays that are nonexistent up to this point
                     dest.rowsByDate[key] = _.fill(Array(dest.header.length), null);
                 }
-                console.log(dest.rowsByDate);
                 dest.rowsByDate[key] = dest.rowsByDate[key].concat(value);
             });
 
@@ -113,7 +127,14 @@ define(function (require) {
      */
     TimeseriesData.prototype.rowData = function () {
         return _(this.rowsByDate).map(function (value, key) {
-            return [new Date(key).getTime()].concat(value);
+            var date = _.attempt(function () {
+                return new Date(key).getTime();
+            });
+            // don't output invalid dates
+            return _.isError(date) ? null : [date].concat(value);
+
+        }).filter(function (row) {
+            return !isNaN(row[0]);
         }).sortBy(function (row) {
             return row[0];
         }).value();

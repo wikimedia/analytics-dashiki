@@ -1,4 +1,9 @@
-define(['knockout', 'vega'], function (ko, vega) {
+define(function (require) {
+    'use strict';
+
+    var ko = require('knockout'),
+        vega = require('vega'),
+        _ = require('lodash');
 
     /**
      * Utility Function.
@@ -28,6 +33,22 @@ define(['knockout', 'vega'], function (ko, vega) {
         return to;
     }
 
+    function transformToVega (timeseriesData) {
+        return _.transform(timeseriesData.rowData(), function (result, row) {
+            var points = _.map(timeseriesData.header, function (col, index) {
+                return {
+                    date: row[0],
+                    value: row[index + 1] || undefined,
+                    color: timeseriesData.colorLabels[index],
+                    label: timeseriesData.colorLabels[index],
+                    pattern: timeseriesData.patternLabels[index],
+                    main: true,
+                };
+            });
+            result.push.apply(result, points);
+        });
+    }
+
     function parseValue(valueAccessor) {
         var unwrap = ko.unwrap(valueAccessor());
 
@@ -47,6 +68,8 @@ define(['knockout', 'vega'], function (ko, vega) {
             strokeWidth: 2,
             colorScale: undefined
         });
+
+        withDefaults.data = transformToVega(withDefaults.data);
 
         // don't animate unless requested, animations cause performance problems
         if (withDefaults.data.length < 1000 && withDefaults.animate) {
@@ -122,7 +145,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                 type: 'ordinal',
                 domain: {
                     data: 'sub-metrics',
-                    field: 'data.type'
+                    field: 'data.pattern'
                 },
                 range: {
                     data: 'dashes',
@@ -183,7 +206,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                     data: 'timeseries',
                     transform: [{
                         type: 'facet',
-                        keys: ['data.label', 'data.type']
+                        keys: ['data.label', 'data.pattern']
                     }]
                 },
                 marks: [{
@@ -209,7 +232,7 @@ define(['knockout', 'vega'], function (ko, vega) {
                             },
                             strokeDash: {
                                 scale: 'dash',
-                                field: 'data.type'
+                                field: 'data.pattern'
                             }
                         }
                     }
