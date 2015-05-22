@@ -6,6 +6,7 @@ var require = {
     baseUrl: '/src',
     paths: {
         'jquery'                : 'bower_modules/jquery/dist/jquery',
+        'lodash'                : 'bower_modules/lodash/main',
         // NOTE: the minified ko build is broken in 3.2.0
         // (Issue reported https://github.com/knockout/knockout/issues/1528)
         'knockout'              : 'bower_modules/knockout/dist/knockout.debug',
@@ -56,6 +57,7 @@ var require = {
         'converters.simple-separated-values': 'app/data-converters/simple-separated-values',
         'converters.wikimetrics-timeseries' : 'app/data-converters/wikimetrics-timeseries',
         'converters.funnel-data'            : 'app/data-converters/funnel-data',
+        'converters.timeseries'             : 'app/data-converters/timeseries-data',
 
         // *** lib
         'lib.polyfills'             : 'lib/polyfills',

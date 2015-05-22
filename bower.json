@@ -18,6 +18,7 @@
     "twix": "~0.5.1",
     "rickshaw": "~1.5.1",
     "nvd3": "~1.7.1",
-    "dygraphs": "~1.1.0"
+    "dygraphs": "~1.1.0",
+    "lodash": "3.9.0-amd"
   }
 }
