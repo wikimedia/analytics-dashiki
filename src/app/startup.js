@@ -32,12 +32,13 @@ define(function(require) {
     ko.components.register('rickshaw-timeseries', { require: 'components/visualizers/rickshaw-timeseries/rickshaw-timeseries' });
     ko.components.register('nvd3-timeseries', { require: 'components/visualizers/nvd3-timeseries/nvd3-timeseries' });
     ko.components.register('dygraphs-timeseries', { require: 'components/visualizers/dygraphs-timeseries/dygraphs-timeseries' });
-    //ko.components.register('stacked-bar', { require: 'components/visualizers/stacked-bar' });
+    ko.components.register('stacked-bars', { require: 'components/visualizers/stacked-bars/stacked-bars' });
 
     // comparison components
     ko.components.register('a-b-compare', { require: 'components/a-b-compare/a-b-compare' });
     ko.components.register('compare-sunburst', { require: 'components/a-b-compare/compare-sunburst' });
     ko.components.register('compare-timeseries', { require: 'components/a-b-compare/compare-timeseries' });
+    ko.components.register('compare-stacked-bars', { require: 'components/a-b-compare/compare-stacked-bars' });
 
     // *********** END Funnel Layout Components ************ //
 

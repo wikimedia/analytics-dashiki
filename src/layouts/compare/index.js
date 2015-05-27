@@ -12,11 +12,13 @@ if (typeof window === 'undefined') {
                 'components/a-b-compare/a-b-compare',
                 'components/a-b-compare/compare-sunburst',
                 'components/a-b-compare/compare-timeseries',
+                'components/a-b-compare/compare-stacked-bars',
             ],
             bundles: {
                 // If you want parts of the site to load on demand, remove them from the 'include' list
                 // above, and group them into bundles here.
                 'sunburst': ['components/visualizers/sunburst/sunburst'],
+                'stacked-bars': ['components/visualizers/stacked-bars/stacked-bars'],
                 'dygraphs-timeseries': ['components/visualizers/dygraphs-timeseries/dygraphs-timeseries'],
             }
         }

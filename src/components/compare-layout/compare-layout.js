@@ -151,7 +151,7 @@ define(function (require) {
                             if (c.type === 'timeseries') {
                                 c.data(data1.merge(data2));
                             }
-                            else if (c.type === 'sunburst') {
+                            else if (c.type === 'sunburst' || c.type === 'stacked-bars') {
                                 c.data({
                                     showAB: showAB,
                                     a: {

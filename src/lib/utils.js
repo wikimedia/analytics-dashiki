@@ -48,7 +48,7 @@ define(function (require) {
         },
 
         formatDate: function (d) {
-            return d ? d.format('YYYY-MM-DD') : '(invalid)';
+            return d ? moment(d).format('YYYY-MM-DD') : '(invalid)';
         },
 
         /**

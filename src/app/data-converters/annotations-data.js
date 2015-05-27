@@ -20,7 +20,6 @@ define(function (require) {
     var _ = require('lodash'),
         TimeseriesData = require('converters.timeseries');
 
-
     return function () {
 
         return function (options, rawData) {
