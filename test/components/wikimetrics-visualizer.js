@@ -51,10 +51,14 @@ define(function (require) {
                 projects: selectedProjects,
             });
             deferred.resolveWith(this, [transformedResponse]);
+
+            // just stub the apply colors function to get it out of the way
+            sinon.stub(visualizer, 'applyColors');
         });
 
         afterEach(function () {
             api.getData.restore();
+            visualizer.applyColors.restore();
         });
 
         it('should not do anything without a selected metric', function () {

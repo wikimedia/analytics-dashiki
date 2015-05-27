@@ -18,7 +18,7 @@ define(function (require) {
             // think carefully about the interface to that component.
             return [
                 '',
-                '2, 5',
+                '5, 5',
                 '15, 15',
                 '30, 5',
             ][index() + 1];

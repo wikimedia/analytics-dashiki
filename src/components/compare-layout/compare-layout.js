@@ -116,7 +116,7 @@ define(function (require) {
                 this.comparisons(config.comparisons.map(function (c) {
 
                     // a container for the async output of the following logic
-                    c.data = ko.observable({showAB: {}});
+                    c.data = ko.observable();
 
                     // promise what is being selected from the api
                     var apiPromises = ko.computed(function () {
@@ -125,8 +125,8 @@ define(function (require) {
 
                         return ['a', 'b'].map(function (side) {
                             return {
-                                promise: showAB[side]
-                                    ? api.getData(c.metric, config[side], wiki)
+                                promise: showAB[side] ?
+                                      api.getData(c.metric, config[side], wiki)
                                     : emptyPromise,
                                 label: config[side]
                             };

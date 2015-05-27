@@ -1,4 +1,4 @@
-<div class="ui grid height540">
+<div class="ui grid height540" data-bind="if: data">
     <div data-bind="if: data().showAB.a" class="eight wide full height column">
         <sunburst params="height: 450, data: data().a.data, colors: colors"/>
     </div>

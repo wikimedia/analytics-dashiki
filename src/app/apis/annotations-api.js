@@ -2,13 +2,65 @@
  * This module gets metric annotations that reside in Mediawiki.
  * To get them, it uses mediawiki-storage library.
  */
-define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, moment) {
+define(function (require) {
     'use strict';
+
+    var mediawikiStorage = require('mediawiki-storage'),
+        moment = require('moment'),
+        logger = require('logger'),
+        converter = require('converters.annotations'),
+        TimeseriesData = require('converters.timeseries');
 
     function AnnotationsApi () {}
 
     /**
-     * Retrieves the annotations for the given metric.
+     * Gets the annotations in a TimeseriesData format.  Important notes:
+     *   1. range annotations (from date A to date B) come in as separate rows, prefixed
+     *      with Start: [the note] and End: [the note]
+     *   2. if duplicate dates are present, duplicateDates is set to true on the returned
+     *      object.  Callers should keep this in mind since it disallows merges
+     *
+     * Parameters
+     *   metric  : Metric object that has an annotations object:
+     *             {
+     *                 ...
+     *                 annotations: {
+     *                     host: 'mediawiki.host',
+     *                     pageName: 'PageName'
+     *                 },
+     *                 ...
+     *             }
+     *
+     * Returns
+     *   A promise to a TimeseriesData instance with the annotations
+     */
+    AnnotationsApi.prototype.getTimeseriesData = function (metric) {
+
+        var params = metric.annotations,
+            deferred = new $.Deferred();
+
+        if (!this.checkParams(params)) {
+            deferred.resolve(new TimeseriesData());
+
+        } else {
+            mediawikiStorage.get({
+                    host: params.host,
+                    pageName: params.pageName
+            }).done(function (data) {
+                deferred.resolve(converter()({}, data));
+
+            }).fail(function (error) {
+                // resolve as done with empty results and log the error
+                deferred.resolve(new TimeseriesData());
+                logger.error(error);
+            });
+        }
+        return deferred;
+    };
+
+    /**
+     * Retrieves the annotations for the given metric, as written on the wiki
+     *   but verified to be in the correct format
      *
      * Parameters
      *
@@ -51,10 +103,10 @@ define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, mo
         }
 
         var params = metric.annotations,
-            deferred = $.Deferred(),
-            that = this;
+            that = this,
+            deferred = new $.Deferred();
 
-        if (!this._checkParams(params)) {
+        if (!this.checkParams(params)) {
             // accept metrics without annotation params
             // and just return an empty array
             deferred.resolve([]);
@@ -66,7 +118,7 @@ define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, mo
             })
             .fail(deferred.reject)
             .done(function (data) {
-                that._checkAnnotations(data, deferred, params);
+                that.checkAnnotations(data, deferred, params);
             });
         }
 
@@ -75,7 +127,7 @@ define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, mo
         return deferred.promise();
     };
 
-    AnnotationsApi.prototype._checkParams = function (params) {
+    AnnotationsApi.prototype.checkParams = function (params) {
         return (
             typeof params === 'object' &&
             typeof params.host === 'string' &&
@@ -83,7 +135,7 @@ define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, mo
         );
     };
 
-    AnnotationsApi.prototype._checkDate = function (date) {
+    AnnotationsApi.prototype.checkDate = function (date) {
         return (
             date === void 0 ||
             typeof date === 'string' &&
@@ -91,8 +143,8 @@ define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, mo
         );
     };
 
-    AnnotationsApi.prototype._checkInterval = function (start, end) {
-        // assumes both dates have passed _checkDate
+    AnnotationsApi.prototype.checkInterval = function (start, end) {
+        // assumes both dates have passed checkDate
         return (
             start === void 0 ||
             end === void 0 ||
@@ -100,7 +152,7 @@ define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, mo
         );
     };
 
-    AnnotationsApi.prototype._checkAnnotations = function (data, deferred, params) {
+    AnnotationsApi.prototype.checkAnnotations = function (data, deferred, params) {
         if (!(data instanceof Array)) {
             var message = (
                 'Mediawiki page with host "' + params.host +
@@ -117,9 +169,9 @@ define(['mediawiki-storage', 'moment', 'logger'], function (mediawikiStorage, mo
             var annotations = data.filter(function (annotation) {
                 return (
                     typeof annotation === 'object' &&
-                    that._checkDate(annotation.start) &&
-                    that._checkDate(annotation.end) &&
-                    that._checkInterval(annotation.start, annotation.end) &&
+                    that.checkDate(annotation.start) &&
+                    that.checkDate(annotation.end) &&
+                    that.checkInterval(annotation.start, annotation.end) &&
                     typeof annotation.note === 'string'
                 );
             });

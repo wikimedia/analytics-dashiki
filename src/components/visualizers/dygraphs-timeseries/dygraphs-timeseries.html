@@ -1,7 +1,7 @@
-<div data-bind="
+<div class="parent-of-resizable" data-bind="
     if: data && data.header,
-    style: {height: height + 'px'},
     dygraphs: {
+        height: $data.height,
         data: data,
         annotations: $data.annotations,
         colors: colors,

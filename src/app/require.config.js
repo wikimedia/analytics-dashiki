@@ -58,6 +58,7 @@ var require = {
         'converters.wikimetrics-timeseries' : 'app/data-converters/wikimetrics-timeseries',
         'converters.funnel-data'            : 'app/data-converters/funnel-data',
         'converters.timeseries'             : 'app/data-converters/timeseries-data',
+        'converters.annotations'            : 'app/data-converters/annotations-data',
 
         // *** lib
         'lib.polyfills'             : 'lib/polyfills',

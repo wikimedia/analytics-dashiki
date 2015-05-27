@@ -8,15 +8,21 @@ define(function(require) {
     require('dygraphs');
 
     ko.bindingHandlers.dygraphs = {
+        init: function (element, valueAccessor) {
+            var val = ko.unwrap(valueAccessor());
+
+            if (val.height) {
+                $(element).height(val.height);
+            }
+
+            $(element).append('<div class="resizable container graph"></div>');
+        },
         update: function (element, valueAccessor) {
             var val = ko.unwrap(valueAccessor()),
                 data = ko.unwrap(val.data),
                 annotations = ko.unwrap(val.annotations),
-                colors = val.colors;
-
-            var graph = $(element).append(
-                $('<div/>').addClass('resizable').addClass('container')
-            ).find('div.resizable')[0];
+                colors = val.colors,
+                graph = $(element).find('div.graph')[0];
 
             if (data) {
                 var rows = data.rowData({convertToDate: true});
@@ -25,7 +31,7 @@ define(function(require) {
                             if (type === 'Date') {
                                 return moment(d).format('YYYY-MM-DD');
                             }
-                            return d.toFixed(3);
+                            return d.toFixed ? d.toFixed(3) : d;
                         },
                         labels: ['Date'],
                         labelsDivWidth: 350,
@@ -45,15 +51,20 @@ define(function(require) {
                         gridLinePattern: [10, 5],
                         series: {},
                         showRoller: true,
+                        animatedZooms: true,
                     };
 
                 var patterns = _(data.patternLabels)
                                     .uniq()
-                                    .zipObject([[], [5, 5], [15, 15], [30, 5]])
+                                    .zipObject([null, [5, 5], [15, 15], [30, 5]])
                                     .value();
 
                 data.header.forEach(function (column, i) {
-                    var label = data.patternLabels[i] + ': ' + column;
+                    var label = data.patternLabels[i] === column
+                        ? data.colorLabels[i] + ': ' + column
+                        : isNaN(data.patternLabels[i])
+                            ? data.patternLabels[i] + ': ' + column
+                            : column;
                     options.labels.push(label);
                     options.series[label] = {
                         color: colors(data.colorLabels[i]),
@@ -69,14 +80,31 @@ define(function(require) {
 
                 if (annotations) {
                     dygraphChart.ready(function () {
-                        dygraphChart.setAnnotations(annotations.rowData().map(function (a) {
+                        var i = 0;
+                        dygraphChart.setAnnotations(annotations.rowData().map(function (a){
+                            // find the closest date in the data that fits
+                            var closestDate = null;
+                            var lastDistance = Math.pow(2, 53) - 1;
+                            for (; i < rows.length; i++) {
+                                var date = rows[i][0];
+                                var thisDistance = Math.min(lastDistance, Math.abs(date.getTime() - a[0]));
+                                // both arrays are sorted so the distance will only get further now
+                                if (thisDistance === lastDistance) {
+                                    i--;
+                                    break;
+                                }
+                                lastDistance = thisDistance;
+                                closestDate = rows[i][0];
+                            }
                             return {
                                 // just attach to the first series and show on X axis
                                 series: options.labels[1],
                                 attachAtBottom: true,
-                                shortText: 'D',
-                                // strip time information from the annotation so it matches the data
-                                x: new Date(a[0].getFullYear(), a[0].getMonth(), a[0].getDate()).getTime(),
+                                shortText: 'A',
+                                // annoying thing to learn through experimentation:
+                                //   Dygraphs requires Date instances for the data, but
+                                //   Dygraphs requires milliseconds since epoch for the annotations
+                                x: closestDate.getTime(),
                                 text: a[1],
                             };
                         }));
