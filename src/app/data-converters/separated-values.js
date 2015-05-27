@@ -13,6 +13,9 @@ define(function (require) {
      *  * The first row in the file is a header row
      *  * The first column in the file is a date column
      *
+     * Important: each date can have more than one row associated.  In this case,
+     * an array of rows is associated with the date instead of just a single row
+     *
      * Parameters for the generated function:
         label           : Used for consistent colors or patterns, default '(not named)'
         lineSeparator   : Split the input lines, default '\n'
@@ -37,6 +40,11 @@ define(function (require) {
 
             }, options);
 
+            if (rawData.indexOf(opt.valueSeparator) < 0
+                || rawData.indexOf(opt.lineSeparator) < 0) {
+                return new TimeseriesData();
+            }
+
             var rows = rawData.split(opt.lineSeparator).map(function (row) {
                 return row.split(opt.valueSeparator);
             });
@@ -45,7 +53,11 @@ define(function (require) {
                             // grab the first row and treat it as the header (required)
                             .splice(0, 1)[0]
                             // always skip the first column because that's the date
-                            .splice(1, opt.allColumns ? rows[0].length : 1),
+                            .splice(1, opt.allColumns ? rows[0].length : 1)
+                            // trim to prevent confusion with configured colors, etc.
+                            .map(function (col) {
+                                return col.trim();
+                            }),
 
                 colorLabels = opt.varyColors
                     ? header
@@ -55,7 +67,8 @@ define(function (require) {
                     ? header
                     : _.fill(Array(header.length), opt.globalPattern ? 0 : opt.label),
 
-                rowsByDate = {};
+                rowsByDate = {},
+                duplicateDates = false;
 
             _.forEach(rows, function (row) {
                 var value = row.splice(1);
@@ -63,20 +76,30 @@ define(function (require) {
                 if (opt.startDate && row[0] < opt.startDate) {
                     return true;
                 }
-                rowsByDate[row[0]] = _(value).take(header.length).map(function (v) {
-                    // force numbers to numbers, strings to strings, and the rest to null
-                    var number = parseFloat(v);
-                    return isNaN(number)
-                        ? v ? v : null
-                        : number;
-                }).value();
+
+                if (_.has(rowsByDate, row[0])) {
+                    duplicateDates = true;
+                } else {
+                    rowsByDate[row[0]] = [];
+                }
+
+                rowsByDate[row[0]].push(
+                    _(value).take(header.length).map(function (v) {
+                        // force numbers, strings, or null
+                        var number = parseFloat(v);
+                        return isNaN(number)
+                            ? v ? v : null
+                            : number;
+                    }).value()
+                );
             });
 
             return new TimeseriesData(
                 header,
                 rowsByDate,
                 colorLabels,
-                patternLabels
+                patternLabels,
+                duplicateDates
             );
         };
     };

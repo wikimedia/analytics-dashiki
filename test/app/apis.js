@@ -1,4 +1,5 @@
 define(function (require) {
+    'use strict';
 
     var wikimetrics = require('apis.wikimetrics'),
         pageviewApi = require('apis.pageview'),
@@ -14,7 +15,7 @@ define(function (require) {
         beforeEach(function () {
             sinon.stub($, 'ajax');
             converter = wikimetrics.dataConverter;
-            wikimetrics.dataConverter = function () {return;};
+            wikimetrics.dataConverter = function () { return; };
         });
 
         afterEach(function () {
@@ -60,7 +61,7 @@ define(function (require) {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             sinon.stub($, 'ajax').returns(deferred);
-            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {return;});
+            sinon.stub(pageviewApi, 'getDataConverter').returns(function () { return; });
 
             pageviewApi.root = 'something';
             var expected = 'https://something/static/public/datafiles/DailyPageviews/project.csv';
@@ -302,7 +303,7 @@ define(function (require) {
                 breakdown: {}
             };
             datasetsApi.getData(metric, 'project').done(function (data) {
-                expect(data).toEqual([]);
+                expect(data.rowData()).toEqual([]);
                 done();
             });
         });

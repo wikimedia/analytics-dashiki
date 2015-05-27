@@ -20,12 +20,12 @@ define([], function () {
      * Logging of ajax errors is done via jquery ajax events
      */
 
-    window.logger = {
+    var logger = window.logger = {
 
         error: function (message) {
-            console.log(this._getTimestamp() + ' ' + message);
+            console.log(this.getTimestamp() + ' ' + message);
         },
-        _getTimestamp: function () {
+        getTimestamp: function () {
             return new Date().toUTCString();
         }
     };
@@ -35,4 +35,5 @@ define([], function () {
         logger.error(file + ':' + line + '\n\n' + message);
     };
 
+    return logger;
 });

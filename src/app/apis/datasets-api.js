@@ -6,11 +6,12 @@ define(function (require) {
     'use strict';
 
     var siteConfig = require('config'),
-        simpleSeparated = require('converters.simple-separated-values'),
-        uri = require('uri/URI');
+        converters = require('dataConverterFactory'),
+        TimeseriesData = require('converters.timeseries'),
+        uri = require('uri/URI'),
+        logger = require('logger');
 
     require('uri/URITemplate');
-    require('logger');
 
 
     function DatasetsApi(config) {
@@ -19,7 +20,7 @@ define(function (require) {
     }
 
     /**
-     * Fetch and parse a dataset.  Parameters will be used 
+     * Fetch and parse a dataset.  Parameters will be used
      *
      * Parameters
      *      metric      : the name of something to measure
@@ -27,27 +28,29 @@ define(function (require) {
      *      project     : database name (enwiki, wikidata, etc.)
      */
     DatasetsApi.prototype.getData = function (metric, submetric, project) {
-        var deferred = $.Deferred(),
+        var deferred = new $.Deferred(),
             address = this.root + uri.expand('/{metric}/{submetric}/{project}.{format}', {
                 metric: metric,
                 submetric: submetric,
                 project: project,
                 format: this.config.format,
-            }).toString();
+            }).toString(),
+            converter = converters.getDataConverter(this.config.format);
 
         $.ajax({
             url: address
         }).done(function (data) {
-            var converter = simpleSeparated(this.config.format),
-                opt = {
+            var opt = {
                     label: submetric,
+                    varyColors: true,
                 };
 
             deferred.resolve(converter(opt, data));
-        }.bind(this)).fail(function (error) {
+
+        }).fail(function (error) {
             // resolve as done with empty results and log the error
             // to avoid crashing the ui when a metric has problems
-            deferred.resolve([]);
+            deferred.resolve(new TimeseriesData([]));
             logger.error(error);
         });
 

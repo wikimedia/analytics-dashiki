@@ -14,7 +14,7 @@ define(function (require) {
                     [1, 2],
                     [1, 2]
                 );
-            }).toThrow();
+            }).toThrow('ArgError: colorLabels must be aligned in size with the header');
 
             expect(function() {
                 TimeseriesData.prototype.init(
@@ -43,6 +43,37 @@ define(function (require) {
             expect(tt.patternLabels).toEqual([1, 2, 3, 4, 5]);
         });
 
+        it('should merge filters correctly', function () {
+            var t1 = new TimeseriesData(['filter left']),
+                t2 = new TimeseriesData(['filter right']);
+
+            t1.filter(1, 10);
+            expect(t1.merge(t2).fromDate).toEqual(1);
+
+            t1.filter();
+            t2.filter(1, 10);
+            expect(t1.merge(t2).fromDate).toEqual(1);
+
+            t1.filter(1, 10);
+            t2.filter();
+            expect(t1.merge(t2).fromDate).toEqual(1);
+
+            t1.filter(1, 10);
+            t2.filter(2, 11);
+            expect(t1.merge(t2).fromDate).toEqual(2);
+            expect(t1.merge(t2).toDate).toEqual(10);
+
+            t1.filter(3, 10);
+            t2.filter(2, 11);
+            expect(t1.merge(t2).fromDate).toEqual(3);
+            expect(t1.merge(t2).toDate).toEqual(10);
+
+            t1.filter(3, 12);
+            t2.filter(2, 11);
+            expect(t1.merge(t2).fromDate).toEqual(3);
+            expect(t1.merge(t2).toDate).toEqual(11);
+        });
+
         it('should handle empty rows', function () {
             var t1 = new TimeseriesData([1, 2]),
                 t2 = new TimeseriesData([1, 2]);
@@ -66,15 +97,15 @@ define(function (require) {
                 return new Date(dStr).getTime();
             });
 
-            t1.rowsByDate[dates[1]] = [10];
-            t1.rowsByDate[dates[2]] = [20];
-            t1.rowsByDate[dates[3]] = [30];
-            t1.rowsByDate[dates[5]] = [50];
+            t1.rowsByDate[dates[1]] = [[10]];
+            t1.rowsByDate[dates[2]] = [[20]];
+            t1.rowsByDate[dates[3]] = [[30]];
+            t1.rowsByDate[dates[5]] = [[50]];
 
-            t2.rowsByDate[dates[2]] = [20, 20];
-            t2.rowsByDate[dates[4]] = [40, 40];
-            t2.rowsByDate[dates[5]] = [50, 50];
-            t2.rowsByDate[dates[6]] = [60, 60];
+            t2.rowsByDate[dates[2]] = [[20, 20]];
+            t2.rowsByDate[dates[4]] = [[40, 40]];
+            t2.rowsByDate[dates[5]] = [[50, 50]];
+            t2.rowsByDate[dates[6]] = [[60, 60]];
 
             expect(t1.merge(t2).rowData()).toEqual([
                 [dateTimes[1], 10  , null, null],
@@ -111,6 +142,38 @@ define(function (require) {
             expect(tt.header).toEqual([1, 2, 3, 4, 5, 5, 6]);
             expect(tt.colorLabels).toEqual([1, 2, 3, 4, 5, 5, 6]);
             expect(tt.patternLabels).toEqual([1, 2, 3, 4, 5, 5, 6]);
+        });
+
+        it('should respect options to rowData', function () {
+            var date = new Date('2015-01-01').getTime(),
+                t1 = new TimeseriesData(
+                    [1],
+                    {'2015-01-01': [[1]]}
+                );
+
+            expect(t1.rowData({convertToDate: true})[0][0].getTime()).toEqual(date);
+        });
+
+        it('should should handle multiple rows per date', function () {
+            var date = new Date('2015-01-01').getTime(),
+                t1 = new TimeseriesData(
+                    [1],
+                    {'2015-01-01': [[1], [2]]}
+                );
+
+            expect(t1.rowData()).toEqual([
+                [date, 1],
+                [date, 2],
+            ]);
+        });
+
+        it('should not merge a TimeseriesData instance with duplicateDates', function () {
+            var t1 = new TimeseriesData(),
+                t2 = new TimeseriesData([], {}, [], [], true);
+
+            expect(function () {
+                t1.merge(t2);
+            }).toThrow('Can not be merged: has multiple rows per date.');
         });
     });
 });

@@ -41,7 +41,7 @@ define(function (require) {
                 [parameters.Cohort],
                 // wrap the values in an array to match the header
                 _.forEach(rawData.result.Sum[submetric], function (value, key, dict) {
-                    dict[key] = [value ? parseFloat(value) : null];
+                    dict[key] = [[value ? parseFloat(value) : null]];
                 }),
                 [parameters.Cohort],
                 // but keep patterns globally constant

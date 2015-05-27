@@ -5,18 +5,23 @@
  *
  * Parameters
  *  header          : [string] with column labels, excluding the first column, "date"
- *  rowsByDate      : dictionary of date strings to rows, each row is aligned with header
- *  colorLabels     : [string] color keys for each column, aligned with header
+ *  rowsByDate      : dictionary from a date to an array of rows,
+ *                      if duplicateDates is false, each array only has one row
+ *                      if duplicateDates is true, this can not be merged with
+ *                        other TimeseriesData and each array has multipe rows
+ *                      in either case, each row is aligned with the header
+ *  colorLabels     : [string] color keys for each column, aligned with the header
  *                      default: a copy of header
- *  patternLabels   : [string] pattern keys for each column, aligned with header
+ *  patternLabels   : [string] pattern keys for each column, aligned with the header
  *                      default: a copy of header
+ *  duplicateDates  : [bool] if true, multiple rows are associated to each date
  *
  * Example Input:
  *  ['col1', 'col2'],           // header
  *  {
- *     '2015-01-01': [10, 20],
- *     '2015-01-02': [11, 21],
- *     '2015-01-03': [12, 22],
+ *     '2015-01-01': [[10, 20]],
+ *     '2015-01-02': [[11, 21]],
+ *     '2015-01-03': [[12, 22]],
  *  },                          // rowsByDate
  *  ['col1', 'col2'],           // colorLabels
  *  ['dataset1', 'dataset1'],   // patternLabels
@@ -31,8 +36,11 @@ define(function (require) {
     }
 
     TimeseriesData.prototype.init = function (
-        header, rowsByDate, colorLabels, patternLabels
+        header, rowsByDate, colorLabels, patternLabels, duplicateDates
     ) {
+        // default for empty constructor
+        header = header || [];
+
         // default to the header if nothing passed in
         colorLabels = colorLabels || header;
         patternLabels = patternLabels || header;
@@ -52,6 +60,7 @@ define(function (require) {
         this.colorLabels = colorLabels;
         this.patternLabels = patternLabels;
         this.rowsByDate = rowsByDate;
+        this.duplicateDates = duplicateDates;
     };
 
     /**
@@ -81,6 +90,13 @@ define(function (require) {
      */
     TimeseriesData.mergeAll = function (arrayOfTimeseries) {
 
+        // check each input, to be merged, they must have one value per date
+        _.forEach(arrayOfTimeseries, function (t) {
+            if (t.duplicateDates) {
+                throw 'Can not be merged: has multiple rows per date.';
+            }
+        });
+
         var rest = arrayOfTimeseries.splice(1),
             first = arrayOfTimeseries[0],
 
@@ -88,16 +104,20 @@ define(function (require) {
                 header: _.clone(first.header),
                 rowsByDate: _.cloneDeep(first.rowsByDate),
                 colorLabels: _.clone(first.colorLabels),
-                patternLabels: _.clone(first.patternLabels)
+                patternLabels: _.clone(first.patternLabels),
+                fromDate: first.fromDate,
+                toDate: first.toDate,
             };
 
+        // in the following, we assume no duplicate rows per date, so we index
+        // each date value at [0] to get what should be the only row there
         _.reduce(rest, function (dest, src) {
             _.map(src.rowsByDate, function (value, key) {
                 if (!_.has(dest.rowsByDate, key)) {
                     // fill arrays that are nonexistent up to this point
-                    dest.rowsByDate[key] = _.fill(Array(dest.header.length), null);
+                    dest.rowsByDate[key] = [_.fill(Array(dest.header.length), null)];
                 }
-                dest.rowsByDate[key] = dest.rowsByDate[key].concat(value);
+                dest.rowsByDate[key][0] = dest.rowsByDate[key][0].concat(value[0]);
             });
 
             _.map(['header', 'colorLabels', 'patternLabels'], function (key) {
@@ -106,36 +126,72 @@ define(function (require) {
 
             // make sure each row lines up with the new concatenated header
             _.each(dest.rowsByDate, function (value) {
-                var oldLength = value.length;
-                value.length = dest.header.length;
-                _.fill(value, null, oldLength);
+                var oldLength = value[0].length;
+                value[0].length = dest.header.length;
+                _.fill(value[0], null, oldLength);
             });
+
+            // merge filters to be most exclusive
+            dest.fromDate = (isNaN(dest.fromDate) || src.fromDate > dest.fromDate)
+                ? src.fromDate
+                : dest.fromDate;
+            dest.toDate = (isNaN(dest.toDate) || src.toDate < dest.toDate)
+                ? src.toDate
+                : dest.toDate;
 
             return dest;
         }, merged);
 
-        return new TimeseriesData(
+        var ret = new TimeseriesData(
             merged.header,
             merged.rowsByDate,
             merged.colorLabels,
             merged.patternLabels
+
         );
+        return ret.filter(merged.fromDate, merged.toDate);
+    };
+
+    /**
+     * Sets up filters to be used when rowData is called
+     * NOTE: This call has no effect until data is materialized
+     *
+     * Parameters are both coerced to a number because this works for all
+     *   intended usages (passing in Date and Moment instances, or milliseconds)
+     *
+     * Returns this for easy chaining
+     */
+    TimeseriesData.prototype.filter = function (from, to) {
+        this.fromDate = +from;
+        this.toDate = +to;
+        return this;
     };
 
     /**
      * Materializes the lodash chainable rowsByDate property and sorts it by date
      */
-    TimeseriesData.prototype.rowData = function () {
-        return _(this.rowsByDate).map(function (value, key) {
+    TimeseriesData.prototype.rowData = function (options) {
+        options = options || {};
+
+        return _(this.rowsByDate).transform(function (result, rows, key) {
             var date = _.attempt(function () {
                 return new Date(key).getTime();
             });
-            // don't output invalid dates
-            return _.isError(date) ? null : [date].concat(value);
+            // don't output invalid dates or dates out of the filter
+            if (!(
+                   _.isError(date)
+                || isNaN(date)
+                || (this.fromDate && date < this.fromDate)
+                || (this.toDate && date > this.toDate)
+                )) {
 
-        }).filter(function (row) {
-            return !isNaN(row[0]);
-        }).sortBy(function (row) {
+                // output all rows for this date
+                result.push.apply(result, _.map(rows, function (row) {
+                    return [options.convertToDate ? new Date(date) : date].concat(row);
+                }));
+            }
+
+        }, [], this).sortBy(function (row) {
             return row[0];
         }).value();
     };

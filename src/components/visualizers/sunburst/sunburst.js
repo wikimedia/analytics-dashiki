@@ -3,9 +3,10 @@
  *
  * Example usage with default parameter values:
 
-        <sunburst params="tsv: [], height: 500"/>
+        <sunburst params="data: new TimeseriesData(), height: 500"/>
  */
 define(function(require) {
+    'use strict';
 
     var ko = require('knockout'),
         d3 = require('d3'),
@@ -18,7 +19,7 @@ define(function(require) {
      * Graphs sequences of steps as proportional concentric arcs
      *
      * Parameters
-     *      data: rows that look like this:
+     *      data: TimeseriesData with rows that look like this:
                 ['init', 5],
                 ['init-ready-saveAttempt-saveSuccess', 75],
                 ['init-ready-saveAttempt-saveFailure', 10],
@@ -26,9 +27,9 @@ define(function(require) {
             colors: a function that takes a step name and returns its color
      */
     function Sunburst(params) {
-        this.rawData = params.data;
+        this.data = params.data;
         this.hierarchy = ko.computed(function() {
-            return buildHierarchy(ko.unwrap(this.rawData));
+            return buildHierarchy(ko.unwrap(this.data).rowData());
         }, this);
         this.colors = params.colors || d3.scale.category10();
 
@@ -50,7 +51,7 @@ define(function(require) {
         this.b = b;
         this.getTransform = function (index, dx) {
             var i = ko.unwrap(index);
-            return 'translate('+(i * (b.w + b.s) + (dx || 0))+', 0)';
+            return 'translate(' + (i * (b.w + b.s) + (dx || 0)) + ', 0)';
         };
         this.getPoints = function (index) {
             var i = ko.unwrap(index),

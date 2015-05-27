@@ -31,8 +31,8 @@ define(function (require) {
         transformedResponse = new TimeseriesData(
             [cohort],
             {
-                '2014-08-22': [v1],
-                '2014-08-23': [v2]
+                '2014-08-22': [[v1]],
+                '2014-08-23': [[v2]]
             }
         );
 
