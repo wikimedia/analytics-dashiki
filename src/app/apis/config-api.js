@@ -30,7 +30,8 @@ define(function (require) {
         // The dashboard page can either be injected by the build or must be a default
         var dashboardPage =
             this.config.dashboardPage ||
-            this.config.defaultDashboardPageRoot + layout;
+            this.config.defaultDashboardPageRoot +
+                (layout ? '/' + layout : '');
 
         // NOTE: don't cache these promises, it makes tests much harder
         // Instead, rely on cache headers being set up properly

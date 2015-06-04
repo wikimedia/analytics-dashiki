@@ -15,7 +15,7 @@ define(function (require) {
             // next two fields are mediawiki page names
             categorizedMetricsPage: 'Dashiki:CategorizedMetrics',
             dashboardPage: buildConfig ? buildConfig.dashboardArticle : null,
-            defaultDashboardPageRoot: 'Dashiki:DefaultDashboard/',
+            defaultDashboardPageRoot: 'Dashiki:DefaultDashboard',
         },
 
         // format are specified per API for now, in the future they can be specified per metric if needed

@@ -2,6 +2,7 @@ define(function (require) {
     'use strict';
 
     var ko = require('knockout'),
+        _ = require('lodash'),
         wikimetricsApi = require('apis.wikimetrics'),
         configApi = require('apis.config'),
         stateManagerFactory = require('stateManager'),
@@ -19,8 +20,23 @@ define(function (require) {
 
         // metric observables
         self.selectedMetric = ko.observable();
-        self.metrics = ko.observable([]);
         self.defaultMetrics = ko.observable([]);
+        self.metricFilter = ko.observable([]);
+        self.allMetrics = ko.observable([]);
+        self.metrics = ko.computed(function () {
+            var filter = ko.unwrap(this.metricFilter),
+                all = ko.unwrap(this.allMetrics);
+
+            return _.map(all, function (category) {
+                if (filter) {
+                    category.metrics = _.filter(category.metrics, function (m) {
+                        return _.includes(filter, m.name);
+                    });
+                }
+                return category;
+            });
+
+        }, this);
 
         // Eagerly fetching the available projects to display in the project-selector
         wikimetricsApi.getProjectAndLanguageChoices(function (config) {
@@ -29,6 +45,11 @@ define(function (require) {
             self.reverseLookup(config.reverseLookup);
         });
 
+        configApi.getDefaultDashboard(function (config) {
+            if (config.metrics) {
+                self.metricFilter(config.metrics);
+            }
+        });
 
         // state manager should be observing the selections of project and metric
         // returns a statemanager obj if you need it
@@ -49,7 +70,7 @@ define(function (require) {
                     });
                 });
             }
-            self.metrics(config.categorizedMetrics);
+            self.allMetrics(config.categorizedMetrics);
         });
     }
 

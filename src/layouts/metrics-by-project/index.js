@@ -7,16 +7,14 @@ if (typeof window === 'undefined') {
                 'requireLib',
                 'components/wikimetrics-visualizer/wikimetrics-visualizer',
                 'components/wikimetrics-layout/wikimetrics-layout',
-                'components/metric-selector/metric-selector',
-                'components/time-selector/time-selector'
+                'components/metric-selector/metric-selector'
             ],
             bundles: {
                 // If you want parts of the site to load on demand, remove them from the 'include' list
                 // above, and group them into bundles here.
                 'project-selector': ['components/project-selector/project-selector'],
-                'vega-timeseries': ['components/visualizers/vega-timeseries/vega-timeseries'],
-                'breakdown-toggle': ['components/breakdown-toggle/breakdown-toggle'],
-                'annotation-list': ['components/annotation-list/annotation-list']
+                'dygraphs-timeseries': ['components/visualizers/dygraphs-timeseries/dygraphs-timeseries'],
+                'breakdown-toggle': ['components/breakdown-toggle/breakdown-toggle']
             }
         }
     };

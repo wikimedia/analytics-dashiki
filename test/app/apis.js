@@ -99,7 +99,7 @@ define(function (require) {
             configApi.config = {
                 endpoint: 'test',
                 dashboardPage: 'dash',
-                defaultDashboardPageRoot: 'defaultDash/',
+                defaultDashboardPageRoot: 'defaultDash',
                 categorizedMetricsPage: 'metrics',
             };
             sinon.stub(mediawikiStorage, 'get').returns(new $.Deferred());
