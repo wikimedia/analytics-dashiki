@@ -23,7 +23,15 @@ define(function (require) {
                 rowMap[colName] = (rowMap[colName] || 0) + row[index + 2];
             });
 
-        }, {}).values().value();
+        }, {}).values().value().sort(function (a, b) {
+            // Custom sorting to support numerical prefixes
+            var aInt = parseInt(a.rowName),
+                bInt = parseInt(b.rowName);
+            if (isNaN(aInt) || isNaN(bInt)) {
+                return a < b ? 1 : a === b ? 0 : -1;
+            }
+            return aInt - bInt;
+        });
     }
 
     function showTooltip(rect, d, text, svg) {
@@ -105,7 +113,7 @@ define(function (require) {
                 // Thanks yuuniverse4444
 
                 var margin = {top: 20, right: 20, bottom: 30, left: 60},
-                    width = 500 - margin.left - margin.right,
+                    width = 550 - margin.left - margin.right,
                     height = 400 - margin.top - margin.bottom;
 
                 var x = d3.scale.ordinal().rangeRoundBands([0, width], .1),
