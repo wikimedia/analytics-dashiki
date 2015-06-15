@@ -96,6 +96,40 @@ function writeBuildConfig (config) {
     );
     fs.writeFileSync(defaults.buildConfigPath, wrappedConfig);
 }
+
+/* uses the optional --piwik argument to generate piwik instrumentation
+ */
+function getPiwikScript() {
+    if (!args.piwik) {
+        return '';
+    }
+    var parts = args.piwik.split(','),
+        host = parts[0],
+        id = parts[1];
+
+    if (!host || !id) {
+        throw '--piwik must be specified as host,id';
+    }
+
+    var template =
+    '<!-- Piwik -->' +
+    '<script type="text/javascript">' +
+      'var _paq = _paq || [];' +
+      '_paq.push(["trackPageView"]);' +
+      '_paq.push(["enableLinkTracking"]);' +
+      '(function() {' +
+        'var u="//###host###/";' +
+        '_paq.push(["setTrackerUrl", u+"piwik.php"]);' +
+        '_paq.push(["setSiteId", ###id###]);' +
+        'var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0];' +
+        'g.type="text/javascript"; g.async=true; g.defer=true; g.src=u+"piwik.js"; s.parentNode.insertBefore(g,s);' +
+      '})();' +
+    '</script>' +
+    '<noscript><p><img src="//###host###/piwik.php?idsite=###id###" style="border:0;" alt="" /></p></noscript>' +
+    '<!-- End Piwik Code -->';
+
+    return template.replace(/###host###/g, host).replace(/###id###/g, id);
+}
 /* End Helper Functions */
 
 
@@ -132,6 +166,7 @@ gulp.task('html', ['js', 'css', 'fonts'], function () {
     // restore the build config to return nothing so it doesn't break
     // automated or local testing
     writeBuildConfig(null);
+    var piwikScript = getPiwikScript();
 
     return gulp.src(layout.rootPath + 'index.html')
         .pipe(htmlreplace({
@@ -140,7 +175,8 @@ gulp.task('html', ['js', 'css', 'fonts'], function () {
         'title': '<title>' + args.config.replace(/([^ ])([A-Z0-9])/g, '$1 $2') + '</title>',
         // version the styles and scripts to flush old logic from client caches
         'css': '<link rel="stylesheet" href="styles.css?v=' + layout.version + '">',
-        'js': '<script src="scripts.js?v=' + layout.version + '"></script>',
+        'js': '<script src="scripts.js?v=' + layout.version + '"></script>' +
+            piwikScript,
 
         }))
         .pipe(gulp.dest(layout.destPath));
