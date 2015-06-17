@@ -27,13 +27,16 @@ define(function (require) {
             var filter = ko.unwrap(this.metricFilter),
                 all = ko.unwrap(this.allMetrics);
 
+            console.log('metrics', all, filter);
+
             return _.map(all, function (category) {
+                var newCategory = _.clone(category, true);
                 if (filter) {
-                    category.metrics = _.filter(category.metrics, function (m) {
+                    newCategory.metrics = _.filter(category.metrics, function (m) {
                         return _.includes(filter, m.name);
                     });
                 }
-                return category;
+                return newCategory;
             });
 
         }, this);
