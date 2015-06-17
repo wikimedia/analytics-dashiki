@@ -1,9 +1,8 @@
-<div class="ui grid">
+<div class="ui grid"  data-bind="if: data">
     <div data-bind="if: data().showAB.a" class="eight wide full height column">
         <stacked-bars params="data: data().a, colors: $data.colors"/>
     </div>
     <div data-bind="if: data().showAB.b" class="eight wide full height column">
         <stacked-bars params="data: data().b, colors: $data.colors"/>
     </div>
-    <div class="stacked-bars-legend"></div>
 </div>

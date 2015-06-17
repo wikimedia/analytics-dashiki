@@ -86,10 +86,11 @@ define(function (require) {
                 rowsByDate[row[0]].push(
                     _(value).take(header.length).map(function (v) {
                         // force numbers, strings, or null
-                        var number = parseFloat(v);
-                        return isNaN(number)
-                            ? v ? v : null
-                            : number;
+                        v = v.trim();
+                        if (/^[-+]?([0-9]+(\.[0-9]+)?|\.[0-9]+)$/.test(v)) {
+                            return parseFloat(v);
+                        }
+                        return v.length === 0 ? null : v;
                     }).value()
                 );
             });
