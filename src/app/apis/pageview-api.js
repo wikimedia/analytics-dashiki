@@ -5,8 +5,15 @@
  * Please note that as long as data abides to this format dashiki
  * can retrieve pageview counts from anywhere.
  */
-define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'], function (siteConfig, dataConverterFactory, uri) {
+define(function (require) {
     'use strict';
+
+    var siteConfig = require('config'),
+        dataConverterFactory = require('dataConverterFactory'),
+        uri = require('uri/URI'),
+        logger = require('logger');
+
+    require('uri/URITemplate');
 
     function PageviewApi(config) {
         this.root = config.pageviewApi.endpoint;
@@ -17,16 +24,6 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
     }
 
     /**
-     * Returns
-     *   a promise to the url passed in
-     **/
-    PageviewApi.prototype._getData = function (url) {
-        return $.ajax({
-            //let jquery decide datatype, otherwise things do not work when retrieving cvs
-            url: url
-        });
-    };
-    /**
      * Parameters
      *   metric         : an object representing a metric
      *   project        : a Wiki project database name (enwiki, commonswiki, etc.)     *
@@ -35,36 +32,38 @@ define(['config', 'dataConverterFactory', 'uri/URI', 'uri/URITemplate', 'logger'
      *  A promise with that wraps data for the metric/project transformed via the converter
      */
     PageviewApi.prototype.getData = function (metric, project, showBreakdown) {
-        var deferred = $.Deferred();
+        var deferred = new $.Deferred();
 
         //using christian's endpoint
         //  http://quelltextlich.at/wmf/projectcounts/daily/enwiki.csv
-        var address = uri.expand('https://{root}/static/public/datafiles/DailyPageviews/{project}.csv', {
+        var address = uri.expand('https://{root}/static/public/datafiles/{metric}/{project}.csv', {
             root: this.root,
-            //  metric: metricName,
+            metric: metric.name,
             project: project
         }).toString();
 
-        this._getData(address)
-            .done(function (data) {
-                var converter = this.getDataConverter(),
-                    opt = {
-                        label: project,
-                        allColumns: showBreakdown,
-                        varyColors: false,
-                        varyPatterns: true,
-                        globalPattern: false,
-                        startDate: '2014-01-01'
-                    };
+        $.ajax({
+            //let jquery decide datatype, otherwise things do not work when retrieving cvs
+            url: address
+        }).done(function (data) {
+            var converter = this.getDataConverter(),
+                opt = {
+                    label: project,
+                    allColumns: showBreakdown,
+                    varyColors: false,
+                    varyPatterns: true,
+                    globalPattern: false,
+                    startDate: '2014-01-01'
+                };
 
-                deferred.resolve(converter(opt, data));
-            }.bind(this))
-            .fail(function (error) {
-                // resolve as done with empty results and log the error
-                // to avoid crashing the ui when a metric has problems
-                deferred.resolve([]);
-                logger.error(error);
-            });
+            deferred.resolve(converter(opt, data));
+        }.bind(this))
+        .fail(function (error) {
+            // resolve as done with empty results and log the error
+            // to avoid crashing the ui when a metric has problems
+            deferred.resolve([]);
+            logger.error(error);
+        });
 
         return deferred.promise();
     };

@@ -27,8 +27,6 @@ define(function (require) {
             var filter = ko.unwrap(this.metricFilter),
                 all = ko.unwrap(this.allMetrics);
 
-            console.log('metrics', all, filter);
-
             return _.map(all, function (category) {
                 var newCategory = _.clone(category, true);
                 if (filter) {

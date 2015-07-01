@@ -48,7 +48,7 @@ var require = {
         // *** apis
         'apis.wikimetrics'          : 'app/apis/wikimetrics',
         'apis.annotations'          : 'app/apis/annotations-api',
-        'apis.pageview'             : 'app/apis/legacy-pageview-api',
+        'apis.pageview'             : 'app/apis/pageview-api',
         'apis.datasets'             : 'app/apis/datasets-api',
         'apis.config'               : 'app/apis/config-api',
 

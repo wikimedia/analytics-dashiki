@@ -64,9 +64,9 @@ define(function (require) {
             sinon.stub(pageviewApi, 'getDataConverter').returns(function () { return; });
 
             pageviewApi.root = 'something';
-            var expected = 'https://something/static/public/datafiles/DailyPageviews/project.csv';
+            var expected = 'https://something/static/public/datafiles/LegacyPageviews/project.csv';
             var metric = {
-                name: 'metric',
+                name: 'LegacyPageviews',
                 breakdown: {}
             };
             pageviewApi.getData(metric, 'project');
