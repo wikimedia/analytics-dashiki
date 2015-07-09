@@ -851,6 +851,7 @@
             "shortName": "all", 
             "name": "All Languages", 
             "projects": {
+                "totals": "all",
                 "advisory": "advisorywiki", 
                 "test2": "test2wiki", 
                 "ten": "tenwiki", 
@@ -908,7 +909,7 @@
                 "usability": "usabilitywiki"
             }, 
             "description": [
-                "55 projects"
+                "56 projects"
             ]
         }, 
         {
@@ -3446,6 +3447,10 @@
         }
     ], 
     "reverse": {
+        "all": {
+            "project": "totals",
+            "language": "All Languages"
+        },
         "cawikibooks": {
             "project": "wikibooks", 
             "language": "Catalan"
@@ -6858,6 +6863,16 @@
     "projects": [
         {
             "languages": {
+                "All languages": "all"
+            }, 
+            "count": 1, 
+            "name": "totals", 
+            "description": [
+                "1 language"
+            ]
+        },
+        {
+            "languages": {
                 "Abkhazian": "abwiki", 
                 "Estonian": "etwiki", 
                 "Telugu": "tewiki", 
@@ -8289,6 +8304,7 @@
         "wiktionary": "Wiktionary", 
         "commons": "Commons", 
         "wikivoyage": "Wikivoyage", 
-        "wikibooks": "Wikibooks"
+        "wikibooks": "Wikibooks",
+        "totals": "Totals"
     }
 }

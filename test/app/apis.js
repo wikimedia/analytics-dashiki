@@ -37,14 +37,14 @@ define(function (require) {
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
-        it('should return empty list if getting data fails', function (done) {
+        it('should return empty TimeseriesData', function (done) {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));
             $.ajax.returns(deferred);
 
             var metric = {name: 'metric'};
             wikimetrics.getData(metric, 'project').done(function (data) {
-                expect(data).toEqual([]);
+                expect(data.header).toEqual([]);
                 done();
             });
         });
@@ -75,7 +75,7 @@ define(function (require) {
             pageviewApi.getDataConverter.restore();
         });
 
-        it('should return empty list if getting data fails', function (done) {
+        it('should return empty TimeseriesData if getting data fails', function (done) {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));
             sinon.stub($, 'ajax').returns(deferred);
@@ -85,7 +85,7 @@ define(function (require) {
                 breakdown: {}
             };
             pageviewApi.getData(metric, 'project').done(function (data) {
-                expect(data).toEqual([]);
+                expect(data.header).toEqual([]);
                 done();
             });
         });

@@ -11,7 +11,8 @@ define(function (require) {
     var siteConfig = require('config'),
         dataConverterFactory = require('dataConverterFactory'),
         uri = require('uri/URI'),
-        logger = require('logger');
+        logger = require('logger'),
+        TimeseriesData = require('converters.timeseries');
 
     require('uri/URITemplate');
 
@@ -61,7 +62,7 @@ define(function (require) {
         .fail(function (error) {
             // resolve as done with empty results and log the error
             // to avoid crashing the ui when a metric has problems
-            deferred.resolve([]);
+            deferred.resolve(new TimeseriesData());
             logger.error(error);
         });
 
