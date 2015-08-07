@@ -29,7 +29,8 @@ define(function(require) {
                 var options = {
                         valueFormatter: function(d, weirdFunction, type) {
                             if (type === 'Date') {
-                                return moment(d).format('YYYY-MM-DD');
+                                // assumes dates are in UTC format
+                                return moment(d).utc().format('YYYY-MM-DD');
                             }
                             return d.toFixed ? d.toFixed(3) : d;
                         },
