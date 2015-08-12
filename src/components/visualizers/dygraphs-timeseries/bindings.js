@@ -96,6 +96,13 @@ define(function(require) {
                                 }
                                 lastDistance = thisDistance;
                                 closestDate = rows[i][0];
+                                // if we're at the end, and no date matched, prefix annotation with date
+                                //   Also, handle other future dates the same by decrementing i
+                                if (i === rows.length - 1) {
+                                    a[1] = moment(a[0]).utc().format('YYYY-MM-DD ') + a[1];
+                                    i--;
+                                    break;
+                                }
                             }
                             return {
                                 // just attach to the first series and show on X axis
