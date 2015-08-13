@@ -175,5 +175,48 @@ define(function (require) {
                 t1.merge(t2);
             }).toThrow('Can not be merged: has multiple rows per date.');
         });
+
+        it('should filter by column', function () {
+            var header = [
+                    'bounce-rate',
+                    'not-attempted-rate',
+                    'success-rate',
+                    'failure-rate',
+                    'bounce-rate',
+                    'not-attempted-rate',
+                    'success-rate',
+                    'failure-rate'
+                ],
+                rowsByDate = {
+                    '2015-04-01': [[1, 2, 3, 4, 5, 6, 7, 8]],
+                    '2015-04-02': [[9, 10, 11, 12, 13, 14, 15, 16]],
+                    '2015-04-03': [[17, 18, 19, 20, 21, 22, 23, 24]],
+                    '2015-04-04': [[25, 26, 27, 28, 29, 30, 31, 32]]
+                },
+                colorLabels = [
+                    'bounce-rate',
+                    'not-attempted-rate',
+                    'success-rate',
+                    'failure-rate',
+                    'bounce-rate',
+                    'not-attempted-rate',
+                    'success-rate',
+                    'failure-rate'
+                ],
+                patternLabels = ['VE', 'VE', 'VE', 'VE', 'WT', 'WT', 'WT', 'WT'],
+                ts = new TimeseriesData(header, rowsByDate, colorLabels, patternLabels),
+                filteredTs = ts.pickColumns(
+                    ['success-rate', 'failure-rate'], ['VE', 'WT']);
+
+            expect(filteredTs.header).toEqual(['success-rate', 'failure-rate']);
+            expect(filteredTs.rowsByDate).toEqual({
+                '2015-04-01': [[3, 8]],
+                '2015-04-02': [[11, 16]],
+                '2015-04-03': [[19, 24]],
+                '2015-04-04': [[27, 32]]
+			});
+            expect(filteredTs.colorLabels).toEqual(['success-rate', 'failure-rate']);
+            expect(filteredTs.patternLabels).toEqual(['VE', 'WT']);
+        });
     });
 });

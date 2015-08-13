@@ -1,0 +1,19 @@
+<div class="ui basic segment">
+    <div data-bind="foreach: categorizedHeader" class="ui horizontal divided list">
+        <div class="item">
+            <h4 data-bind="text: name"></h4>
+            <div data-bind="foreach: columns" class="ui list">
+                <div class="inline field item">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" data-bind="attr: {id: $data.uniqueId}, checked: selected"/>
+                        <label data-bind="attr: {for: $data.uniqueId}">
+                            <span data-bind="text: title"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<dygraphs-timeseries params="height: 500, data: filteredData, colors: colors, annotations: annotations" />

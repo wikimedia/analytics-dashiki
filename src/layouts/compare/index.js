@@ -19,7 +19,10 @@ if (typeof window === 'undefined') {
                 // above, and group them into bundles here.
                 'sunburst': ['components/visualizers/sunburst/sunburst'],
                 'stacked-bars': ['components/visualizers/stacked-bars/stacked-bars'],
-                'dygraphs-timeseries': ['components/visualizers/dygraphs-timeseries/dygraphs-timeseries'],
+                'filter-timeseries': [
+                    'components/filter-timeseries',
+                    'components/visualizers/dygraphs-timeseries/dygraphs-timeseries'
+                ],
             }
         }
     };

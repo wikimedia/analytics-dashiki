@@ -168,6 +168,55 @@ define(function (require) {
     };
 
     /**
+     * Filter data by columns
+     * @param {Array} header - column names
+     * @param {Array} patternLabels - label names
+     * @return TimeseriesData
+     */
+    TimeseriesData.prototype.pickColumns = function (header, patternLabels) {
+        var self = this,
+            result = {
+                header: [],
+                colorLabels: [],
+                patternLabels: [],
+                rowsByDate: {}
+            };
+
+        _.forEach(self.rowsByDate, function (row, date) {
+            result.rowsByDate[date] = [];
+            _.forEach(self.rowsByDate[date], function() {
+                result.rowsByDate[date].push([]);
+            });
+        });
+
+        _.forEach(header, function (h, k) {
+            var i = self.header.indexOf(h);
+
+            // make sure the patternLabels also match
+            while (self.patternLabels[i] !== patternLabels[k]) {
+                i = self.header.indexOf(h, i + 1);
+            }
+
+            result.header.push(self.header[i]);
+            result.colorLabels.push(self.colorLabels[i]);
+            result.patternLabels.push(self.patternLabels[i]);
+            _.forEach(result.rowsByDate, function (row, date) {
+                _.forEach(result.rowsByDate[date], function(row2, j) {
+                    result.rowsByDate[date][j].push(self.rowsByDate[date][j][i]);
+                });
+            });
+        });
+
+        return new TimeseriesData(
+            result.header,
+            result.rowsByDate,
+            result.colorLabels,
+            result.patternLabels,
+            this.duplicateDates
+        );
+    };
+
+    /**
      * Materializes the lodash chainable rowsByDate property and sorts it by date
      */
     TimeseriesData.prototype.rowData = function (options) {

@@ -39,6 +39,7 @@ define(function(require) {
     ko.components.register('compare-sunburst', { require: 'components/a-b-compare/compare-sunburst' });
     ko.components.register('compare-timeseries', { require: 'components/a-b-compare/compare-timeseries' });
     ko.components.register('compare-stacked-bars', { require: 'components/a-b-compare/compare-stacked-bars' });
+    ko.components.register('filter-timeseries', { require: 'components/filter-timeseries/filter-timeseries' });
 
     // *********** END Funnel Layout Components ************ //
 
