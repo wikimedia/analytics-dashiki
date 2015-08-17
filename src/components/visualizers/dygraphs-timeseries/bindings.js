@@ -27,14 +27,16 @@ define(function(require) {
             if (data) {
                 var rows = data.rowData({convertToDate: true});
                 var options = {
-                        valueFormatter: function(d, weirdFunction, type) {
-                            if (type === 'Date') {
-                                // assumes dates are in UTC format
-                                return moment(d).utc().format('YYYY-MM-DD');
-                            }
-                            return d.toFixed ? d.toFixed(3) : d;
+                        axes: {
+                            x: {
+                                valueFormatter: function(d) {
+                                    // assumes dates are in UTC format
+                                    return moment(d).utc().format('YYYY-MM-DD');
+                                },
+                            },
                         },
                         labels: ['Date'],
+                        labelsKMB: true,
                         labelsDivWidth: 350,
                         labelsDivStyles: {
                             'margin-left': '-120px',
