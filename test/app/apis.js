@@ -289,7 +289,11 @@ define(function (require) {
 
             datasetsApi.root = 'something';
             var expected = 'something/metric/submetric/project.tsv';
-            datasetsApi.getData('metric', 'submetric', 'project');
+            var metricInfo = {
+                'metric': 'metric',
+                'submetric': 'submetric'
+            };
+            datasetsApi.getData(metricInfo, 'project');
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 

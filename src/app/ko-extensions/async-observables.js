@@ -14,7 +14,7 @@ define(function (require) {
          * Does not care whether A or B is shown, only cares about observing
          * changes that would affect data
          */
-        asyncData: function(api, metric, comparable, constantWiki) {
+        asyncData: function(api, metricInfo, constantWiki) {
             var result = ko.observable(new TimeseriesData([]));
 
             ko.computed(function () {
@@ -22,7 +22,7 @@ define(function (require) {
                     from = ko.unwrap(this.fromDate.selected),
                     to = ko.unwrap(this.toDate.selected);
 
-                api.getData(metric, comparable, wiki).done(function(data) {
+                api.getData(metricInfo, wiki).done(function(data) {
                     result(data.filter(from, to));
                 });
 

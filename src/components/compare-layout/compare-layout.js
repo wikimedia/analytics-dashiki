@@ -124,9 +124,13 @@ define(function (require) {
                             showAB = ko.unwrap(this.showAB);
 
                         return ['a', 'b'].map(function (side) {
+                            var metricInfo = {
+                                'metric': c.metric,
+                                'submetric': config[side]
+                            };
                             return {
                                 promise: showAB[side] ?
-                                      api.getData(c.metric, config[side], wiki)
+                                      api.getData(metricInfo, wiki)
                                     : emptyPromise,
                                 label: config[side]
                             };
@@ -170,8 +174,12 @@ define(function (require) {
                     c.desc = c.desc ? marked(c.desc, {sanitize: true}) : '';
 
                     if (c.annotationsMetric) {
+                        var metricInfo = {
+                            'metric': c.annotationsMetric,
+                            'submetric': config.a
+                        };
                         // use 'all' as the constant wiki, annotations don't vary by wiki
-                        c.annotations = asyncData(api, c.annotationsMetric, config.a, 'all');
+                        c.annotations = asyncData(api, metricInfo, 'all');
                     }
 
                     // default to a 10-color scale, but use config if present

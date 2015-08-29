@@ -27,11 +27,11 @@ define(function (require) {
      *      submetric   : subcategory being measured
      *      project     : database name (enwiki, wikidata, etc.)
      */
-    DatasetsApi.prototype.getData = function (metric, submetric, project) {
+    DatasetsApi.prototype.getData = function (metricInfo, project) {
         var deferred = new $.Deferred(),
             address = this.root + uri.expand('/{metric}/{submetric}/{project}.{format}', {
-                metric: metric,
-                submetric: submetric,
+                metric: metricInfo.metric,
+                submetric: metricInfo.submetric,
                 project: project,
                 format: this.config.format,
             }).toString(),
@@ -41,7 +41,7 @@ define(function (require) {
             url: address
         }).done(function (data) {
             var opt = {
-                    label: submetric,
+                    label: metricInfo.submetric,
                     varyColors: true,
                 };
 
