@@ -23,7 +23,7 @@ gulp --layout compare --config VisualEditorAndWikitext
 python -m SimpleHTTPServer 5000
 ```
 
-And you can now browse to http://localhost:5000/compare-VisualEditorAndWikitext
+And you can now browse to http://localhost:5000/dist/compare-VisualEditorAndWikitext
 
 What is this magic?  When you pass `--layout compare` to the gulp build, you're telling it
 to use the layout defined in src/layouts/compare/.  When you pass `--config
