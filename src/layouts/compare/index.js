@@ -20,7 +20,7 @@ if (typeof window === 'undefined') {
                 'sunburst': ['components/visualizers/sunburst/sunburst'],
                 'stacked-bars': ['components/visualizers/stacked-bars/stacked-bars'],
                 'filter-timeseries': [
-                    'components/filter-timeseries',
+                    'components/filter-timeseries/filter-timeseries',
                     'components/visualizers/dygraphs-timeseries/dygraphs-timeseries'
                 ],
             }
