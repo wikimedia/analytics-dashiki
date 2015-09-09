@@ -183,6 +183,12 @@ gulp.task('html', ['js', 'css', 'fonts'], function () {
 });
 
 gulp.task('js', ['lint', 'clean'], function () {
+    // version the names of all the bundles, so they can bust caches
+    Object.keys(layout.requireJsOptimizerConfig.bundles).forEach(function (bundle) {
+        layout.requireJsOptimizerConfig.bundles[bundle + '-' + layout.version] = layout.requireJsOptimizerConfig.bundles[bundle];
+        delete layout.requireJsOptimizerConfig.bundles[bundle];
+    });
+
     // Discovers all AMD dependencies, concatenates together all required .js files, minifies them
     rjs(layout.requireJsOptimizerConfig)
         .pipe(uglify({
