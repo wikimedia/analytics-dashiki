@@ -246,3 +246,11 @@ breakdown-toggle .ui.menu a.header.item.off:hover {
     z-index: 100;
 }
 /* End Twitter Typeahead stuff */
+
+/* !important because we want to override the inline style */
+.dygraph-roller input {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    display: inline !important;
+} 

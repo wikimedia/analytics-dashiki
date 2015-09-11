@@ -18,11 +18,12 @@ define(function(require) {
             $(element).append('<div class="resizable container graph"></div>');
         },
         update: function (element, valueAccessor) {
-            var val = ko.unwrap(valueAccessor()),
+            var $element = $(element),
+                val = ko.unwrap(valueAccessor()),
                 data = ko.unwrap(val.data),
                 annotations = ko.unwrap(val.annotations),
                 colors = val.colors,
-                graph = $(element).find('div.graph')[0];
+                graph = $element.find('div.graph')[0];
 
             if (data) {
                 var rows = data.rowData({convertToDate: true});
@@ -83,7 +84,10 @@ define(function(require) {
 
                 if (annotations) {
                     dygraphChart.ready(function () {
-                        var i = 0;
+                        var i = 0,
+                            $roller = $(dygraphChart.roller_),
+                            $rollerHolder = $('<span class="dygraph-roller">Averaging: </span>');
+
                         dygraphChart.setAnnotations(annotations.rowData().map(function (a){
                             // find the closest date in the data that fits
                             var closestDate = null;
@@ -118,6 +122,11 @@ define(function(require) {
                                 text: a[1],
                             };
                         }));
+                        // move the roller to the top and add a label
+                        $rollerHolder.append($roller.detach()).append(' day(s)');
+                        // remove the previous roller if any
+                        $element.siblings('.dygraph-roller').remove();
+                        $rollerHolder.insertBefore($element);
                     });
                 }
             }

@@ -63,3 +63,10 @@ div.sunburst span.percentage {
 
 /* dygraphs style fixes */
 div.dygraph-legend span b { display: inline-block; width: 80%; text-align: right; }
+/* !important because we want to override the inline style */
+.dygraph-roller input {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    display: inline !important;
+}
