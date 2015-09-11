@@ -15,7 +15,7 @@
     <comparisons class="ui attached scrolling segment">
         <!-- ko foreach: comparisons -->
         <div class="ui top attached header">
-            <span data-bind="popup: {inline: true}, text: title, attr: {'data-content': desc}"
+            <span data-bind="popup: {}, text: title, attr: {'data-html': desc}"
                   data-position="bottom center"
                   data-variation="inverted"></span>
             <span class="ui small label" data-bind="text: $parent.timespan"></span>
