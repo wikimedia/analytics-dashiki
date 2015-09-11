@@ -208,13 +208,15 @@ define(function (require) {
             });
         });
 
-        return new TimeseriesData(
+        var ret = new TimeseriesData(
             result.header,
             result.rowsByDate,
             result.colorLabels,
             result.patternLabels,
             this.duplicateDates
+
         );
+        return ret.filter(self.fromDate, self.toDate);
     };
 
     /**

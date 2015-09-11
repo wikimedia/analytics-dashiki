@@ -214,9 +214,18 @@ define(function (require) {
                 '2015-04-02': [[11, 16]],
                 '2015-04-03': [[19, 24]],
                 '2015-04-04': [[27, 32]]
-			});
+            });
             expect(filteredTs.colorLabels).toEqual(['success-rate', 'failure-rate']);
             expect(filteredTs.patternLabels).toEqual(['VE', 'WT']);
+        });
+
+        it('should preserve date filters when filtering by column', function () {
+            var original = new TimeseriesData(),
+                filterDates = original.filter(1400000000000, 1400000000001),
+                filteredColumns = filterDates.pickColumns([], []);
+
+            expect(filteredColumns.fromDate).toEqual(1400000000000);
+            expect(filteredColumns.toDate).toEqual(1400000000001);
         });
     });
 });
