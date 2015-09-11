@@ -95,7 +95,7 @@ define(function (require) {
 
                 // dates
                 var days = moment
-                    .twix(new Date(config.startDate), new Date())
+                    .twix(moment.utc(config.startDate).toDate(), new Date())
                     .iterate('days');
                 var dates = [];
                 while (days.hasNext()) {

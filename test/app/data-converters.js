@@ -160,10 +160,10 @@ define(function (require) {
 
             expect(converted.header).toEqual(['arwiki']);
             expect(converted.rowData()).toEqual([
-                [new Date('2014-08-18 00:00:00').getTime(), 1132.0],
-                [new Date('2014-08-19 00:00:00').getTime(), 1120.0],
-                [new Date('2014-08-20 00:00:00').getTime(), 1117.0],
-                [new Date('2014-08-21 00:00:00').getTime(), 1120.0],
+                [new Date('2014-08-18').getTime(), 1132.0],
+                [new Date('2014-08-19').getTime(), 1120.0],
+                [new Date('2014-08-20').getTime(), 1117.0],
+                [new Date('2014-08-21').getTime(), 1120.0],
             ]);
             expect(converted.colorLabels).toEqual(['arwiki']);
             expect(converted.patternLabels).toEqual([0]);

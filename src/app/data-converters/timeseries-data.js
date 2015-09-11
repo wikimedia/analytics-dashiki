@@ -29,7 +29,8 @@
 define(function (require) {
     'use strict';
 
-    var _ = require('lodash');
+    var _ = require('lodash'),
+        moment = require('moment');
 
     function TimeseriesData () {
         this.init.apply(this, arguments);
@@ -224,7 +225,7 @@ define(function (require) {
 
         return _(this.rowsByDate).transform(function (result, rows, key) {
             var date = _.attempt(function () {
-                return new Date(key).getTime();
+                return moment.utc(key).toDate().getTime();
             });
             // don't output invalid dates or dates out of the filter
             if (!(
@@ -236,7 +237,7 @@ define(function (require) {
 
                 // output all rows for this date
                 result.push.apply(result, _.map(rows, function (row) {
-                    return [options.convertToDate ? new Date(date) : date].concat(row);
+                    return [options.convertToDate ? moment.utc(date).toDate() : date].concat(row);
                 }));
             }
 
