@@ -1,0 +1,16 @@
+# Deployment config for dashboards
+config:
+    edit-analysis:
+        layout: compare
+        config: VisualEditorAndWikitext
+        piwikHost:
+        piwikId:
+        hostname: edit-analysis-test.wmflabs.org
+        subfolder: compare
+    language-reportcard:
+        layout: metrics-by-project
+        config: LanguageReportcard
+        piwikHost:
+        piwikId:
+        hostname: language-reportcard-test.wmflabs.org
+        subfolder:
