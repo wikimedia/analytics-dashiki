@@ -66,6 +66,12 @@ define(function (require) {
                 })).sort(utils.sortByNameIgnoreCase)
             });
 
+            // lots of different categories are sharing the same layout,
+            // hide the ones that have no metrics configured for this dash
+            categories = categories.filter(function (c) {
+                return c.metrics.length;
+            });
+
             if (categories.length) {
                 this.selectedCategory(categories[0]);
             }
