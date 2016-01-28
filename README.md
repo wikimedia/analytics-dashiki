@@ -28,7 +28,8 @@ And you can now browse to http://localhost:5000/dist/compare-VisualEditorAndWiki
 What is this magic?  When you pass `--layout compare` to the gulp build, you're telling it
 to use the layout defined in src/layouts/compare/.  When you pass `--config
 VisualEditorAndWikitext`, you're telling it to configure this layout with the article found
-at http://meta.wikimedia.org/wiki/Config:VisualEditorAndWikitext
+at http://meta.wikimedia.org/wiki/Config:VisualEditorAndWikitext.  For all valid layouts,
+see the `src/layouts` folder and the README there.
 
 ### Build and Dev tools
 

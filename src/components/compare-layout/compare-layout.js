@@ -4,7 +4,6 @@ define(function (require) {
     'use strict';
 
     var ko = require('knockout'),
-        d3 = require('d3'),
         _ = require('lodash'),
         templateMarkup = require('text!./compare-layout.html'),
         apiFinder = require('api-finder'),
@@ -174,23 +173,23 @@ define(function (require) {
                     c.desc = c.desc ? marked(c.desc, {sanitize: true}) : '';
 
                     if (c.annotationsMetric) {
-                        var metricInfo = {
+                        var annotationInfo = {
                             'metric': c.annotationsMetric,
                             'submetric': config.a
                         };
                         // use 'all' as the constant wiki, annotations don't vary by wiki
-                        c.annotations = asyncData(api, metricInfo, 'all');
+                        c.annotations = asyncData(api, annotationInfo, 'all');
                     }
 
                     // default to a 10-color scale, but use config if present
-                    var colorScale = d3.scale.category10();
+                    var colorScale = utils.category10();
                     if (c.colors) {
                         var domain = [], range = [];
                         _.forEach(c.colors, function (val, key) {
                             range.push(val);
                             domain.push(key);
                         });
-                        colorScale.domain(domain).range(range);
+                        colorScale = utils.category10(domain, range);
                     }
                     c.colors = colorScale;
 

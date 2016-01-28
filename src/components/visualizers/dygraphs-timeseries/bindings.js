@@ -25,7 +25,7 @@ define(function(require) {
                 colors = val.colors,
                 graph = $element.find('div.graph')[0];
 
-            if (data) {
+            if (data && data.header.length) {
                 var rows = data.rowData({convertToDate: true});
                 var options = {
                         axes: {
@@ -34,6 +34,7 @@ define(function(require) {
                                     // assumes dates are in UTC format
                                     return moment(d).utc().format('YYYY-MM-DD');
                                 },
+                                axisLabelWidth: 77,
                             },
                         },
                         labels: ['Date'],

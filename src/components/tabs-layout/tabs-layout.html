@@ -1,0 +1,22 @@
+<h1 class="ui header">
+    <span data-bind="text: config().title"></span>
+    <small data-bind="text: config().subtitle, visible: config().subtitle"></small>
+</h1>
+
+<div class="ui secondary pointing menu">
+    <!-- ko foreach: config().tabs -->
+    <a class="item" data-bind="
+        text: title,
+        click: select,
+        css: {active: selected},
+    "></a>
+    <!-- /ko -->
+</div>
+<section class="ui scrollable bottom pane">
+    <!-- ko foreach: selectedTab().graphs -->
+    <!-- ko if: $parent.selectedGraph() === null || $data.selected() -->
+        <!-- ko component: { name: 'visualizer', params: $data } -->
+        <!-- /ko -->
+    <!-- /ko -->
+    <!-- /ko -->
+</section>

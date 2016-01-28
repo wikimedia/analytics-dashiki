@@ -1,1 +1,9 @@
-<div data-bind="stackedBars: {data: data, colors: colors}"></div>
+<style>
+.axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+</style>
+
+<div data-bind="stackedBars: {data: data, label: $data.label, colors: colors}"></div>

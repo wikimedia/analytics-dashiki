@@ -102,10 +102,15 @@ define(function (require) {
 
     ko.bindingHandlers.stackedBars = {
         update: function (element, valueAccessor) {
-            var timeseriesData = ko.unwrap(valueAccessor().data),
-                colors = ko.unwrap(valueAccessor().colors),
-                data = unfoldData(timeseriesData.data),
-                side = timeseriesData.label;
+            var val = ko.unwrap(valueAccessor()),
+                timeseriesData = ko.unwrap(val.data),
+                colors = ko.unwrap(val.colors),
+                side = ko.unwrap(val.label);
+
+            if (!timeseriesData || !timeseriesData.header.length) {
+                return;
+            }
+            var data = unfoldData(timeseriesData);
 
             if (!_.isEmpty(data)) {
                 // This code inside this if clause is based on this example:

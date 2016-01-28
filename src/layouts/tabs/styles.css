@@ -1,0 +1,45 @@
+html, body {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+h1 small {
+    font-size: 18px;
+    font-weight: normal;
+    color: #999999;
+}
+
+.resizable.container {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.link {
+    cursor: pointer;
+}
+
+tabs-layout {
+    display: block;
+    margin: 10px 0 0 0;
+}
+
+tabs-layout .ui.header {
+    margin: 10px;
+}
+tabs-layout .ui.menu {
+    margin-bottom: 0;
+}
+
+tabs-layout > .scrollable.bottom.pane {
+    overflow-y: scroll!important;
+    overflow-x: hidden!important;
+    height: 78vh!important;
+    background-color: #f7f7f7;
+    padding: 1em;
+}
+
+tabs-layout > .scrollable.bottom.pane .attached.segment {
+    width: auto;
+}

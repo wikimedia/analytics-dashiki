@@ -1,5 +1,6 @@
 # temp files and install artifacts
 *swp
+*swo
 .DS_Store
 node_modules/
 bower_modules/

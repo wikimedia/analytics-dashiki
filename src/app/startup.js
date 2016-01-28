@@ -11,8 +11,9 @@ define(function(require) {
     require('ajaxWrapper');
     require('logger');
     require('app/ko-extensions/global-bindings');
+    // separate layouts, TODO: make each layout register its own components
 
-    // register components here like
+    // *********** BEGIN Metrics By Project Layout Components ********** //
     ko.components.register('wikimetrics-layout', { require: 'components/wikimetrics-layout/wikimetrics-layout' });
     ko.components.register('wikimetrics-visualizer', { require: 'components/wikimetrics-visualizer/wikimetrics-visualizer' });
     ko.components.register('project-selector', { require: 'components/project-selector/project-selector' });
@@ -21,10 +22,10 @@ define(function(require) {
     ko.components.register('breakdown-toggle', { require: 'components/breakdown-toggle/breakdown-toggle' });
     ko.components.register('vega-timeseries', { require: 'components/visualizers/vega-timeseries/vega-timeseries' });
     ko.components.register('annotation-list', { require: 'components/annotation-list/annotation-list' });
+    // *********** END Metrics By Project Layout Components ************ //
 
 
-    // *********** BEGIN Funnel Layout Components ********** //
-    // separate layout, TODO: make multiple layouts coexist
+    // *********** BEGIN Compare Layout Components ********** //
     ko.components.register('compare-layout', { require: 'components/compare-layout/compare-layout' });
     ko.components.register('dropdown', { require: 'components/dropdown/dropdown' });
     ko.components.register('button-group', { require: 'components/button-group/button-group' });
@@ -32,16 +33,21 @@ define(function(require) {
     ko.components.register('rickshaw-timeseries', { require: 'components/visualizers/rickshaw-timeseries/rickshaw-timeseries' });
     ko.components.register('nvd3-timeseries', { require: 'components/visualizers/nvd3-timeseries/nvd3-timeseries' });
     ko.components.register('dygraphs-timeseries', { require: 'components/visualizers/dygraphs-timeseries/dygraphs-timeseries' });
+    ko.components.register('filter-timeseries', { require: 'components/visualizers/filter-timeseries/filter-timeseries' });
     ko.components.register('stacked-bars', { require: 'components/visualizers/stacked-bars/stacked-bars' });
+
 
     // comparison components
     ko.components.register('a-b-compare', { require: 'components/a-b-compare/a-b-compare' });
     ko.components.register('compare-sunburst', { require: 'components/a-b-compare/compare-sunburst' });
     ko.components.register('compare-timeseries', { require: 'components/a-b-compare/compare-timeseries' });
     ko.components.register('compare-stacked-bars', { require: 'components/a-b-compare/compare-stacked-bars' });
-    ko.components.register('filter-timeseries', { require: 'components/filter-timeseries/filter-timeseries' });
+    // *********** END Compare Layout Components ************ //
 
-    // *********** END Funnel Layout Components ************ //
+    // *********** BEGIN Tabs Layout Components ********** //
+    ko.components.register('tabs-layout', { require: 'components/tabs-layout/tabs-layout' });
+    ko.components.register('visualizer', { require: 'components/visualizers/visualizer/visualizer' });
+    // *********** END Tabs Layout Components ************ //
 
     // Start the application
     ko.applyBindings();

@@ -12,26 +12,6 @@ comparisons .ui.top.attached.header { background-color: #ffffff; }
     padding: 0;
 }
 
-div.sunburst {
-    font-family: 'Open Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 400;
-    padding: 10px;
-}
-div.sunburst div.sequence text { font-weight: 600; fill: #fff; }
-div.sunburst svg path {
-    stroke: #fff;
-}
-div.sunburst div.explanation {
-    position: relative;
-    height: 0;
-    text-align: center;
-    color: #666;
-}
-div.sunburst span.percentage {
-    font-size: 2.0em;
-}
-
 /* Additional semantic styles */
 .ui.tight.grid {
     margin: 0;

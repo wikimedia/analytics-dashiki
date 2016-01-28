@@ -1,0 +1,12 @@
+<div class="ui top attached link header" data-bind="
+    click: select,
+    css: { inverted: selected },
+    attr: { title: selected() ?
+                'click to show all graphs' :
+                'click to show only this graph' },
+">
+    <span data-bind="text: title"></span>
+</div>
+<div class="ui attached segment">
+    <div data-bind="component: {name: type, params: params}"></div>
+</div>

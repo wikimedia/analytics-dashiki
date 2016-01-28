@@ -45,11 +45,17 @@ define(function (require) {
         }, this);
 
         this.filteredData = ko.computed(function () {
+            var data = ko.unwrap(this.data);
+
+            if (!data) {
+                return [];
+            }
+
             var newHeader = _.filter(this.filteredHeader(), function (header) {
                 return header.selected();
             });
 
-            return ko.unwrap(this.data).pickColumns(
+            return data.pickColumns(
                 _.pluck(newHeader, 'title'),
                 _.pluck(newHeader, 'patternLabel')
             );
