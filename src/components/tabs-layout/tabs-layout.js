@@ -1,5 +1,8 @@
+'use strict';
+/**
+ * Defines a generic tabular layout dashboard
+ */
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         _ = require('lodash'),

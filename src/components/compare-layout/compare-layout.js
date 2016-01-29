@@ -1,7 +1,7 @@
+'use strict';
 // NOTE: a few oddities remain from when this was hardcoded to
 // compare only visual editor and wikitext, but it's much cleaner
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         _ = require('lodash'),

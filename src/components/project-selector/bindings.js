@@ -1,5 +1,10 @@
-define(['knockout', 'utils', 'typeahead'], function (ko, utils) {
-    'use strict';
+'use strict';
+define(function (require) {
+
+    var ko = require('knockout'),
+        utils = require('utils');
+
+    require('typeahead');
 
     // Data is an array of option objects
     function substringMatcher(data, minLength) {

@@ -1,8 +1,8 @@
+'use strict';
 /**
  * Look into doing this with Lodash if we can make a slim enough build
  **/
 define(function (require) {
-    'use strict';
 
     var moment = require('moment');
 

@@ -1,8 +1,8 @@
+'use strict';
 /**
  * Static configuration object
  */
 define(function (require) {
-    'use strict';
 
     // load any config files written by the build system
     var buildConfig = require('./config-from-build');
@@ -40,10 +40,5 @@ define(function (require) {
             endpoint: '//datasets.wikimedia.org/limn-public-data/metrics',
             format: 'tsv'
         },
-
-
-        //urlProjectLanguageChoices: '/stubs/fake-wikimetrics/projectLanguageChoices.json',
-        //urlCategorizedMetrics: '/stubs/fake-wikimetrics/categorizedMetrics.json',
-        //urlDefaultDashboard: '/stubs/fake-wikimetrics/defaultDashboard.json',
     };
 });

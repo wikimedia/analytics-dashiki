@@ -5,8 +5,8 @@ if (typeof window === 'undefined') {
         optimizerConfig: {
             include: [
                 'requireLib',
-                'components/wikimetrics-visualizer/wikimetrics-visualizer',
-                'components/wikimetrics-layout/wikimetrics-layout',
+                'components/visualizers/wikimetrics/wikimetrics',
+                'components/metrics-by-project-layout/metrics-by-project-layout',
                 'components/metric-selector/metric-selector'
             ],
             bundles: {

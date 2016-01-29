@@ -1,5 +1,5 @@
+'use strict';
 define(function (require) {
-    'use strict';
 
     var d3 = require('d3'),
         templateMarkup = require('text!./compare-timeseries.html');

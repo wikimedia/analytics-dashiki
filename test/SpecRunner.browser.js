@@ -1,8 +1,9 @@
+'use strict';
 (function () {
     // Reference your test modules here
     var testModules = [
-        'components/wikimetrics-layout',
-        'components/wikimetrics-visualizer',
+        'components/metrics-by-project-layout',
+        'components/visualizers/wikimetrics',
         'components/vega-timeseries',
         'components/project-selector',
         'app/data-converters',

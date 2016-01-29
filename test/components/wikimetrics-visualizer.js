@@ -1,7 +1,7 @@
 define(function (require) {
     'use strict';
 
-    var component = require('components/wikimetrics-visualizer/wikimetrics-visualizer'),
+    var component = require('components/visualizers/wikimetrics/wikimetrics'),
         $ = require('jquery'),
         api = require('apis.wikimetrics'),
         ko = require('knockout'),

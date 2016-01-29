@@ -1,3 +1,4 @@
+'use strict';
 /**
  * This component allows the user to select a metric.
  *
@@ -19,7 +20,6 @@
         "/>
  */
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         templateMarkup = require('text!./metric-selector.html'),

@@ -1,12 +1,12 @@
+'use strict';
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         _ = require('lodash'),
         wikimetricsApi = require('apis.wikimetrics'),
         configApi = require('apis.config'),
         stateManagerFactory = require('stateManager'),
-        templateMarkup = require('text!./wikimetrics-layout.html');
+        templateMarkup = require('text!./metrics-by-project-layout.html');
 
     function WikimetricsLayout() {
         var self = this;

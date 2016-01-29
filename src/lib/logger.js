@@ -1,5 +1,5 @@
+'use strict';
 define([], function () {
-    'use strict';
     /**
      * Logger for client side errors.
      *

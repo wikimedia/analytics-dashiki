@@ -1,5 +1,3 @@
-/* jshint -W098 */
-/* jshint -W079 */
 'use strict';
 // require.js looks for the following global when initializing
 var require = {

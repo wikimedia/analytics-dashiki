@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Knows how to translate from the URL to an application state
  * and (in the future) will mutate the url reading the application state
@@ -13,7 +14,6 @@
  * http: //dashiki.com/something#projects=enwiki,dewiki/metrics=newlyregister,rollingactive
  **/
 define(function (require) {
-    'use strict';
     var ko = require('knockout'),
         configApi = require('apis.config'),
         URI = require('uri/URI'),
@@ -98,7 +98,7 @@ define(function (require) {
         var metrics = [];
         var defaults = hash.split('/');
         defaults.forEach(function (item) {
-            var choice = item.split("=");
+            var choice = item.split('=');
             //some translation needed from 'projects' to 'defaultProjects'
             if (choice[0] === 'projects' && choice.length > 1) {
                 projects = choice[1].split(',');
@@ -128,7 +128,7 @@ define(function (require) {
 
         this.state = null;
 
-        this._init();
+        this.init();
 
     }
 
@@ -137,26 +137,26 @@ define(function (require) {
      * if not it bootstraps the state of the application
      * from the config.
      **/
-    StateManager.prototype._init = function () {
+    StateManager.prototype.init = function () {
         var self = this;
         //gives you a nice object from window.location
         var uri = new URI().normalizeHash();
         // hash without '#'
         var hash = uri.fragment();
 
-        var _state;
+        var state;
 
         if (!hash) {
             configApi.getDefaultDashboard(function (config) {
-                _state = new State(config.defaultProjects, config.defaultMetrics);
+                state = new State(config.defaultProjects, config.defaultMetrics);
                 this.defaultProjects(config.defaultProjects);
                 this.defaultMetrics(config.defaultMetrics);
             }.bind(this));
 
         } else {
-            _state = State.splitStateURL(hash);
-            this.defaultProjects(_state.projects);
-            this.defaultMetrics(_state.metrics);
+            state = State.splitStateURL(hash);
+            this.defaultProjects(state.projects);
+            this.defaultMetrics(state.metrics);
         }
 
         // now define the computation for the state
@@ -176,16 +176,16 @@ define(function (require) {
                     });
                 }
 
-                _state = new State(projectNames, metricName);
+                state = new State(projectNames, metricName);
 
 
             } else {
                 // user must have cleared up the dashboard
                 // but has a prior state, clean it up
-                _state = new EmptyState();
+                state = new EmptyState();
             }
-            StateManager._publish(_state);
-            return _state;
+            StateManager.publish(state);
+            return state;
         });
 
     };
@@ -199,7 +199,7 @@ define(function (require) {
      * Publishes state changes to the url
      * @param State object
      **/
-    StateManager._publish = function (state) {
+    StateManager.publish = function (state) {
         var fragment = state.toString();
         var uri = new URI().normalizeHash();
         //reset fragment

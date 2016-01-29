@@ -1,8 +1,12 @@
-define(['components/wikimetrics-layout/wikimetrics-layout'], function(component) {
-    var WikimetricsLayout = component.viewModel,
+'use strict';
+define(function(require) {
+
+    var component = require('components/metrics-by-project-layout/metrics-by-project-layout'),
         wikimetricsApi = require('apis.wikimetrics');
 
-    describe('WikimetricsLayout view model', function() {
+    var MetricsByProjectLayout = component.viewModel;
+
+    describe('MetricsByProjectLayout view model', function() {
 
         beforeEach(function() {
             var deferred = new $.Deferred();
@@ -16,13 +20,13 @@ define(['components/wikimetrics-layout/wikimetrics-layout'], function(component)
         });
 
         it('should create observables needed by others', function() {
-            var layout = new WikimetricsLayout();
+            var layout = new MetricsByProjectLayout();
 
-            expect(typeof(layout.selectedMetric)).toEqual('function');
-            expect(typeof(layout.selectedProjects)).toEqual('function');
+            expect(typeof layout.selectedMetric).toEqual('function');
+            expect(typeof layout.selectedProjects).toEqual('function');
 
-            expect(typeof(layout.metrics)).toEqual('function');
-            expect(typeof(layout.defaultMetrics)).toEqual('function');
+            expect(typeof layout.metrics).toEqual('function');
+            expect(typeof layout.defaultMetrics).toEqual('function');
         });
     });
 });

@@ -1,3 +1,4 @@
+'use strict';
 /**
  * This component coordinates between the project, metric, and time selectors
  *   and visualizations.  Currently, it will render a single timeseries graph
@@ -5,18 +6,17 @@
  *
  * Example usage:
 
-        <wikimetrics-visualizer params="
+        <wikimetrics params="
             metric      : -- on observable of your selected metric --
             projects    : -- an observable of your selected projects --
         "/>
  */
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         _ = require('lodash'),
         TimeseriesData = require('converters.timeseries'),
-        templateMarkup = require('text!./wikimetrics-visualizer.html'),
+        templateMarkup = require('text!./wikimetrics.html'),
         annotationsApi = require('apis.annotations'),
         apiFinder = require('app/apis/api-finder');
 

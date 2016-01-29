@@ -1,5 +1,5 @@
+'use strict';
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         templateMarkup = require('text!./annotation-list.html'),

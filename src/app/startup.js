@@ -1,9 +1,9 @@
+'use strict';
 /**
 All requires below live on global scope.
 There is no need to specify them as such
 **/
 define(function(require) {
-    'use strict';
 
     var ko = require('knockout');
 
@@ -14,11 +14,10 @@ define(function(require) {
     // separate layouts, TODO: make each layout register its own components
 
     // *********** BEGIN Metrics By Project Layout Components ********** //
-    ko.components.register('wikimetrics-layout', { require: 'components/wikimetrics-layout/wikimetrics-layout' });
-    ko.components.register('wikimetrics-visualizer', { require: 'components/wikimetrics-visualizer/wikimetrics-visualizer' });
+    ko.components.register('metrics-by-project-layout', { require: 'components/metrics-by-project-layout/metrics-by-project-layout' });
+    ko.components.register('wikimetrics', { require: 'components/visualizers/wikimetrics/wikimetrics' });
     ko.components.register('project-selector', { require: 'components/project-selector/project-selector' });
     ko.components.register('metric-selector', { require: 'components/metric-selector/metric-selector' });
-    ko.components.register('time-selector', { require: 'components/time-selector/time-selector' });
     ko.components.register('breakdown-toggle', { require: 'components/breakdown-toggle/breakdown-toggle' });
     ko.components.register('vega-timeseries', { require: 'components/visualizers/vega-timeseries/vega-timeseries' });
     ko.components.register('annotation-list', { require: 'components/annotation-list/annotation-list' });

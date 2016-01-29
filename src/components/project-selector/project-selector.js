@@ -1,6 +1,5 @@
-/* jshint -W098 */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var ko              = require('knockout'),
         templateMarkup  = require('text!./project-selector.html'),
@@ -95,7 +94,6 @@ define(function (require) {
         });
     }
 
-    /*jslint unparam: true */
     ProjectSelector.prototype.displaySecondLevel = function (event, element, selection, datasetName) {
         var options = [],
             reverse = ko.unwrap(this.reverseLookup) || {};
@@ -122,7 +120,6 @@ define(function (require) {
         options.sort(utils.sortByNameIgnoreCase);
         this.suboptions(options);
     };
-    /*jslint unparam: false */
 
     ProjectSelector.prototype.hideSecondLevel = function () {
 
@@ -166,7 +163,7 @@ define(function (require) {
     ProjectSelector.prototype.removeCategory = function (removeOthers, data) {
         // change the whole selectedProjects array at once
         // so as to send updates only once
-        var _selectedProjects = ko.utils.arrayFilter(this.selectedProjects(), function (item) {
+        var selectedProjects = ko.utils.arrayFilter(this.selectedProjects(), function (item) {
             var languages = data.languages,
                 i, keep;
 
@@ -185,7 +182,7 @@ define(function (require) {
             }
             return keep;
         });
-        this.selectedProjects(_selectedProjects);
+        this.selectedProjects(selectedProjects);
     };
 
     return {

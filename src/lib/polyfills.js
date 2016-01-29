@@ -1,6 +1,6 @@
+'use strict';
 // Really basic polyfill, consider using modernizr
 define(function() {
-    'use strict';
 
     if (!Array.prototype.find) {
         Array.prototype.find = function(predicate) {
