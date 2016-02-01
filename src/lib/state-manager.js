@@ -69,7 +69,7 @@ define(function (require) {
     State.prototype.buildHashFragment = function () {
 
         var projects = 'projects=' + this.projects.join(',');
-        var metrics = 'metrics=' + this.metrics.join(',');
+        var metrics = 'metrics=' + encodeURIComponent(this.metrics.join(','));
         return projects + '/' + metrics;
     };
 
@@ -103,7 +103,7 @@ define(function (require) {
             if (choice[0] === 'projects' && choice.length > 1) {
                 projects = choice[1].split(',');
             } else if (choice[0] === 'metrics' && choice.length > 1) {
-                metrics = choice[1].split(',');
+                metrics = choice[1].split(',').map(decodeURIComponent);
             }
         });
         return new State(projects, metrics);
