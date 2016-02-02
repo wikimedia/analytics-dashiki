@@ -18,6 +18,7 @@ if (typeof window === 'undefined') {
                     'components/visualizers/filter-timeseries/filter-timeseries',
                     'components/visualizers/dygraphs-timeseries/dygraphs-timeseries'
                 ],
+                'table-timeseries': ['components/visualizers/table-timeseries/table-timeseries'],
             }
         }
     };

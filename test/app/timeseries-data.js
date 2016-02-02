@@ -144,14 +144,48 @@ define(function (require) {
             expect(tt.patternLabels).toEqual([1, 2, 3, 4, 5, 5, 6]);
         });
 
-        it('should respect options to rowData', function () {
-            var date = new Date('2015-01-01').getTime(),
+        it('should handle options to rowData', function () {
+            var dateStr = '2015-01-01',
+                date = new Date(dateStr).getTime(),
                 t1 = new TimeseriesData(
                     [1],
-                    {'2015-01-01': [[1]]}
+                    {
+                        '2015-01-01': [[1]],
+                        '2015-02-01': [[2]],
+                        '2015-03-01': [[3]],
+                        '2015-04-01': [[4]]
+                    }
                 );
 
+            // Date conversion
             expect(t1.rowData({convertToDate: true})[0][0].getTime()).toEqual(date);
+            // String conversion
+            expect(t1.rowData({convertToString: true})[0][0]).toEqual(dateStr);
+            // filter by date string
+            expect(t1.rowData({convertToString: true, filter: function (row) {
+                return row[0].indexOf('2015-02') >= 0;
+            }}).length).toEqual(1);
+            expect(t1.rowData({convertToString: true, filter: function (row) {
+                return row[0].indexOf('2016-') >= 0;
+            }}).length).toEqual(0);
+            // limit
+            expect(t1.rowData({limit: {start: 1, end: 3}}).length).toEqual(2);
+            expect(t1.rowData({limit: {start: 1, end: 3}})[0][1]).toEqual(2);
+            expect(t1.rowData({limit: {start: 1, end: 3}})[1][1]).toEqual(3);
+        });
+
+        it('should report size correctly', function () {
+            var t1 = new TimeseriesData(
+                    [1],
+                    {
+                        '2015-01-01': [[1], [10]],
+                        '2015-02-01': [[2]],
+                        '2015-03-01': [[3], [30]],
+                        '2015-04-01': [[4]]
+                    }
+                );
+
+            expect(t1.size()).toEqual(6);
         });
 
         it('should should handle multiple rows per date', function () {

@@ -54,6 +54,9 @@ define(function (require) {
             logger.error(error);
         });
 
+        // add the address fetched to the metricInfo, so clients can use it
+        metricInfo.downloadLink = address;
+
         return deferred.promise();
     };
 

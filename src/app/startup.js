@@ -46,6 +46,7 @@ define(function(require) {
     // *********** BEGIN Tabs Layout Components ********** //
     ko.components.register('tabs-layout', { require: 'components/tabs-layout/tabs-layout' });
     ko.components.register('visualizer', { require: 'components/visualizers/visualizer/visualizer' });
+    ko.components.register('table-timeseries', { require: 'components/visualizers/table-timeseries/table-timeseries' });
     // *********** END Tabs Layout Components ************ //
 
     // Start the application

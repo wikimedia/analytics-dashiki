@@ -1,5 +1,5 @@
+'use strict';
 define(function (require) {
-    'use strict';
 
     var templateMarkup = require('text!./visualizer.html'),
         ko = require('knockout'),
@@ -31,9 +31,11 @@ define(function (require) {
             data:  ko.observable(new TimeseriesData()),
             colors: colorScale,
             height: 500,
+            id: _.kebabCase([graph.metric, graph.submetric].join('-')),
         };
 
         api.getData(graph, 'all').done(this.params.data);
+        this.params.downloadLink = graph.downloadLink;
     }
 
     return {

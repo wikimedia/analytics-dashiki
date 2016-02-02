@@ -169,6 +169,15 @@ define(function (require) {
     };
 
     /**
+     * Returns the number of rows
+     */
+    TimeseriesData.prototype.size = function () {
+        return _(this.rowsByDate).transform(function (result, rows) {
+            result.size = result.size + rows.length;
+        }, {size: 0}).value().size;
+    };
+
+    /**
      * Filter data by columns
      * @param {Array} header - column names
      * @param {Array} patternLabels - label names
@@ -225,7 +234,7 @@ define(function (require) {
     TimeseriesData.prototype.rowData = function (options) {
         options = options || {};
 
-        return _(this.rowsByDate).transform(function (result, rows, key) {
+        var output = _(this.rowsByDate).transform(function (result, rows, key) {
             var date = _.attempt(function () {
                 return moment.utc(key).toDate().getTime();
             });
@@ -239,13 +248,28 @@ define(function (require) {
 
                 // output all rows for this date
                 result.push.apply(result, _.map(rows, function (row) {
-                    return [options.convertToDate ? moment.utc(date).toDate() : date].concat(row);
+                    var dateOutput = date;
+                    if (options.convertToDate) {
+                        dateOutput = moment.utc(date).toDate();
+                    }
+                    if (options.convertToString) {
+                        dateOutput = moment.utc(date).format('YYYY-MM-DD');
+                    }
+                    return [dateOutput].concat(row);
                 }));
             }
 
         }, [], this).sortBy(function (row) {
             return row[0];
-        }).value();
+        });
+
+        if (options.filter) {
+            output = output.filter(options.filter);
+        }
+        if (options.limit) {
+            output = output.slice(options.limit.start, options.limit.end);
+        }
+        return output.value();
     };
 
     return TimeseriesData;

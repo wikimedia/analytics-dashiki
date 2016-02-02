@@ -1,0 +1,46 @@
+<div class="ui secondary menu">
+    <div class="item">
+        <!-- ko if: largeDataset -->
+        <div class="ui icon input">
+            <i class="search icon"></i>
+            <input type="text" placeholder="filter then press Enter" data-bind="value: filter">
+        </div>
+        <!-- /ko -->
+
+        <!-- ko ifnot: largeDataset -->
+        <div class="ui icon input">
+            <i class="search icon"></i>
+            <input type="text" placeholder="filter as you type" data-bind="textInput: filter">
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <div class="right menu">
+        <div class="item">
+            <a class="ui blue icon button" data-bind="attr: {href: downloadLink}">
+                <i class="download icon"></i>
+                Download
+            </a>
+        </div>
+    </div>
+</div>
+
+<table class="ui striped definition table">
+    <thead>
+        <tr>
+            <th></th>
+            <!-- ko foreach: header -->
+            <th data-bind="text: $data"></th>
+            <!-- /ko -->
+        </tr>
+    </thead>
+    <tbody>
+        <!-- ko foreach: rows -->
+        <tr>
+            <!-- ko foreach: $data -->
+            <td data-bind="text: $data"></td>
+            <!-- /ko -->
+        </tr>
+        <!-- /ko -->
+    </tbody>
+</table>

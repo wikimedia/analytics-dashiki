@@ -206,14 +206,20 @@ gulp.task('css', ['clean'], function () {
 
 /** Copies semantic fonts where the css expects them to be**/
 gulp.task('fonts', ['clean'], function () {
-    var semanticFonts = 'src/fonts';
-    return gulp.src([
-        semanticFonts + '/icons.svg',
-        semanticFonts + '/icons.ttf',
-        semanticFonts + '/icons.woff'
+    var semanticFonts = 'src/fonts/*',
+        semantic2Fonts = 'src/themes/default/**/*';
+
+    // put fonts in both places
+    // not pretty but needed for self-contained deploys
+    gulp.src([
+        semantic2Fonts,
     ])
-        // put fonts in both places
-        // not pretty but needed for self-contained deploys
+        .pipe(gulp.dest(layout.destPath + 'themes/default/'))
+        .pipe(gulp.dest(layout.destPath + '../themes/default/'));
+
+    return gulp.src([
+        semanticFonts,
+    ])
         .pipe(gulp.dest(layout.destPath + 'fonts/'))
         .pipe(gulp.dest(layout.destPath + '../fonts/'));
 });
