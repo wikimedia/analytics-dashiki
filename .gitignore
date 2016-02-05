@@ -16,3 +16,6 @@ dashiki.sublime-workspace
 # able to build different configurations
 dist/
 fonts/
+
+# ignore python stuff fabric generates
+*pyc

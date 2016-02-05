@@ -1,5 +1,13 @@
 # Deployment config for dashboards
 config:
+    vital-signs:
+        layout: metrics-by-project
+        config: VitalSigns
+        piwikHost:
+        piwikId:
+        hostname: vital-signs-test.wmflabs.org
+        subfolder:
+
     edit-analysis:
         layout: compare
         config: VisualEditorAndWikitext
@@ -7,6 +15,7 @@ config:
         piwikId:
         hostname: edit-analysis-test.wmflabs.org
         subfolder: compare
+
     language-reportcard:
         layout: metrics-by-project
         config: LanguageReportcard
@@ -14,3 +23,11 @@ config:
         piwikId:
         hostname: language-reportcard-test.wmflabs.org
         subfolder:
+
+    multimedia-health:
+        layout: metrics-by-project
+        config: MultimediaHealth
+        piwikHost:
+        piwikId:
+        hostname: edit-analysis-test.wmflabs.org
+        subfolder: multimedia-health
