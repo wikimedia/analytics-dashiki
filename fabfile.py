@@ -141,6 +141,7 @@ def setup():
     Setup npm, bower and gulp in local environment,
     only needs to be done once
     """
+    print 'Setting up your local environment'
     local('npm install')
     local('bower install')
     local('npm install -g gulp')
@@ -154,6 +155,7 @@ def deploy():
     and pushing the dashboard to the remote destination directory
     """
     # Compile the report locally using gulp
+    print 'Compiling {} dashboard'.format(env.dashboard)
     local(get_gulp_command())
 
     # Get the source and destination paths
@@ -161,6 +163,7 @@ def deploy():
     dest = get_dest_path()
     source = get_source_path()
 
+    print 'Deploying {} dashboard to {}'.format(env.dashboard, env.stage)
     # Create the destination directory
     sudo('mkdir -p {}'.format(dest))
 
