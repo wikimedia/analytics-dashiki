@@ -103,7 +103,7 @@ edit-analysis:
         subfolder: compare
 ```
 
-In Wikimedia labs, we are hoping to have all the dashboards setup in the Dashiki labs project, so ask for access to this project. And from Wikitech's Manage Web Proxies page, set up a proxy for your hostname. Use the dashiki-staging-01 instance to test, and dasiki-01 as prod. You can have different hostnames for them, like:
+In Wikimedia labs, we are hoping to have all the dashboards setup in the Dashiki labs project, so ask for access to this project. And from Wikitech's Manage Web Proxies page, set up a proxy for your hostname. Use the dashiki-staging-01 instance to test, and dashiki-01 as prod. You can have different hostnames for them, like:
 
 ```
 edit-analysis-test.wmflabs.org, http://dashiki-staging-01.dashiki.eqiad.wmflabs:80
@@ -112,7 +112,14 @@ edit-analysis.wmflabs.org, http://dashiki-01.dashiki.eqiad.wmflabs:80
 
 If you are deploying to a different instance, add a stage to the STAGES dictionary defined in the fabfile.
 
-You are all set. Apache has been configured on our instances to serve all files out of /srv/static/hostname at https://hostname. If you are not using labs - you can have a similar setup - Feel free to adapt the fabfile to suit your destination paths. (Our puppet setup is [here](https://github.com/wikimedia/operations-puppet/blob/production/manifests/role/simplestatic.pp))
+Apache has been configured on our instances to serve all files out of /srv/static/hostname at https://hostname. To get this working for your dashboard add your hostname to the staging/prod Hiera config page:
+
+* [Staging config](https://wikitech.wikimedia.org/wiki/Hiera:Dashiki/host/dashiki-staging-01)
+* [Prod config](https://wikitech.wikimedia.org/wiki/Hiera:Dashiki/host/dashiki-01)
+
+You are all set!
+
+If you are not using labs - you can have a similar setup - Feel free to adapt the fabfile to suit your destination paths. (Our puppet setup is [here](https://github.com/wikimedia/operations-puppet/blob/production/manifests/role/simplestatic.pp))
 
 * What all can you do with fabric? - `fab help`
 * Find all dashboards setup in config.yaml - `fab dashboards`
