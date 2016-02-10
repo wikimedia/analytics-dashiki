@@ -31,3 +31,11 @@ config:
         piwikId:
         hostname: edit-analysis-test.wmflabs.org
         subfolder: multimedia-health
+
+    flow-by-wiki:
+        layout: metrics-by-project
+        config: FlowByWiki
+        piwikHost:
+        piwikId:
+        hostname: edit-analysis-test.wmflabs.org
+        subfolder: beta-enables
