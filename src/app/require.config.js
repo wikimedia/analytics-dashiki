@@ -54,7 +54,7 @@ var require = {
         'converters.separated-values'       : 'app/data-converters/separated-values',
         'converters.simple-separated-values': 'app/data-converters/simple-separated-values',
         'converters.wikimetrics-timeseries' : 'app/data-converters/wikimetrics-timeseries',
-        'converters.funnel-data'            : 'app/data-converters/funnel-data',
+        'converters.hierarchy-data'         : 'app/data-converters/hierarchy-data',
         'converters.timeseries'             : 'app/data-converters/timeseries-data',
         'converters.annotations'            : 'app/data-converters/annotations-data',
 
