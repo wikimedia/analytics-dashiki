@@ -29,6 +29,7 @@ define(function(require) {
     ko.components.register('dropdown', { require: 'components/dropdown/dropdown' });
     ko.components.register('button-group', { require: 'components/button-group/button-group' });
     ko.components.register('sunburst', { require: 'components/visualizers/sunburst/sunburst' });
+    ko.components.register('hierarchy', { require: 'components/visualizers/hierarchy/hierarchy' });
     ko.components.register('rickshaw-timeseries', { require: 'components/visualizers/rickshaw-timeseries/rickshaw-timeseries' });
     ko.components.register('nvd3-timeseries', { require: 'components/visualizers/nvd3-timeseries/nvd3-timeseries' });
     ko.components.register('dygraphs-timeseries', { require: 'components/visualizers/dygraphs-timeseries/dygraphs-timeseries' });

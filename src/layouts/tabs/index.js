@@ -12,6 +12,7 @@ if (typeof window === 'undefined') {
                 // If you want parts of the site to load on demand, remove them from the 'include' list
                 // above, and group them into bundles here.
                 'sunburst': ['components/visualizers/sunburst/sunburst'],
+                'hierarchy': ['components/visualizers/hierarchy/hierarchy'],
                 'stacked-bars': ['components/visualizers/stacked-bars/stacked-bars'],
                 'dygraphs-timeseries': ['components/visualizers/dygraphs-timeseries/dygraphs-timeseries'],
                 'filter-timeseries': [

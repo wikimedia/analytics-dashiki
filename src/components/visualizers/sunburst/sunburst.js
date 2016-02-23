@@ -11,9 +11,30 @@ define(function(require) {
     var ko = require('knockout'),
         d3 = require('d3'),
         templateMarkup = require('text!./sunburst.html'),
-        buildHierarchy = require('converters.funnel-data');
+        buildHierarchy = require('converters.hierarchy-data');
 
     require('./bindings');
+
+    /**
+     * Extracts a hierarchy path from a row of input.
+     * From: ['2016-01-01', 'path-sepparated-by-dashes', 123]
+     * To: ['path', 'separated', 'by', 'dashes', 'end']
+     */
+    function splitPath (row) {
+        var parts = row[1].split('-');
+
+        // Limit hierarchy values to be shown to 10.
+        parts = parts.slice(0, 10);
+
+        // Always end the path because if the partition layout saw these paths:
+        //   A -> B -> C
+        //   A -> B -> C -> D
+        // it would not show the first one since C has other children. So C needs
+        // an "end" leaf child. We can look into simulating this but it's harder.
+        parts.push('end');
+
+        return parts;
+    }
 
     /**
      * Graphs sequences of steps as proportional concentric arcs
@@ -29,7 +50,7 @@ define(function(require) {
     function Sunburst(params) {
         this.data = params.data;
         this.hierarchy = ko.computed(function() {
-            return buildHierarchy(ko.unwrap(this.data).rowData());
+            return buildHierarchy(ko.unwrap(this.data).rowData(), splitPath);
         }, this);
         this.colors = params.colors || d3.scale.category10();
 

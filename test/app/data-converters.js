@@ -1,7 +1,8 @@
 define(function (require) {
     'use strict';
 
-    var factory = require('dataConverterFactory');
+    var factory = require('dataConverterFactory'),
+        buildHierarchy = require('converters.hierarchy-data');
 
     describe('sv converter', function () {
         var converterCSV = factory.getDataConverter('csv');
@@ -167,6 +168,60 @@ define(function (require) {
             ]);
             expect(converted.colorLabels).toEqual(['arwiki']);
             expect(converted.patternLabels).toEqual([0]);
+        });
+    });
+
+    describe('hierarchy-data converter', function () {
+        var converterCSV = factory.getDataConverter('csv');
+
+        it('should convert tsv to hierarchy', function () {
+            var csvData = (
+                    'h1,h2,h3,h4\n' +
+                    '2016-01-01,catA1,catB1,1\n' +
+                    '2016-01-02,catA2,catB2,2\n' +
+                    '2016-01-03,catA2,catB3,3\n'
+                ),
+                converted = converterCSV({}, csvData),
+                hierarchy = buildHierarchy(
+                    converted.rowData(),
+                    function (row) { return row.slice(1, row.length - 1); }
+                ),
+                expected = {
+                    name: 'root',
+                    children: [
+                        {
+                            name: 'catA2',
+                            children: [
+                                {name: 'catB3', size: 3},
+                                {name: 'catB2', size: 2}
+                            ]
+                        },
+                        {
+                            name: 'catA1',
+                            children: [
+                                {name: 'catB1', size: 1}
+                            ]
+                        }
+                    ]
+                },
+                checkTrees = function (a, b) {
+                    if (a.name !== b.name || a.size !== b.size ||
+                        Boolean(a.children) !== Boolean(b.children) ||
+                        a.children && a.children.length !== b.children.length) {
+                        return false;
+                    }
+                    if (a.children) {
+                        a.children.forEach(function (aChild, index) {
+                            var bChild = a.children[index];
+                            if (!checkTrees(aChild, bChild)) {
+                                return false;
+                            }
+                        });
+                    }
+                    return true;
+                };
+
+            expect(checkTrees(hierarchy, expected)).toBe(true);
         });
     });
 });
