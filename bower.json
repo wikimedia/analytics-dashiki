@@ -1,5 +1,6 @@
 {
-  "name": "dashiki",
+
+"name": "dashiki",
   "version": "0.0.0",
   "private": true,
   "dependencies": {
@@ -20,7 +21,8 @@
     "rickshaw": "~1.5.1",
     "nvd3": "~1.7.1",
     "dygraphs": "~1.1.0",
-    "lodash": "3.9.0-amd"
+    "lodash": "3.9.0-amd",
+    "pageviews":null
   },
   "resolutions": {
     "knockout": "~3.2.0",

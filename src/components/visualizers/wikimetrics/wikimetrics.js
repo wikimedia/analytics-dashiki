@@ -32,21 +32,23 @@ define(function (require) {
                 metric = ko.unwrap(this.metric);
 
             if (metric && projects && projects.length) {
-                var promises,
-                    showBreakdown = ko.unwrap(metric.showBreakdown);
+                var showBreakdown = ko.unwrap(metric.showBreakdown);
 
                 var api = apiFinder(metric);
 
-                // NOTE: this is fetching all datafiles each time and relies on the cache
-                // For a more optimal, but perhaps prematurely optimized, version see:
-                //     https://gerrit.wikimedia.org/r/#/c/158244/8/src/components/wikimetrics-visualizer/wikimetrics-visualizer.js
-                promises = projects.map(function (project) {
+                var promises = projects.map(function (project) {
                     return api.getData(metric, project.database, showBreakdown);
                 });
+
+                //invoqued when all promises are done
                 $.when.apply(this, promises).then(function () {
-                    this.mergedData(TimeseriesData.mergeAll(_.toArray(arguments)));
+                    var timeseriesData = _.flatten(arguments);
+                    console.log(TimeseriesData.mergeAll(_.toArray(timeseriesData)));
+                    this.mergedData(TimeseriesData.mergeAll(_.toArray(timeseriesData)));
                     this.applyColors(projects);
                 }.bind(this));
+
+
             } else {
                 this.mergedData(new TimeseriesData([]));
             }

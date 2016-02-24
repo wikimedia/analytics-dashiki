@@ -1,24 +1,25 @@
 /**
- * Retrieves the pageview counts per project from the files produced by webstatscollector
- * and hive/oozie according to our legacy pageview definition for now.
- *
- * Please note that as long as data abides to this format dashiki
- * can retrieve pageview counts from anywhere.
+ * Retrieves the pageview counts from pageview API
  */
 define(function (require) {
     'use strict';
 
     var siteConfig = require('config'),
         dataConverterFactory = require('dataConverterFactory'),
-        uri = require('uri/URI'),
         logger = require('logger'),
-        TimeseriesData = require('converters.timeseries');
+        moment = require('moment'),
+        pageviews = require('pageviews'),
+        config = require('config'),
+        _ = require('lodash'),
+
+        TimeseriesData = require('converters.timeseries'),
+        sitematrix = require('sitematrix');
 
     require('uri/URITemplate');
 
-    function PageviewApi(config) {
-        this.root = config.pageviewApi.endpoint;
-        this.config = config;
+    function PageviewApi (conf) {
+        this.root = conf.pageviewApi.endpoint;
+        this.config = conf;
         // note that dataConverter is a function that will need
         // to be executed in the context of the metric
         this.dataConverter = dataConverterFactory.getDataConverter(config.pageviewApi.format);
@@ -27,47 +28,81 @@ define(function (require) {
     /**
      * Parameters
      *   metric         : an object representing a metric
-     *   project        : a Wiki project database name (enwiki, commonswiki, etc.)     *
-     *   showBreakdown  : whether to materialize breakdowns
+     *   project        : a Wiki project database name (enwiki, commonswiki, etc.)
+     *  showBreakdown  : whether to split data by mobile/destop access
      * Returns
      *  A promise with that wraps data for the metric/project transformed via the converter
+     *  Mobile and desktop breakdowns translate to two different requests to pageview api
      */
     PageviewApi.prototype.getData = function (metric, project, showBreakdown) {
-        var deferred = new $.Deferred();
 
-        //using christian's endpoint
-        //  http://quelltextlich.at/wmf/projectcounts/daily/enwiki.csv
-        var address = uri.expand('https://{root}/static/public/datafiles/{metric}/{project}.csv', {
-            root: this.root,
-            metric: metric.name,
-            project: project
-        }).toString();
+        var deferred = new $.Deferred(),
+            endDate = moment().format('YYYYMMDDHH'),
+            accessMethods;
 
-        $.ajax({
-            //let jquery decide datatype, otherwise things do not work when retrieving cvs
-            url: address
-        }).done(function (data) {
-            var converter = this.getDataConverter(),
-                opt = {
-                    label: project,
-                    allColumns: showBreakdown,
-                    varyColors: false,
-                    varyPatterns: true,
-                    globalPattern: false,
-                    startDate: '2014-01-01'
-                };
+        if (showBreakdown) {
+            accessMethods = ['all-access', 'desktop', 'mobile-web'];
+        } else {
+            accessMethods = ['all-access'];
+        }
 
-            deferred.resolve(converter(opt, data));
-        }.bind(this))
-        .fail(function (error) {
-            // resolve as done with empty results and log the error
-            // to avoid crashing the ui when a metric has problems
+        var sitematrixPromise = sitematrix.getProjectUrl(config, project);
+        sitematrixPromise.done(function (projectUrl) {
+
+            var promises = [];
+
+            _.forEach(accessMethods, function (method) {
+
+                promises.push(pageviews.getAggregatedPageviews({
+                    project: projectUrl,
+                    agent: 'user',
+                    granularity: 'daily',
+                    access: method,
+                    start: '2015010100',
+                    end: endDate
+                }));
+
+            });
+
+            //return when we have all data
+
+            Promise.all(promises).then(function (data) {
+
+                var converter = this.dataConverter,
+                    timeseries = [];
+
+                _.forEach(data, function (dataForMethod) {
+                    // use the dbname as the label, to match colors with Project Selector
+                    // if we want to re-label, we need to change both
+                    var opt = {
+                        label: project,
+                        pattern: dataForMethod.items[0].access,
+                    };
+
+                    timeseries.push(converter(opt, dataForMethod));
+                });
+                // datasets are disjointed but we need to add them such the timeseries object makes sense
+                deferred.resolve(timeseries);
+
+            }.bind(this), function (reason) {
+                deferred.resolve(new TimeseriesData());
+                logger.error(reason);
+            }).catch(function (error) {
+                deferred.resolve(new TimeseriesData());
+                logger.error(error);
+            });
+
+        }.bind(this));
+
+        sitematrixPromise.fail(function () {
+            //something went wrong, make sure to return empty data
             deferred.resolve(new TimeseriesData());
-            logger.error(error);
         });
 
         return deferred.promise();
+
     };
+
 
     PageviewApi.prototype.getDataConverter = function () {
         return this.dataConverter;

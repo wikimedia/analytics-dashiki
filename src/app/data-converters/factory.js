@@ -6,7 +6,9 @@ define(function (require) {
     'use strict';
 
     var separatedValues = require('converters.separated-values'),
-        wikimetricsTimeseries = require('converters.wikimetrics-timeseries');
+        wikimetricsTimeseries = require('converters.wikimetrics-timeseries'),
+        buildHierarchy = require('converters.hierarchy-data'),
+        pageviewApiResponse = require('converters.pageview-api-response');
 
     function ConverterFactory() {
         return;
@@ -33,6 +35,12 @@ define(function (require) {
 
         case 'json':
             return wikimetricsTimeseries();
+
+        case 'pageview-api-response':
+            return pageviewApiResponse();
+
+        case 'hierarchy':
+            return buildHierarchy;
 
         }
     };

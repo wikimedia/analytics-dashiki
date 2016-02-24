@@ -32,7 +32,7 @@ define(function (require) {
     var _ = require('lodash'),
         moment = require('moment');
 
-    function TimeseriesData () {
+    function TimeseriesData() {
         this.init.apply(this, arguments);
     }
 
@@ -110,6 +110,8 @@ define(function (require) {
                 toDate: first.toDate,
             };
 
+
+
         // in the following, we assume no duplicate rows per date, so we index
         // each date value at [0] to get what should be the only row there
         _.reduce(rest, function (dest, src) {
@@ -133,12 +135,8 @@ define(function (require) {
             });
 
             // merge filters to be most exclusive
-            dest.fromDate = (isNaN(dest.fromDate) || src.fromDate > dest.fromDate)
-                ? src.fromDate
-                : dest.fromDate;
-            dest.toDate = (isNaN(dest.toDate) || src.toDate < dest.toDate)
-                ? src.toDate
-                : dest.toDate;
+            dest.fromDate = (isNaN(dest.fromDate) || src.fromDate > dest.fromDate) ? src.fromDate : dest.fromDate;
+            dest.toDate = (isNaN(dest.toDate) || src.toDate < dest.toDate) ? src.toDate : dest.toDate;
 
             return dest;
         }, merged);
@@ -194,7 +192,7 @@ define(function (require) {
 
         _.forEach(self.rowsByDate, function (row, date) {
             result.rowsByDate[date] = [];
-            _.forEach(self.rowsByDate[date], function() {
+            _.forEach(self.rowsByDate[date], function () {
                 result.rowsByDate[date].push([]);
             });
         });
@@ -211,7 +209,7 @@ define(function (require) {
             result.colorLabels.push(self.colorLabels[i]);
             result.patternLabels.push(self.patternLabels[i]);
             _.forEach(result.rowsByDate, function (row, date) {
-                _.forEach(result.rowsByDate[date], function(row2, j) {
+                _.forEach(result.rowsByDate[date], function (row2, j) {
                     result.rowsByDate[date][j].push(self.rowsByDate[date][j][i]);
                 });
             });
@@ -240,10 +238,7 @@ define(function (require) {
             });
             // don't output invalid dates or dates out of the filter
             if (!(
-                   _.isError(date)
-                || isNaN(date)
-                || (this.fromDate && date < this.fromDate)
-                || (this.toDate && date > this.toDate)
+                    _.isError(date) || isNaN(date) || (this.fromDate && date < this.fromDate) || (this.toDate && date > this.toDate)
                 )) {
 
                 // output all rows for this date
@@ -274,4 +269,3 @@ define(function (require) {
 
     return TimeseriesData;
 });
-

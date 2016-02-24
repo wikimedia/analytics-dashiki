@@ -21,6 +21,7 @@ var require = {
         'dygraphs'              : 'bower_modules/dygraphs/dygraph-combined',
         'nvd3'                  : 'bower_modules/nvd3/build/nv.d3',
         'rickshaw'              : 'bower_modules/rickshaw/rickshaw',
+        'pageviews'             : 'bower_modules/pageviews/pageviews.min',
         // NOTE: if you want functions like uri.expand, you must include both
         // URI and URITemplate like define(['uri/URI', 'uri/URITemplate'] ...
         // because URITemplate modifies URI when it's parsed
@@ -35,6 +36,7 @@ var require = {
         'utils'                 : 'lib/utils',
         'window'                : 'lib/window',
         'stateManager'          : 'lib/state-manager',
+        'sitematrix'            : 'app/sitematrix',
 
         // *** viewmodels
         'viewmodels.copy-params'    : 'app/ko-extensions/common-viewmodels/copy-params',
@@ -57,6 +59,7 @@ var require = {
         'converters.hierarchy-data'         : 'app/data-converters/hierarchy-data',
         'converters.timeseries'             : 'app/data-converters/timeseries-data',
         'converters.annotations'            : 'app/data-converters/annotations-data',
+        'converters.pageview-api-response': 'app/data-converters/pageview-api-response',
 
         // *** lib
         'lib.polyfills'             : 'lib/polyfills',
@@ -80,6 +83,7 @@ var require = {
         'semantic-popup': {
           deps: ['jquery']
         },
+        pageviews: {exports:'pageviews'}
     }
 };
 

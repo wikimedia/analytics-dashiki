@@ -29,10 +29,9 @@ define(function (require) {
 
         },
 
-        //placeholder for now, note this is coming from a temporary domain
         pageviewApi: {
-            endpoint: 'metrics.wmflabs.org', // needs to support https
-            format: 'csv'
+            endpoint: '', // not used
+            format: 'pageview-api-response'
 
         },
 
@@ -40,5 +39,10 @@ define(function (require) {
             endpoint: '//datasets.wikimedia.org/limn-public-data/metrics',
             format: 'tsv'
         },
+
+        // our sitematrix request should be cached for 1 hour
+        sitematrix: {
+            endpoint: 'https://meta.wikimedia.org/w/api.php?action=sitematrix&formatversion=2&format=json&maxage=3600&smaxage=3600'
+        }
     };
 });

@@ -7,6 +7,8 @@ define(function (require) {
         annotationsApi = require('apis.annotations'),
         datasetsApi = require('apis.datasets'),
         mediawikiStorage = require('mediawiki-storage'),
+        config = require('config'),
+        sitematrix = require('sitematrix'),
         $ = require('jquery');
 
     describe('Wikimetrics API', function () {
@@ -15,7 +17,9 @@ define(function (require) {
         beforeEach(function () {
             sinon.stub($, 'ajax');
             converter = wikimetrics.dataConverter;
-            wikimetrics.dataConverter = function () { return; };
+            wikimetrics.dataConverter = function () {
+                return;
+            };
         });
 
         afterEach(function () {
@@ -42,7 +46,9 @@ define(function (require) {
             deferred.reject(new Error('SomeError'));
             $.ajax.returns(deferred);
 
-            var metric = {name: 'metric'};
+            var metric = {
+                name: 'metric'
+            };
             wikimetrics.getData(metric, 'project').done(function (data) {
                 expect(data.header).toEqual([]);
                 done();
@@ -52,28 +58,102 @@ define(function (require) {
     });
 
     describe('Pageview API', function () {
+        var xhr, requests,
+            sitematrixData = {
+                'sitematrix': {
+                    'count': 894,
+                    '0': {
+                        'code': 'aa',
+                        'name': 'some',
+                        'site': [{
+                            'url': 'https: //aa.wikipedia.org',
+                            'dbname': 'aawiki',
+                            'code': 'wiki',
+                            'sitename': 'Wikipedia',
+                            'closed': ''
+                        }, {
+                            'url': 'https://aa.wiktionary.org',
+                            'dbname': 'aawiktionary',
+                            'code': 'wiktionary',
+                            'sitename': 'Wiktionary',
+                            'closed': ''
+                        }],
+                        'localname': 'Afar'
+                    }
+                }
+            };
+
+        // mocking native object as pageview API bower module
+        // does not use jquery
+        beforeEach(function () {
+            xhr = sinon.useFakeXMLHttpRequest();
+            requests = [];
+            xhr.onCreate = function (req) {
+                requests.push(req);
+            };
+        });
 
         afterEach(function () {
             $.ajax.restore();
+            xhr.restore();
         });
 
-        it('should fetch the correct URL', function () {
+        it('should fetch the correct project on pageview API URL if project exist', function () {
             var deferred = new $.Deferred();
-            deferred.resolveWith(null, ['not important']);
-            sinon.stub($, 'ajax').returns(deferred);
-            sinon.stub(pageviewApi, 'getDataConverter').returns(function () { return; });
 
-            pageviewApi.root = 'something';
-            var expected = 'https://something/static/public/datafiles/LegacyPageviews/project.csv';
+            deferred.resolveWith(null, [sitematrixData]);
+
+            // mocking ajax cause sitematrix does use jquery for ajax
+            sinon.stub($, 'ajax').returns(deferred);
+            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {
+                return;
+            });
+
             var metric = {
-                name: 'LegacyPageviews',
+                name: 'Pageviews',
                 breakdown: {}
             };
-            pageviewApi.getData(metric, 'project');
-            expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
+
+            pageviewApi.getData(metric, 'aawiktionary');
+
+            //given that ajax is a fake it shoudld resolve imediately
+            expect(requests[0].url.match(/aa.wiktionary/).toString()).toBe(['aa.wiktionary'].toString());
+
+            // should also match all-access
+            expect(requests[0].url.match(/all-access/).toString()).toBe(['all-access'].toString());
 
             pageviewApi.getDataConverter.restore();
         });
+
+
+
+        it('Should do two requests for mobile and desktop data for breakdowns', function () {
+            var deferred = new $.Deferred();
+
+            deferred.resolveWith(null, [sitematrixData]);
+
+            // mocking ajax cause sitematrix does use jquery for ajax
+            sinon.stub($, 'ajax').returns(deferred);
+            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {
+                return;
+            });
+
+            var metric = {
+                name: 'Pageviews',
+                breakdown: {}
+            };
+
+            // request breakfdowns
+            pageviewApi.getData(metric, 'aawiktionary', true);
+
+            // request for mobile and desktop data
+            expect(/all-access/ .test(requests[0].url)).toBe(true, 'all-access fetched');
+            expect(/desktop/    .test(requests[1].url)).toBe(true, 'desktop fetched');
+            expect(/mobile-web/ .test(requests[2].url)).toBe(true, 'mobile-web fetched');
+
+            pageviewApi.getDataConverter.restore();
+        });
+
 
         it('should return empty TimeseriesData if getting data fails', function (done) {
             var deferred = new $.Deferred();
@@ -84,11 +164,46 @@ define(function (require) {
                 name: 'metric',
                 breakdown: {}
             };
+
+
             pageviewApi.getData(metric, 'project').done(function (data) {
                 expect(data.header).toEqual([]);
                 done();
             });
         });
+
+    });
+
+
+    //mmm.. not api per se but close to how config works
+    describe('Sitematrix', function () {
+
+        afterEach(function () {
+            $.ajax.restore();
+        });
+
+        it('sitematrix should raise an error if project does not exist', function () {
+            var deferred = new $.Deferred();
+
+            deferred.resolveWith(null, []);
+
+            // mocking ajax cause sitematrix does use jquery for ajax
+            sinon.stub($, 'ajax').returns(deferred);
+
+            var p = sitematrix.getProjectUrl(config, 'badbadproject');
+
+            p.then(function () {
+                // promise should not be sucessful
+                expect(true).toEqual(false);
+
+            }, function () {
+                // promise should be rejected if project is no good
+                expect(true).toEqual(true);
+
+            });
+
+        });
+
 
     });
 
@@ -136,7 +251,11 @@ define(function (require) {
                 startDate = '2014-01-01 00:00:00',
                 endDate = '2014-01-01 00:00:00',
                 note = 'Some text.',
-                annotations = [{start: startDate, end: endDate, note: note}];
+                annotations = [{
+                    start: startDate,
+                    end: endDate,
+                    note: note
+                }];
 
             sinon.stub(mediawikiStorage, 'get', function (options) {
                 expect(options.host).toBe(mediawikiHost);
@@ -182,10 +301,10 @@ define(function (require) {
             };
             annotationsApi.get(
                 metric,
-                function () {  // success callback
-                    expect(true).toBe(false);  // should not get here
+                function () { // success callback
+                    expect(true).toBe(false); // should not get here
                 },
-                function (error) {  // error callback
+                function (error) { // error callback
                     expect(error instanceof TypeError).toBe(true);
                     done();
                 }
@@ -194,10 +313,10 @@ define(function (require) {
 
         it('should return empty list when metric has no annotations info', function (done) {
             sinon.stub(mediawikiStorage, 'get', function () {
-                expect(true).toBe(false);  // should not get here
+                expect(true).toBe(false); // should not get here
             });
 
-            var metric = {};  // metric has no annotations information
+            var metric = {}; // metric has no annotations information
             annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(0);
@@ -208,10 +327,13 @@ define(function (require) {
         it('should filter out annotations with invalid dates', function (done) {
             sinon.stub(mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
-                deferred.resolve([
-                    {start: 'Bad date', note: 'Some note.'},
-                    {start: '2014-01-01 00:00:00', note: 'Some note.'}
-                ]);
+                deferred.resolve([{
+                    start: 'Bad date',
+                    note: 'Some note.'
+                }, {
+                    start: '2014-01-01 00:00:00',
+                    note: 'Some note.'
+                }]);
                 return deferred.promise();
             });
 
@@ -231,10 +353,12 @@ define(function (require) {
         it('should filter out annotations with no note', function (done) {
             sinon.stub(mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
-                deferred.resolve([
-                    {start: '2014-01-01 00:00:00'},
-                    {start: '2014-01-01 00:00:00', note: 'Some note.'}
-                ]);
+                deferred.resolve([{
+                    start: '2014-01-01 00:00:00'
+                }, {
+                    start: '2014-01-01 00:00:00',
+                    note: 'Some note.'
+                }]);
                 return deferred.promise();
             });
 
@@ -256,8 +380,15 @@ define(function (require) {
                 var deferred = new $.Deferred();
                 deferred.resolve([
                     // end date before start date
-                    {start: '2014-01-01', end: '2013-01-01', note: 'Some note.'},
-                    {start: '2014-01-01', end: '2014-01-02', note: 'Some note.'}
+                    {
+                        start: '2014-01-01',
+                        end: '2013-01-01',
+                        note: 'Some note.'
+                    }, {
+                        start: '2014-01-01',
+                        end: '2014-01-02',
+                        note: 'Some note.'
+                    }
                 ]);
                 return deferred.promise();
             });

@@ -68,7 +68,7 @@ define(function(require) {
                     var label = data.patternLabels[i] === column
                         ? data.colorLabels[i] + ': ' + column
                         : isNaN(data.patternLabels[i])
-                            ? data.patternLabels[i] + ': ' + column
+                            ? column + ': ' + data.patternLabels[i]
                             : column;
                     options.labels.push(label);
                     options.series[label] = {

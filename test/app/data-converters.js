@@ -1,8 +1,8 @@
 define(function (require) {
     'use strict';
 
-    var factory = require('dataConverterFactory'),
-        buildHierarchy = require('converters.hierarchy-data');
+    var factory = require('dataConverterFactory');
+
 
     describe('sv converter', function () {
         var converterCSV = factory.getDataConverter('csv');
@@ -172,7 +172,8 @@ define(function (require) {
     });
 
     describe('hierarchy-data converter', function () {
-        var converterCSV = factory.getDataConverter('csv');
+        var converterCSV = factory.getDataConverter('csv'),
+            buildHierarchy = factory.getDataConverter('hierarchy');
 
         it('should convert tsv to hierarchy', function () {
             var csvData = (
@@ -222,6 +223,49 @@ define(function (require) {
                 };
 
             expect(checkTrees(hierarchy, expected)).toBe(true);
+        });
+    });
+
+    describe('pageview-api response converter', function () {
+
+        it('happy case ', function () {
+
+            var converterPageviewApi = factory.getDataConverter('pageview-api-response');
+
+            var sample = {
+                'items': [{
+                    'project': 'en.wikipedia',
+                    'access': 'mobile_web',
+                    'agent': 'user',
+                    'granularity ': 'daily',
+                    'timestamp': '2015080100',
+                    'views': 104621367
+                }, {
+                    'project': 'en.wikipedia',
+                    'access': 'mobile_web',
+                    'agent ': 'user',
+                    'granularity ': 'daily',
+                    'timestamp': '2015080200',
+                    'views': 113144834
+                }]
+            };
+
+            var opt = {
+                label: 'blahLabel',
+                varyColors: false,
+                varyPatterns: true,
+                globalPattern: false,
+                startDate: '2014-01-01'
+            };
+
+
+            //TimeseriesData{header: ['blah'], colorLabels: ['blah'], patternLabels: [0], rowsByDate: Object{2015-08-01: [...], 2015-08-02: [...]}, duplicateDates: undefined}
+            var converted = converterPageviewApi(opt, sample);
+
+            //there should be 2 records
+            expect(converted.rowsByDate['2015-08-01'][0]).toEqual([104621367]);
+            expect(converted.rowsByDate['2015-08-02'][0]).toEqual([113144834]);
+            expect(converted.header).toEqual(['blahLabel']);
         });
     });
 });
