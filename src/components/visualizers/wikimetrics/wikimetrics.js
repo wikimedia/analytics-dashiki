@@ -43,7 +43,6 @@ define(function (require) {
                 //invoqued when all promises are done
                 $.when.apply(this, promises).then(function () {
                     var timeseriesData = _.flatten(arguments);
-                    console.log(TimeseriesData.mergeAll(_.toArray(timeseriesData)));
                     this.mergedData(TimeseriesData.mergeAll(_.toArray(timeseriesData)));
                     this.applyColors(projects);
                 }.bind(this));
