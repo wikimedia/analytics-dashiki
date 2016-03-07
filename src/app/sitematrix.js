@@ -55,12 +55,19 @@ define(function (require) {
                     cache: true
 
                 }).then(function (data) {
-
                     // transform sitematrix in structure that allows easy o(1) lookups
                     var sitematrix = {};
-                    _.forEach(data.sitematrix, function (language) {
+                    _.forEach(data.sitematrix, function (languageGroup) {
+                        // special projects like commons are reported differently
+                        var next;
+                        if (languageGroup.site) {
+                            next = languageGroup.site;
 
-                        _.forEach(language.site, function (site) {
+                        } else {
+                            next = languageGroup;
+                        }
+                        _.forEach(next, function (site) {
+
 
                             /*
                             Each site record is like:
@@ -71,8 +78,7 @@ define(function (require) {
                             url: 'https://aa.wikipedia.org'
                             url needs to be transform to: aa.wikipedia
                             */
-                            var urlEndpoint = site.url.replace('https://', '').replace('.org', '');
-
+                            var urlEndpoint = site.url.replace(/https:\/\/(www\.)?/, '');
                             //building lookup both ways
                             sitematrix[site.dbname] = urlEndpoint;
                             sitematrix[urlEndpoint] = site.dbname;
