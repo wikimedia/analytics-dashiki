@@ -29,13 +29,28 @@ define(function (require) {
      */
     DatasetsApi.prototype.getData = function (metricInfo, project) {
         var deferred = new $.Deferred(),
+            address = '',
+            converter = converters.getDataConverter(this.config.format),
+            handleFailure = function (error) {
+                // resolve as done with empty results and log the error
+                // to avoid crashing the ui when a metric has problems
+                deferred.resolve(new TimeseriesData([]));
+                logger.error(error);
+            };
+
+        if (metricInfo.metric) {
             address = this.root + uri.expand('/{metric}/{submetric}/{project}.{format}', {
                 metric: metricInfo.metric,
                 submetric: metricInfo.submetric,
                 project: project,
                 format: this.config.format,
-            }).toString(),
-            converter = converters.getDataConverter(this.config.format);
+            }).toString();
+        } else if (metricInfo.path) {
+            address = uri(this.root + '/' + metricInfo.path).normalize().toString();
+        } else {
+            handleFailure('When calling getData, the metricInfo parameter needs either a metric/submetric or a path');
+            return deferred.promise();
+        }
 
         $.ajax({
             url: address
@@ -47,12 +62,7 @@ define(function (require) {
 
             deferred.resolve(converter(opt, data));
 
-        }).fail(function (error) {
-            // resolve as done with empty results and log the error
-            // to avoid crashing the ui when a metric has problems
-            deferred.resolve(new TimeseriesData([]));
-            logger.error(error);
-        });
+        }).fail(handleFailure);
 
         // add the address fetched to the metricInfo, so clients can use it
         metricInfo.downloadLink = address;

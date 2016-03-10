@@ -428,6 +428,20 @@ define(function (require) {
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
+        it('should fetch the correct URL when using metric.path', function () {
+            var deferred = new $.Deferred();
+            deferred.resolveWith(null, ['not important']);
+            sinon.stub($, 'ajax').returns(deferred);
+
+            datasetsApi.root = 'something';
+            var expected = 'something/metric/submetric/project.tsv';
+            var metricInfo = {
+                'path': 'metric/submetric/project.tsv',
+            };
+            datasetsApi.getData(metricInfo, 'project');
+            expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
+        });
+
         it('should return empty list if getting data fails', function (done) {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));
