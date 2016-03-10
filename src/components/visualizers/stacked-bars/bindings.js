@@ -107,7 +107,8 @@ define(function (require) {
                 colors = ko.unwrap(val.colors),
                 side = ko.unwrap(val.label);
 
-            if (!timeseriesData || !timeseriesData.header.length) {
+            // need at least two columns for this visualization
+            if (!timeseriesData || !(timeseriesData.header.length > 1)) {
                 return;
             }
             var data = unfoldData(timeseriesData);

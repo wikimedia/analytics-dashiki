@@ -17,7 +17,7 @@ define(function (require) {
      * an array of rows is associated with the date instead of just a single row
      *
      * Parameters for the generated function:
-        label           : Used for consistent colors or patterns, default '(not named)'
+        label           : Used for consistent colors or patterns, default ''
         lineSeparator   : Split the input lines, default '\n'
         valueSeparator  : Split the input rows, default valueSeparator from parent
         allColumns      : Return all columns from the dataset, default true
@@ -30,7 +30,7 @@ define(function (require) {
         return function (options, rawData) {
 
             var opt = $.extend({
-                label: '(not named)',
+                label: '',
                 lineSeparator: '\n',
                 valueSeparator: valueSeparator,
                 allColumns: true,

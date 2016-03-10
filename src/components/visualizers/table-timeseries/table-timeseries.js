@@ -8,20 +8,14 @@ define(function (require) {
         this.data = params.data;
         this.downloadLink = params.downloadLink;
 
-        this.largeDataset = ko.computed(function () {
-            return ko.unwrap(this.data).size() > 1000;
-        }, this);
-        this.filter = ko.observable('');
         this.rows = ko.computed(function () {
-            var dateFilter = ko.unwrap(this.filter);
             return ko.unwrap(this.data).rowData({
                 convertToString: true,
-                filter: function (row) {
-                    return row[0].indexOf(dateFilter) >= 0;
-                },
+                // only show a few rows to speed up rendering
+                // TODO: paginate?
                 limit: {
                     start: 0,
-                    end: 10,
+                    end: 200,
                 },
             });
         }, this);
@@ -29,7 +23,7 @@ define(function (require) {
             return ko.unwrap(this.data).header;
         }, this);
         this.colors = params.colors;
-        this.height = params.height;
+        this.containerHeight = params.height + 'px';
     }
 
     return {

@@ -30,7 +30,7 @@ define(function (require) {
         return function (options, rawData) {
 
             var opt = $.extend({
-                label: '(not named)',
+                label: '',
 
             }, options);
 

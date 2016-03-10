@@ -13,12 +13,16 @@
         <title>Illuminate</title>
         <!-- endbuild -->
 
-        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans:400,600">
 
         <section class="minify">
         <!-- build:css -->
         <!-- always pick and choose semantic ui components, full build includes things like chatrooms! -->
         <!-- we have symlinked the modules used from bower_modules into style directory -->
+
+        <link href="/src/css/semantic2.reset.css" rel="stylesheet">
+        <link href="/src/css/semantic2.site.css" rel="stylesheet">
+
+        <link href="/src/css/semantic2.grid.css" rel="stylesheet">
         <link href="/src/css/semantic2.menu.css" rel="stylesheet">
         <link href="/src/css/semantic2.segment.css" rel="stylesheet">
         <link href="/src/css/semantic2.header.css" rel="stylesheet">
@@ -26,6 +30,12 @@
         <link href="/src/css/semantic2.table.css" rel="stylesheet">
         <link href="/src/css/semantic2.icon.css" rel="stylesheet">
         <link href="/src/css/semantic2.input.css" rel="stylesheet">
+        <link href="/src/css/semantic2.checkbox.css" rel="stylesheet">
+        <link href="/src/css/semantic2.transition.css" rel="stylesheet">
+        <link href="/src/css/semantic2.dropdown.css" rel="stylesheet">
+        <link href="/src/css/semantic2.label.css" rel="stylesheet">
+
+        <link href="/src/css/datepicker.css" rel="stylesheet">
         <!-- end semantic ui -->
 
         <link href="styles.css" rel="stylesheet">
@@ -38,6 +48,6 @@
         <!-- endbuild -->
     </head>
     <body>
-        <tabs-layout/>
+        <tabs-layout class="flexer"/>
     </body>
 </html>

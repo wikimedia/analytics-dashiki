@@ -1,7 +1,8 @@
 html, body {
     padding: 0;
     margin: 0;
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
 }
 
 h1 small {
@@ -17,12 +18,20 @@ h1 small {
 }
 
 .link {
-    cursor: pointer;
+    cursor: pointer!important;
+}
+
+.flexer {
+    display: flex;
+    flex-direction: column;
+}
+.flexed {
+    overflow-x: hidden!important;
+    flex: 1;
 }
 
 tabs-layout {
-    display: block;
-    margin: 10px 0 0 0;
+    height: 100%;
 }
 
 tabs-layout .ui.header {
@@ -32,14 +41,36 @@ tabs-layout .ui.menu {
     margin-bottom: 0;
 }
 
-tabs-layout > .scrollable.bottom.pane {
-    overflow-y: scroll!important;
-    overflow-x: hidden!important;
-    height: 78vh!important;
+tabs-layout > .top.pane {
+    padding: 10px 0 0 10px;
+}
+tabs-layout > .bottom.pane {
     background-color: #f7f7f7;
     padding: 1em;
 }
 
-tabs-layout > .scrollable.bottom.pane .attached.segment {
+tabs-layout > .bottom.pane .attached.segment {
     width: auto;
+}
+
+.ui.simple.dropdown > .menu {
+    margin-top: 2px!important;
+}
+.ui.simple.active.dropdown > .menu {
+    display: none;
+}
+.ui.simple.active.dropdown:hover > .menu {
+    display: block;
+}
+
+.tight.segment {
+    padding: 0px 6px 3px 6px;
+}
+
+/* Simple reveal */
+.ui.simple.reveal .hidden.content {
+    opacity: 0;
+}
+.ui.simple.reveal:hover .hidden.content {
+    opacity: 1;
 }

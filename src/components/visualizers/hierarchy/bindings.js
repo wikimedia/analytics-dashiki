@@ -243,6 +243,7 @@ define(function (require) {
     }
 
     ko.bindingHandlers.sunburst = {
+        // TODO: this does not update properly when the data changes, it paints new versions underneath I think
         update: function (element, valueAccessor, viewModel, bindingContext) {
             var height = bindingContext.height,
                 width = $(element).parents('.resizable.container').innerWidth();

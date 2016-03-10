@@ -46,10 +46,20 @@ define(function (require) {
 
                 t.graphs.forEach(function (g) {
                     g.id = _.kebabCase(g.title);
-                    g.select = function () { dashboard.select(t, g); };
+                    g.select = function (thisGraph, event) {
+                        event.stopPropagation();
+                        dashboard.select(t, g);
+                    };
                     g.selected = ko.computed(function () {
                         return g === dashboard.selectedGraph();
                     });
+                    // TODO: define this kind of property on the visualizers themselves
+                    // and just reference here by looking up e.g. visualizers[g.type].typeIcon
+                    g.typeIcon =
+                        (g.type === 'sunburst' || g.type === 'hierarchy') ? 'pie' :
+                        g.type === 'stacked-bars'                         ? 'bar' :
+                        g.type === 'dygraphs-timeseries'                  ? 'line' :
+                        g.type === 'table-timeseries'                     ? 'table' : '';
                 });
             }, this);
 

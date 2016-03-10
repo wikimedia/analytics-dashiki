@@ -1,12 +1,41 @@
 <div class="ui top attached link header" data-bind="
     click: select,
-    css: { inverted: selected },
+    css: { inverted: selected, blue: selected },
     attr: { title: selected() ?
                 'click to show all graphs' :
                 'click to show only this graph' },
 ">
     <span data-bind="text: title"></span>
 </div>
-<div class="ui attached segment">
-    <div data-bind="component: {name: type, params: params}"></div>
+<div class="ui attached segment grid">
+    <div class="ui three wide column flexer">
+        <div class="ui fluid icon input">
+            <input placeholder="filter by date" data-bind="datepicker: {start: startDate, end: endDate}" />
+            <i class="calendar icon" />
+        </div>
+        <hr/>
+
+        <!-- ko if: columnToggle -->
+        <div class="ui flexed" data-bind="style: {height: legendHeight}">
+            <!-- ko foreach: filteredHeader -->
+            <div class="ui simple reveal basic tight segment" data-bind="style: {'border-bottom': '5px solid ' + color}">
+                <div class="ui checkbox">
+                    <input type="checkbox" data-bind="attr: {id: uniqueId}, checked: selected"/>
+                    <label class="link" data-bind="attr: {for: uniqueId}">
+                        <div class="ui image">
+                            <span data-bind="text: title"></span>
+                            <span class="hidden content">
+                                <a data-bind="click: selectOnly">(only)</a>
+                                <a data-bind="click: selectAll">(all)</a>
+                            </span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <!-- /ko -->
+        </div>
+        <!-- /ko -->
+    </div>
+
+    <div class="thirteen wide column" data-bind="component: {name: type, params: params}"></div>
 </div>

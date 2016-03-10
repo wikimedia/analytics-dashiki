@@ -1,18 +1,39 @@
-<h1 class="ui header">
-    <span data-bind="text: config().title"></span>
-    <small data-bind="text: config().subtitle, visible: config().subtitle"></small>
-</h1>
+<section class="top pane">
+    <h1 class="ui header">
+        <span data-bind="text: config().title"></span>
+        <small data-bind="text: config().subtitle, visible: config().subtitle"></small>
+    </h1>
 
-<div class="ui blue secondary pointing menu">
-    <!-- ko foreach: config().tabs -->
-    <a class="item" data-bind="
-        text: title,
-        click: select,
-        css: {active: selected},
-    "></a>
+    <div class="ui blue secondary pointing menu">
+        <!-- ko foreach: config().tabs -->
+        <a class="ui simple dropdown link item" data-bind="
+            click: select,
+            css: {active: selected},
+        ">
+            <span class="text" data-bind="text: title"></span>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+                <!-- ko foreach: graphs -->
+                <div class="item" data-bind="click: select">
+                    <i class="chart icon" data-bind="css: typeIcon"></i>
+                    <span data-bind="text: title"></span>
+                </div>
+                <!-- /ko -->
+            </div>
+        </a>
+        <!-- /ko -->
+    </div>
+</section>
+<section class="ui bottom pane flexed">
+    <!-- ko if: selectedTab().graphs && selectedTab().graphs.length > 1 -->
+    <!-- ko foreach: selectedTab().graphs -->
+    <a class="ui label" data-bind="click: select, css: {blue: selected, inverted: selected}">
+        <i class="chart icon" data-bind="css: typeIcon"></i>
+        <span data-bind="text: title"></span>
+    </a>
     <!-- /ko -->
-</div>
-<section class="ui scrollable bottom pane">
+    <!-- /ko -->
+
     <!-- ko foreach: selectedTab().graphs -->
     <!-- ko if: $parent.selectedGraph() === null || $data.selected() -->
         <!-- ko component: { name: 'visualizer', params: $data } -->

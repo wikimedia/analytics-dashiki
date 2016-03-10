@@ -11,13 +11,16 @@ var require = {
         'text'                  : 'bower_modules/requirejs-text/text',
         'd3'                    : 'bower_modules/d3/d3',
         'vega'                  : 'bower_modules/vega/vega',
+        'datepicker'            : 'bower_modules/semantic-datepicker/daterangepicker',
         'topojson'              : 'bower_modules/topojson/topojson',
         'moment'                : 'bower_modules/moment/moment',
         'semantic-dropdown'     : 'bower_modules/semantic/build/uncompressed/modules/dropdown',
         'semantic-popup'        : 'bower_modules/semantic/build/uncompressed/modules/popup',
+        'semantic2-dropdown'    : 'bower_modules/semantic-2/dist/components/dropdown',
+        'semantic2-transition'  : 'bower_modules/semantic-2/dist/components/transition',
         'mediawiki-storage'     : 'bower_modules/mediawiki-storage/dist/mediawiki-storage',
         'marked'                : 'bower_modules/marked/lib/marked',
-        'twix'                  : 'bower_modules/twix/bin/twix',
+        'twix'                  : 'bower_modules/twix/dist/twix',
         'dygraphs'              : 'bower_modules/dygraphs/dygraph-combined',
         'nvd3'                  : 'bower_modules/nvd3/build/nv.d3',
         'rickshaw'              : 'bower_modules/rickshaw/rickshaw',
@@ -44,6 +47,9 @@ var require = {
 
         // *** custom observables
         'observables.async'         : 'app/ko-extensions/async-observables',
+
+        // *** general custom bindings
+        'datepicker-binding'        : 'app/ko-extensions/datepicker-binding',
 
         // *** apis
         'apis.wikimetrics'          : 'app/apis/wikimetrics',

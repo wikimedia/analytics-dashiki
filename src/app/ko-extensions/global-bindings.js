@@ -1,5 +1,11 @@
-define(['knockout', 'jquery', 'semantic-popup'], function (ko) {
-    'use strict';
+'use strict';
+define(function (require) {
+    var ko = require('knockout');
+
+    require('jquery');
+    require('semantic-popup');
+    require('semantic2-dropdown');
+    require('semantic2-transition');
 
     /**
      * Convention-based binding that expects html like this:
@@ -77,8 +83,8 @@ define(['knockout', 'jquery', 'semantic-popup'], function (ko) {
         }
 
         // if no target and no trigger was clicked, close all targets through their observables
-        toggles.forEach(function (toggle) {
-            toggle.observable(false);
+        toggles.forEach(function (t) {
+            t.observable(false);
         });
     });
 
@@ -89,6 +95,17 @@ define(['knockout', 'jquery', 'semantic-popup'], function (ko) {
 
             ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
                 $(element).popup('destroy');
+            });
+        }
+    };
+
+    ko.bindingHandlers.dropdown = {
+        init: function (element, valueAccessor) {
+
+            $(element).dropdown(ko.unwrap(valueAccessor()));
+
+            ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+                $(element).dropdown('destroy');
             });
         }
     };
