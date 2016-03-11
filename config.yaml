@@ -3,8 +3,8 @@ config:
     vital-signs:
         layout: metrics-by-project
         config: VitalSigns
-        piwikHost:
-        piwikId:
+        piwikHost:piwik.wikimedia.org
+        piwikId: 6
         hostname: vital-signs-test.wmflabs.org
         subfolder:
 
