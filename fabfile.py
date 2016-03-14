@@ -100,7 +100,7 @@ def get_gulp_command():
     """
     if env.piwikHost and env.piwikId:
         return 'gulp --layout {} --config {} --piwik {},{}'.format(
-            env.layout, env.config, env.piwikHost, env.piwikHost, env.piwikId)
+            env.layout, env.config, env.piwikHost, env.piwikId)
     else:
         return 'gulp --layout {} --config {}'.format(
             env.layout, env.config)
