@@ -77,8 +77,12 @@ define(function (require) {
             return;
         }
 
+        // Remove the previous labels.
+        this.container.selectAll('text').remove();
+
         // Execute the zoom.
-        var that = this;
+        var that = this,
+            n = 0;
         hoverOut.bind(that)();
         that.container
             .attr('pointer-events', 'none')
@@ -96,10 +100,17 @@ define(function (require) {
             })
             .selectAll('path')
                 .attrTween('d', function(node) {
+                    n++;
                     return function() { return that.arc(node); };
                 })
             .each('end', function() {
-                that.container.attr('pointer-events', null);
+                n--;
+                // n is a hack to be able to execute a block of code
+                // only when all elements have finished transitioning.
+                if (n === 0) {
+                    that.container.attr('pointer-events', null);
+                    addLabels.bind(that)(d.depth + 1, d.depth + 2);
+                }
             });
 
         // Update context.
@@ -196,6 +207,41 @@ define(function (require) {
         });
     }
 
+    function getLabelAngle (d, arc) {
+        // Offset the angle by 90 deg since the '0' degree axis for arc is Y axis, while
+        // for text it is the X axis.
+        var angleAverage = (arc.startAngle()(d) + arc.endAngle()(d)) / 2;
+        return 180 / Math.PI * angleAverage - 90;
+    }
+
+    function addLabels (fromDepth, toDepth) {
+        var that = this;
+        this.container.selectAll('g').append('text')
+            .filter(function (d) {
+                var baseNode = d;
+                while (baseNode.depth >= fromDepth) {
+                    baseNode = baseNode.parent;
+                }
+                return (
+                    d.depth >= fromDepth &&
+                    d.depth <= toDepth &&
+                    d.dx / baseNode.dx > 0.03 &&  // wide enough (>3%)
+                    d.x >= x.domain()[0] &&  // within the zoom
+                    d.x + d.dx <= x.domain()[1]
+                );
+            })
+            .text(function (d) { return d.name; })
+            .attr('text-anchor', 'middle')
+            // Translate to the desired point and set the rotation.
+            .attr("transform", function (d) {
+                var angle = getLabelAngle(d, that.arc);
+                return "translate(" + that.arc.centroid(d) + ")" +
+                       "rotate(" + (angle > 90 ? angle - 180 : angle) + ")";
+            })
+            .attr("dy", ".35em")  // vertical-align
+            .attr("pointer-events", "none");
+    }
+
     ko.bindingHandlers.sunburst = {
         update: function (element, valueAccessor, viewModel, bindingContext) {
             var height = bindingContext.height,
@@ -256,8 +302,7 @@ define(function (require) {
             colorizeHierarchy(data);
 
             var path = element.sunburst.container.data([data]).selectAll('path')
-                .data(nodes)
-                .enter().append('path')
+                .data(nodes).enter().append('g').append('path')
                 .attr('d', element.sunburst.arc)
                 .attr('fill-rule', 'evenodd')
                 .style('fill', function (d) { return d.color; })
@@ -266,6 +311,8 @@ define(function (require) {
                 })
                 .on('mouseover', hoverPath.bind(element.sunburst))
                 .on('click', click.bind(element.sunburst));
+
+            addLabels.bind(element.sunburst)(1, 2);
 
             // Get total size of the tree = value of root node from partition.
             element.sunburst.totalSize = path.node().__data__.value;
