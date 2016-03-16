@@ -52,7 +52,7 @@ define(function (require) {
         // properly. Otherwise, race conditions create an inconsistent state.
         this.container.selectAll('path').transition().duration(50)
             .style('opacity', function (node) {
-                return sequenceArray.indexOf(node) >= 0 ? 0.5 : 1;
+                return sequenceArray.indexOf(node) >= 0 ? 0.25 : 1;
             });
     }
 
@@ -288,13 +288,6 @@ define(function (require) {
                 bindingContext: bindingContext,
             };
 
-            // Bounding circle underneath the sunburst, to make it easier
-            // to detect when the mouse leaves the parent g.
-            container.append('circle')
-                .attr('r', radius + 5)
-                .style('opacity', 0)
-                .on('mouseover', hoverOut.bind(element.sunburst));
-
             var val = ko.unwrap(valueAccessor()),
                 data = ko.unwrap(val.hierarchy),
                 nodes = element.sunburst.partition.nodes(data);
@@ -316,6 +309,15 @@ define(function (require) {
 
             // Get total size of the tree = value of root node from partition.
             element.sunburst.totalSize = path.node().__data__.value;
+
+            // Highlight greatest leaf.
+            var greatestLeaf = element.sunburst.container.select('path').datum();
+            while (greatestLeaf.children) {
+                greatestLeaf = greatestLeaf.children[0];
+            }
+            setTimeout(function () {
+                hoverPath.bind(element.sunburst)(greatestLeaf);
+            }, 50);  // To avoid race condition that breaks zoom.
         }
     };
 });
