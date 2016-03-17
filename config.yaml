@@ -1,5 +1,13 @@
 # Deployment config for dashboards
 config:
+    browser-reports:
+        layout: tabs
+        config: SimpleRequestBreakdowns
+        piwikHost: 
+        piwikId: 
+        hostname: browser-reports-test.wmflabs.org
+        subfolder:
+
     vital-signs:
         layout: metrics-by-project
         config: VitalSigns
