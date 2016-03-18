@@ -20,6 +20,16 @@ define(function (require) {
 
         // metric observables
         self.selectedMetric = ko.observable();
+
+        // breakdown component state gets initialized here cause it needs to have
+        // page scope as other components subscribe to its changes
+        self.breakdownState = ko.observable();
+        self.patterns = [
+            '', [5, 5],
+            [15, 15],
+            [30, 5],
+        ];
+
         self.defaultMetrics = ko.observable([]);
         self.metricFilter = ko.observable([]);
         self.allMetrics = ko.observable([]);

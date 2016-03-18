@@ -1,5 +1,5 @@
 'use strict';
-define(function(require) {
+define(function (require) {
 
     var ko = require('knockout'),
         _ = require('lodash'),
@@ -25,48 +25,44 @@ define(function(require) {
                 data = ko.unwrap(val.data),
                 annotations = ko.unwrap(val.annotations),
                 colors = val.colors,
+                patterns = val.patterns,
                 graph = $element.find('div.graph')[0];
 
             if (data && data.header.length) {
-                var rows = data.rowData({convertToDate: true});
+                var rows = data.rowData({
+                    convertToDate: true
+                });
                 var options = {
-                        axes: {
-                            x: {
-                                valueFormatter: function(d) {
-                                    // assumes dates are in UTC format
-                                    return moment(d).utc().format('YYYY-MM-DD');
-                                },
-                                axisLabelWidth: 77,
+                    axes: {
+                        x: {
+                            valueFormatter: function (d) {
+                                // assumes dates are in UTC format
+                                return moment(d).utc().format('YYYY-MM-DD');
                             },
-                            y: {
-                                valueFormatter: val.format,
-                            },
+                            axisLabelWidth: 77,
                         },
-                        labels: ['Date'],
-                        strokeWidth: 1.8,
-                        gridLineColor: '#cacaca',
-                        gridLinePattern: [10, 5],
-                        series: {},
-                        showRoller: true,
-                        animatedZooms: true,
-                        labelsSeparateLines: true,
-                    };
+                        y: {
+                            valueFormatter: val.format,
+                        },
+                    },
+                    labels: ['Date'],
+                    strokeWidth: 1.8,
+                    gridLineColor: '#cacaca',
+                    gridLinePattern: [10, 5],
+                    series: {},
+                    showRoller: true,
+                    animatedZooms: true,
+                    labelsSeparateLines: true,
+                };
 
-                var patterns = _(data.patternLabels)
-                                    .uniq()
-                                    .zipObject([null, [5, 5], [15, 15], [30, 5]])
-                                    .value();
+
 
                 data.header.forEach(function (column, i) {
-                    var label = data.patternLabels[i] === column
-                        ? data.colorLabels[i] + ': ' + column
-                        : isNaN(data.patternLabels[i])
-                            ? column + ': ' + data.patternLabels[i]
-                            : column;
+                    var label = data.patternLabels[i] === column ? data.colorLabels[i] + ': ' + column : isNaN(data.patternLabels[i]) ? column + ': ' + data.patternLabels[i] : column;
                     options.labels.push(label);
                     options.series[label] = {
                         color: colors(data.colorLabels[i]),
-                        strokePattern: patterns[data.patternLabels[i]],
+                        strokePattern: patterns(data.patternLabels[i]),
                     };
                 });
 
@@ -82,7 +78,7 @@ define(function(require) {
                             $roller = $(dygraphChart.roller_),
                             $rollerHolder = $('<span class="dygraph-roller">Averaging: </span>');
 
-                        dygraphChart.setAnnotations(annotations.rowData().map(function (a){
+                        dygraphChart.setAnnotations(annotations.rowData().map(function (a) {
                             // find the closest date in the data that fits
                             var closestDate = null;
                             var lastDistance = Math.pow(2, 53) - 1;

@@ -27,18 +27,33 @@ define(function (require) {
         this.metric = params.metric;
         this.projects = params.projects;
         this.mergedData = ko.observable();
+        this.breakdownState = params.breakdownState;
+        this.patterns = params.patterns;
+
+
 
         this.datasets = ko.computed(function () {
             var projects = ko.unwrap(this.projects),
+                breakdown = [],
                 metric = ko.unwrap(this.metric);
 
             if (metric && projects && projects.length) {
-                var showBreakdown = ko.unwrap(metric.showBreakdown);
+                // make sure to listen to changes to the breakdown
+                // mmm..don't like that this requires too much inside knowledge
+                // of breakdown state
+                if (this.breakdownState() && this.breakdownState().display()) {
+                    for (var i = 0; i < this.breakdownState().columns().length; i++) {
+                        var column = this.breakdownState().columns()[i];
+                        if (column.selected()) {
+                            breakdown.push(column.label)
+                        }
+                    }
+                }
 
                 var api = apiFinder(metric);
 
                 var promises = projects.map(function (project) {
-                    return api.getData(metric, project.database, showBreakdown);
+                    return api.getData(metric, project.database, breakdown);
                 });
 
                 //invoqued when all promises are done
@@ -78,7 +93,23 @@ define(function (require) {
             }
             return visualizer.colors[i % visualizer.colors.length];
         };
+
+        this.patternProject = [];
+
+
+        // patterns differentiate 'all-access' versus 'mobile-web'
+        // data for one project
+        this.patternScale = function (patternLabel) {
+            // repeat pattern if more than dashes.length
+            var i = _.indexOf(visualizer.patternProject, patternLabel);
+            if (i === -1) {
+                i = visualizer.patternProject.push(patternLabel) - 1;
+            }
+            return visualizer.patterns[i % visualizer.patterns.length];
+        }
+
         this.format = numberUtils.numberFormatter('kmb');
+
 
         this.applyColors = function (projects) {
             projects.forEach(function (project) {

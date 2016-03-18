@@ -31,7 +31,16 @@ define(function (require) {
 
         pageviewApi: {
             endpoint: '', // not used
-            format: 'pageview-api-response'
+            format: 'pageview-api-response',
+            // api knows how to translate from general config (labels) to api semantics
+            // to retrieve data
+            breakdown: {
+                'All': 'all-access',
+                'Desktop site': 'desktop',
+                'Mobile site': 'mobile-web',
+                'Mobile App': 'mobile-app'
+
+            }
 
         },
 

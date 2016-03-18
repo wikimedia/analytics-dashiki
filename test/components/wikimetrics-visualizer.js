@@ -29,10 +29,13 @@ define(function (require) {
         deferred = new $.Deferred(),
 
         transformedResponse = new TimeseriesData(
-            [cohort],
-            {
-                '2014-08-22': [[v1]],
-                '2014-08-23': [[v2]]
+            [cohort], {
+                '2014-08-22': [
+                    [v1]
+                ],
+                '2014-08-23': [
+                    [v2]
+                ]
             }
         );
 
@@ -46,10 +49,13 @@ define(function (require) {
             selectedMetric = ko.observable();
             selectedProjects = ko.observableArray();
 
+
             visualizer = new WikimetricsVisualizer({
                 metric: selectedMetric,
                 projects: selectedProjects,
+                breakdownState: ko.observable()
             });
+
             deferred.resolveWith(this, [transformedResponse]);
 
             // just stub the apply colors function to get it out of the way

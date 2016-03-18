@@ -1,20 +1,27 @@
-define(['components/breakdown-toggle/breakdown-toggle', 'knockout'], function(component, ko) {
+define(['components/breakdown-toggle/breakdown-toggle', 'knockout'], function (component, ko) {
     var BreakdownToggle = component.viewModel;
 
-    describe('BreakdownToggle view model', function() {
+    describe('BreakdownToggle view model', function () {
 
-        it('should have a toggle function', function() {
+        it('should have a toggle function that changes display values', function () {
             var params = {
                 metric: ko.observable({
-                    showBreakdown: ko.observable(false)
-                })
+                    breakdown: {
+                        columns: []
+                    }
+                }),
+                breakdownState: ko.observable(),
+                patterns: []
             };
             var instance = new BreakdownToggle(params);
 
-            expect(typeof(instance.toggle)).toBe('function');
+            expect(typeof (instance.toggle)).toBe('function');
 
+
+            expect(params.breakdownState().display()).toBe(false);
             instance.toggle();
-            expect(instance.metric().showBreakdown()).toBe(true);
+            expect(params.breakdownState().display()).toBe(true);
+
         });
     });
 });

@@ -17,9 +17,7 @@ define(function (require) {
 
     require('uri/URITemplate');
 
-    function PageviewApi (conf) {
-        this.root = conf.pageviewApi.endpoint;
-        this.config = conf;
+    function PageviewApi(conf) {
         // note that dataConverter is a function that will need
         // to be executed in the context of the metric
         this.dataConverter = dataConverterFactory.getDataConverter(config.pageviewApi.format);
@@ -29,22 +27,24 @@ define(function (require) {
      * Parameters
      *   metric         : an object representing a metric
      *   project        : a Wiki project database name (enwiki, commonswiki, etc.)
-     *  showBreakdown  : whether to split data by mobile/destop access
+     *  accessMethods  : access_methods to split data by
      * Returns
      *  A promise with that wraps data for the metric/project transformed via the converter
-     *  Mobile and desktop breakdowns translate to two different requests to pageview api
+     *  Mobile, desktop and app breakdowns translate to different requests to pageview api
      */
-    PageviewApi.prototype.getData = function (metric, project, showBreakdown) {
+    PageviewApi.prototype.getData = function (metric, project, accessMethods) {
 
         var deferred = new $.Deferred(),
-            endDate = moment().format('YYYYMMDDHH'),
-            accessMethods;
+            endDate = moment().format('YYYYMMDDHH');
 
-        if (showBreakdown) {
-            accessMethods = ['all-access', 'desktop', 'mobile-web'];
-        } else {
-            accessMethods = ['all-access'];
+
+        if (!accessMethods || !accessMethods.length) {
+            accessMethods = ['All']
         }
+        accessMethods = _.map(accessMethods, function (method) {
+            return config.pageviewApi.breakdown[method];
+        });
+
 
         var sitematrixPromise = sitematrix.getProjectUrl(config, project);
         sitematrixPromise.done(function (projectUrl) {

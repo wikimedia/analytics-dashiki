@@ -110,8 +110,7 @@ define(function (require) {
             });
 
             var metric = {
-                name: 'Pageviews',
-                breakdown: {}
+                name: 'Pageviews'
             };
 
             pageviewApi.getData(metric, 'aawiktionary');
@@ -127,7 +126,7 @@ define(function (require) {
 
 
 
-        it('Should do two requests for mobile and desktop data for breakdowns', function () {
+        it('Should requests for mobile and desktop data breakdowns', function () {
             var deferred = new $.Deferred();
 
             deferred.resolveWith(null, [sitematrixData]);
@@ -139,17 +138,16 @@ define(function (require) {
             });
 
             var metric = {
-                name: 'Pageviews',
-                breakdown: {}
+                name: 'Pageviews'
             };
 
             // request breakfdowns
-            pageviewApi.getData(metric, 'aawiktionary', true);
+            pageviewApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
 
             // request for mobile and desktop data
-            expect(/all-access/ .test(requests[0].url)).toBe(true, 'all-access fetched');
-            expect(/desktop/    .test(requests[1].url)).toBe(true, 'desktop fetched');
-            expect(/mobile-web/ .test(requests[2].url)).toBe(true, 'mobile-web fetched');
+            expect(/all-access/.test(requests[0].url)).toBe(true, 'all-access fetched');
+            expect(/desktop/.test(requests[1].url)).toBe(true, 'desktop fetched');
+            expect(/mobile-web/.test(requests[2].url)).toBe(true, 'mobile-web fetched');
 
             pageviewApi.getDataConverter.restore();
         });

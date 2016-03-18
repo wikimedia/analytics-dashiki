@@ -1,23 +1,25 @@
 <div class="ui secondary inverted vertical fluid menu">
-    <a class="header item" data-bind="css: {'off': !metric().showBreakdown()}, click: toggle">
+    <a class="header item" data-bind="css: {'off': !breakdownState().display()}, click: toggle">
         <span class="default text">
             <i class="block layout icon"></i>
             Data Breakdowns
         </span>
     </a>
-    <!-- ko if: metric().showBreakdown -->
+    <!-- ko if: breakdownState().display() -->
     <div class="colored menu">
-    <!-- ko foreach: metric().breakdown.columns -->
+    <!-- ko foreach: breakdownState().columns()-->
         <div class="item">
-            <span>
+            <label>
                 <i class="circle icon"></i>
-                <span data-bind="text: $data"></span>
+                <span data-bind="text: label"></span>
+
+                <input type="checkbox" data-bind="disable: selected() && $parents[0].isOnlyOneSelected(),checked: selected ">
                 <svg height="10" width="80">
                     <path stroke="white"
-                          data-bind="attr: {'stroke-dasharray': $parent.dashes($index)}"
+                          data-bind="attr: {'stroke-dasharray': pattern}"
                           d="M6 5 l215 0" />
                 </svg>
-            </span>
+            </label>
         </div>
     <!-- /ko -->
     </div>
