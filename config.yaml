@@ -3,8 +3,8 @@ config:
     browser-reports:
         layout: tabs
         config: SimpleRequestBreakdowns
-        piwikHost: 
-        piwikId: 
+        piwikHost: piwik.wikimedia.org 
+        piwikId: 7 
         hostname: browser-reports-test.wmflabs.org
         subfolder:
 
