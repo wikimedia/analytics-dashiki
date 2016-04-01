@@ -233,13 +233,13 @@ define(function (require) {
             .text(function (d) { return d.name; })
             .attr('text-anchor', 'middle')
             // Translate to the desired point and set the rotation.
-            .attr("transform", function (d) {
+            .attr('transform', function (d) {
                 var angle = getLabelAngle(d, that.arc);
-                return "translate(" + that.arc.centroid(d) + ")" +
-                       "rotate(" + (angle > 90 ? angle - 180 : angle) + ")";
+                return 'translate(' + that.arc.centroid(d) + ')' +
+                       'rotate(' + (angle > 90 ? angle - 180 : angle) + ')';
             })
-            .attr("dy", ".35em")  // vertical-align
-            .attr("pointer-events", "none");
+            .attr('dy', '.35em')  // vertical-align
+            .attr('pointer-events', 'none');
     }
 
     ko.bindingHandlers.sunburst = {
@@ -260,11 +260,9 @@ define(function (require) {
             y = d3.scale.sqrt().range([0, radius]);
             var d2r = d3.scale.linear().domain([0, 3600]).range([0, 2 * Math.PI]);
 
-            var container = d3.select(element)
+            var el = d3.select(element)
                     .attr('width', width)
-                    .attr('height', height)
-                    .append('g')
-                        .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')'),
+                    .attr('height', height),
 
                 partition = d3.layout.partition()
                     .value(function(d) { return d.size; }),
@@ -279,6 +277,12 @@ define(function (require) {
                     }).outerRadius(function(d) {
                         return Math.max(0, y(d.y));
                     });
+
+            // clean up after the old rendering
+            el.select('g').remove();
+
+            var container = el.append('g')
+                .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
             // not sure about this pattern, saving references in DOM elements... hm
             element.sunburst = {
