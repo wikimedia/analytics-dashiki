@@ -1,11 +1,13 @@
+'use strict';
 define(function(require) {
-    'use strict';
 
     var ko = require('knockout'),
         _ = require('lodash'),
-        moment = require('moment');
+        moment = require('moment'),
+        numeral = require('numeral');
 
     require('dygraphs');
+    require('./dygraphs.patch');
 
     ko.bindingHandlers.dygraphs = {
         init: function (element, valueAccessor) {
@@ -36,27 +38,22 @@ define(function(require) {
                                 },
                                 axisLabelWidth: 77,
                             },
+                            y: {
+                                valueFormatter: function(d) {
+                                    return numeral(d).format(d < 1 ? '0.00' : '0.0a');
+                                },
+                            },
                         },
                         labels: ['Date'],
                         labelsKMB: true,
-                        labelsDivWidth: 350,
-                        labelsDivStyles: {
-                            'margin-left': '-120px',
-                            'backgroundColor': 'rgba(255, 255, 255, 0.9)',
-                            'padding': '4px',
-                            'border': '1px solid #dadada',
-                            'borderRadius': '5px',
-                            'boxShadow': '2px 2px 2px #aaa',
-                            'textAlign': 'left',
-                            'fontFamily': 'sans-serif',
-                        },
-                        labelsSeparateLines: true,
+                        // labelsDivStyles: defined as CSS in dygraphs-timeseries.html
                         strokeWidth: 1.8,
                         gridLineColor: '#cacaca',
                         gridLinePattern: [10, 5],
                         series: {},
                         showRoller: true,
                         animatedZooms: true,
+                        labelsSeparateLines: true,
                     };
 
                 var patterns = _(data.patternLabels)

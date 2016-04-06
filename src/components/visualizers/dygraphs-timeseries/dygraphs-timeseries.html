@@ -1,3 +1,31 @@
+<style>
+    div.dygraph-legend {
+        background-color: rgba(255, 255, 255, 0.9)!important;
+        padding: 4px;
+        border: 1px solid #dadada;
+        border-radius: 5px;
+        box-shadow: 2px 2px 2px #aaa;
+        margin-left: -120px;
+        pointer-events: none;
+        width: auto!important;
+    }
+
+    div.dygraph-legend > span {
+        font-weight: bold;
+    }
+    div.dygraph-legend > span > span {
+        padding: 1px 3px 1px 1px;
+        text-align: right;
+        font-family: 'courier new';
+        display: inline-block;
+        width: 70px;
+    }
+    div.dygraph-legend > span > label {
+        padding: 1px 1px 1px 2px;
+        text-align: left;
+    }
+</style>
+
 <div class="parent-of-resizable" data-bind="
     if: data && data.header,
     dygraphs: {

@@ -9,6 +9,7 @@ var require = {
         // (Issue reported https://github.com/knockout/knockout/issues/1528)
         'knockout'              : 'bower_modules/knockout/dist/knockout.debug',
         'text'                  : 'bower_modules/requirejs-text/text',
+        'numeral'               : 'bower_modules/numeral/numeral',
         'd3'                    : 'bower_modules/d3/d3',
         'vega'                  : 'bower_modules/vega/vega',
         'datepicker'            : 'bower_modules/semantic-datepicker/daterangepicker',

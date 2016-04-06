@@ -20,7 +20,8 @@
     "twix": "~0.9.0",
     "dygraphs": "~1.1.0",
     "lodash": "3.9.0-amd",
-    "pageviews": null
+    "pageviews": null,
+    "numeral": "^1.5.3"
   },
   "resolutions": {
     "d3": "3.5.2"
