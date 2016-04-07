@@ -2,7 +2,7 @@
 define(function (require) {
 
     var ko = require('knockout'),
-        utils = require('utils');
+        arrayUtils = require('utils.arrays');
 
     require('typeahead');
 
@@ -23,7 +23,7 @@ define(function (require) {
             // an array that will be populated with substring matches
             matches = unwrapped.filter(function (item) {
                 return substrRegex.test(item.name);
-            }).sort(utils.sortByName);
+            }).sort(arrayUtils.sortByName);
 
             callback(matches);
         };

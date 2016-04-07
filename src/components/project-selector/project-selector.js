@@ -3,7 +3,7 @@ define(function (require) {
 
     var ko              = require('knockout'),
         templateMarkup  = require('text!./project-selector.html'),
-        utils           = require('utils');
+        arrayUtils      = require('utils.arrays');
     require('./bindings');
 
     function ProjectSelector(params) {
@@ -117,7 +117,7 @@ define(function (require) {
                 this.addProject({project: selection.name});
                 return;
         }
-        options.sort(utils.sortByNameIgnoreCase);
+        options.sort(arrayUtils.sortByNameIgnoreCase);
         this.suboptions(options);
     };
 

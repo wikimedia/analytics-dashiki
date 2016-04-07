@@ -23,7 +23,7 @@ define(function (require) {
 
     var ko = require('knockout'),
         templateMarkup = require('text!./metric-selector.html'),
-        utils = require('utils');
+        arrayUtils = require('utils.arrays');
 
     require('./bindings');
 
@@ -57,13 +57,13 @@ define(function (require) {
         this.categories = ko.computed(function () {
             var unwrap = ko.unwrap(this.metricsByCategory) || [],
                 copy = unwrap.slice(),
-                categories = copy.sort(utils.sortByNameIgnoreCase);
+                categories = copy.sort(arrayUtils.sortByNameIgnoreCase);
 
             categories.splice(0, 0, {
                 name: 'All metrics',
                 metrics: [].concat.apply([], categories.map(function (c) {
                     return c.metrics;
-                })).sort(utils.sortByNameIgnoreCase)
+                })).sort(arrayUtils.sortByNameIgnoreCase)
             });
 
             // lots of different categories are sharing the same layout,

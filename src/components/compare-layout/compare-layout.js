@@ -10,7 +10,8 @@ define(function (require) {
         configApi = require('apis.config'),
         marked = require('marked'),
         moment = require('moment'),
-        utils = require('utils'),
+        dateUtils = require('utils.datetime'),
+        colorUtils = require('utils.colors'),
         asyncObs = require('observables.async'),
         TimeseriesData = require('converters.timeseries');
 
@@ -33,7 +34,7 @@ define(function (require) {
         this.fromDate = {
             options: this.dates,
             selected: ko.observable(),
-            format: utils.formatDate,
+            format: dateUtils.formatDate,
         };
         this.toDate = {
             options: ko.computed(function() {
@@ -42,7 +43,7 @@ define(function (require) {
                 }, this);
             }, this),
             selected: ko.observable(),
-            format: utils.formatDate,
+            format: dateUtils.formatDate,
             defaultToLast: true,
         };
         this.fromDate.selected.subscribe(function (newFromDate) {
@@ -51,7 +52,7 @@ define(function (require) {
             }
         }, this);
         this.timespan = ko.computed(function() {
-            return utils.timespan(this.fromDate.selected(), this.toDate.selected());
+            return dateUtils.timespan(this.fromDate.selected(), this.toDate.selected());
             // rate limit for when fromDate forces a change on toDate
         }, this).extend({ rateLimit: 0 });
 
@@ -182,14 +183,14 @@ define(function (require) {
                     }
 
                     // default to a 10-color scale, but use config if present
-                    var colorScale = utils.category10();
+                    var colorScale = colorUtils.category10();
                     if (c.colors) {
                         var domain = [], range = [];
                         _.forEach(c.colors, function (val, key) {
                             range.push(val);
                             domain.push(key);
                         });
-                        colorScale = utils.category10(domain, range);
+                        colorScale = colorUtils.category10(domain, range);
                     }
                     c.colors = colorScale;
 

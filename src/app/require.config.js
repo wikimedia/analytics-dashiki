@@ -37,7 +37,6 @@ var require = {
         'dataConverterFactory'  : 'app/data-converters/factory',
         'typeahead'             : 'bower_modules/typeahead.js/dist/typeahead.bundle',
         'ajaxWrapper'           : 'lib/ajax-wrapper',
-        'utils'                 : 'lib/utils',
         'window'                : 'lib/window',
         'stateManager'          : 'lib/state-manager',
         'sitematrix'            : 'app/sitematrix',
@@ -67,6 +66,14 @@ var require = {
         'converters.timeseries'             : 'app/data-converters/timeseries-data',
         'converters.annotations'            : 'app/data-converters/annotations-data',
         'converters.pageview-api-response': 'app/data-converters/pageview-api-response',
+
+        // *** utils
+        'utils.arrays'              : 'app/utils/arrays',
+        'utils.strings'             : 'app/utils/strings',
+        'utils.datetime'            : 'app/utils/datetime',
+        'utils.numbers'             : 'app/utils/numbers',
+        'utils.colors'              : 'app/utils/colors',
+        'utils.elements'            : 'app/utils/elements',
 
         // *** lib
         'lib.polyfills'             : 'lib/polyfills',

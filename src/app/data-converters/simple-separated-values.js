@@ -2,9 +2,10 @@
  * This module returns a method that knows how to parse a file with values
  *   separated by arbitrary characters on lines separated by arbitrary characters
  */
+'use strict';
 define(function (require) {
 
-    var util = require('utils');
+    var stringUtils = require('utils.strings');
 
     /**
      * Parses a CSV, TSV, or similar into an array of rows.
@@ -35,7 +36,7 @@ define(function (require) {
             if (rows.length <= 1) { return []; }
 
             // try to determine the type of each column
-            var parsers = rows[1].map(util.parserFromSample);
+            var parsers = rows[1].map(stringUtils.parserFromSample);
             var trimmer = function (s) { return s.trim(); };
 
             // NOTE: will return the header but take care not to parse it

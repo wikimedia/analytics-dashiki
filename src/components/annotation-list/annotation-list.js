@@ -6,7 +6,7 @@ define(function (require) {
         annotationsApi = require('apis.annotations'),
         marked = require('marked'),
         moment = require('moment'),
-        utils = require('utils');
+        dateUtils = require('utils.datetime');
 
     require('./bindings');
 
@@ -56,7 +56,7 @@ define(function (require) {
                 return formattedStart + ' - ' + formattedEnd;
             }
 
-            return utils.timespan(start, end);
+            return dateUtils.timespan(start, end);
         };
 
         this.annotations = ko.computed(function () {

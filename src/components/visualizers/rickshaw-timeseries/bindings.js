@@ -1,9 +1,10 @@
+'use strict';
 define(function(require) {
 
     var Rickshaw = require('rickshaw'),
         ko = require('knockout'),
         d3 = require('d3'),
-        getBounds = require('utils').getBounds;
+        getBounds = require('utils.elements').getBounds;
 
     require('lib/polyfills');
 
@@ -22,8 +23,8 @@ define(function(require) {
 
             graphEl.graph = new Rickshaw.Graph({
                 element: graphEl,
-                width: opt.width || bounds.width * (opt.widthRatio || 13/16),
-                height: opt.height || bounds.height * (opt.heightRatio || 5/6),
+                width: opt.width || bounds.width * (opt.widthRatio || 13 / 16),
+                height: opt.height || bounds.height * (opt.heightRatio || 5 / 6),
                 renderer: 'multi',
                 series: [],
             });

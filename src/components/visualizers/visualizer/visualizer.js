@@ -5,7 +5,7 @@ define(function (require) {
         ko = require('knockout'),
         _ = require('lodash'),
         apiFinder = require('api-finder'),
-        utils = require('utils'),
+        colorUtils = require('utils.colors'),
         TimeseriesData = require('converters.timeseries');
 
     require('datepicker-binding');
@@ -22,14 +22,14 @@ define(function (require) {
         // like visualizers[this.type].showColumnToggle
         this.columnToggle = this.type !== 'sunburst' && this.type !== 'hierarchy';
 
-        var colorScale = utils.category10();
+        var colorScale = colorUtils.category10();
         if (graph.colors) {
             var domain = [], range = [];
             _.forEach(graph.colors, function (val, key) {
                 range.push(val);
                 domain.push(key);
             });
-            colorScale = utils.category10(domain, range);
+            colorScale = colorUtils.category10(domain, range);
         }
 
         this.data = ko.observable(new TimeseriesData());
