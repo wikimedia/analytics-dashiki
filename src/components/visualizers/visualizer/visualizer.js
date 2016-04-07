@@ -6,6 +6,7 @@ define(function (require) {
         _ = require('lodash'),
         apiFinder = require('api-finder'),
         colorUtils = require('utils.colors'),
+        numberUtils = require('utils.numbers'),
         TimeseriesData = require('converters.timeseries');
 
     require('datepicker-binding');
@@ -99,6 +100,7 @@ define(function (require) {
         this.params = {
             data: this.filteredData,
             colors: colorScale,
+            format: numberUtils.numberFormatter(graph.format),
             height: 500,
             id: _.kebabCase([graph.metric, graph.submetric].join('-')),
         };

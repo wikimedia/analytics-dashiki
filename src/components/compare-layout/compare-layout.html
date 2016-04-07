@@ -21,7 +21,13 @@
             <span class="ui small label" data-bind="text: $parent.timespan"></span>
         </div>
         <div class="ui attached raised segment">
-            <a-b-compare params="type: type, data: data, colors: $data.colors, annotations: $data.annotations"/>
+            <a-b-compare params="
+                type: type,
+                data: data,
+                colors: $data.colors,
+                annotations: $data.annotations,
+                format: format
+            "/>
         </div>
         <!-- /ko -->
     </comparisons>

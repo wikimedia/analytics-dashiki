@@ -39,14 +39,10 @@ define(function(require) {
                                 axisLabelWidth: 77,
                             },
                             y: {
-                                valueFormatter: function(d) {
-                                    return numeral(d).format(d < 1 ? '0.00' : '0.0a');
-                                },
+                                valueFormatter: val.format,
                             },
                         },
                         labels: ['Date'],
-                        labelsKMB: true,
-                        // labelsDivStyles: defined as CSS in dygraphs-timeseries.html
                         strokeWidth: 1.8,
                         gridLineColor: '#cacaca',
                         gridLinePattern: [10, 5],

@@ -13,11 +13,11 @@
                 <!-- /ko -->
             </tr>
         </thead>
-        <tbody>
+        <tbody class="right aligned">
             <!-- ko foreach: rows -->
             <tr>
                 <!-- ko foreach: $data -->
-                <td data-bind="text: $data"></td>
+                <td data-bind="text: $parents[1].format($data)"></td>
                 <!-- /ko -->
             </tr>
             <!-- /ko -->

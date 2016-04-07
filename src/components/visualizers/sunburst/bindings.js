@@ -1,9 +1,16 @@
+'use strict';
 define(function (require) {
 
     var d3 = require('d3'),
-        ko = require('knockout');
+        ko = require('knockout'),
+        numberUtils = require('utils.numbers');
 
     require('lib.polyfills');
+
+        // thousands / millions / billions formatter
+    var kmb = numberUtils.numberFormatter('kmb'),
+        // percent formatter
+        pct = numberUtils.numberFormatter('0.0%');
 
     // Given a node in a partition layout, return an array of all of its ancestor
     // nodes, highest first, but excluding the root.
@@ -19,8 +26,8 @@ define(function (require) {
 
     function hoverPath (d) {
 
-        var percentage = (100 * d.value / this.totalSize).toPrecision(3);
-        var percentageString = percentage + '%';
+        var percentage = d.value / this.totalSize;
+        var percentageString = pct(percentage);
         if (percentage < 0.1) {
             percentageString = '< 0.1%';
         }
@@ -28,15 +35,15 @@ define(function (require) {
         var sequenceArray = getAncestors(d);
         this.bindingContext.steps(sequenceArray);
         this.bindingContext.percentage(percentageString);
-        this.bindingContext.ratio('(' + d.value + ' out of ' + this.totalSize + ')');
+        this.bindingContext.ratio('(' + kmb(d.value) + ' out of ' + kmb(this.totalSize) + ')');
 
         // Highlight only those that are an ancestor of the current segment.
         // The transition is necessary because it allows d3 to resolve the hoverOut
         //   transition properly.  Without it, race conditions would create an
         //   inconsistent state
         this.container.selectAll('path').transition().duration(50)
-            .style('opacity', function (d) {
-                return sequenceArray.indexOf(d) >= 0 ? 1 : 0.2;
+            .style('opacity', function (d1) {
+                return sequenceArray.indexOf(d1) >= 0 ? 1 : 0.2;
             });
     }
 
@@ -63,7 +70,7 @@ define(function (require) {
                     .attr('width', width)
                     .attr('height', height)
                     .append('g')
-                        .attr('transform', 'translate(' + width/2 + ',' + height/2 + ')'),
+                        .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')'),
 
                 partition = d3.layout.partition()
                     .size([2 * Math.PI, radius * radius])

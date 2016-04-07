@@ -18,7 +18,8 @@ define(function (require) {
         TimeseriesData = require('converters.timeseries'),
         templateMarkup = require('text!./wikimetrics.html'),
         annotationsApi = require('apis.annotations'),
-        apiFinder = require('app/apis/api-finder');
+        apiFinder = require('app/apis/api-finder'),
+        numberUtils = require('utils.numbers');
 
     function WikimetricsVisualizer(params) {
         var visualizer = this;
@@ -77,6 +78,7 @@ define(function (require) {
             }
             return visualizer.colors[i % visualizer.colors.length];
         };
+        this.format = numberUtils.numberFormatter('kmb');
 
         this.applyColors = function (projects) {
             projects.forEach(function (project) {

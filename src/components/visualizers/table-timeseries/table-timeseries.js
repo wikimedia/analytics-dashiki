@@ -23,6 +23,7 @@ define(function (require) {
             return ko.unwrap(this.data).header;
         }, this);
         this.colors = params.colors;
+        this.format = params.format;
         this.containerHeight = params.height + 'px';
     }
 

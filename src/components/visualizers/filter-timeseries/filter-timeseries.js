@@ -63,6 +63,7 @@ define(function (require) {
 
         this.colors = params.colors;
         this.annotations = params.annotations;
+        this.format = params.format;
     }
 
     return {

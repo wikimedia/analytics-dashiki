@@ -12,6 +12,7 @@ define(function (require) {
         moment = require('moment'),
         dateUtils = require('utils.datetime'),
         colorUtils = require('utils.colors'),
+        numberUtils = require('utils.numbers'),
         asyncObs = require('observables.async'),
         TimeseriesData = require('converters.timeseries');
 
@@ -193,6 +194,8 @@ define(function (require) {
                         colorScale = colorUtils.category10(domain, range);
                     }
                     c.colors = colorScale;
+
+                    c.format = numberUtils.numberFormatter(c.format || 'percent');
 
                     return c;
                 }, this));
