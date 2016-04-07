@@ -50,6 +50,7 @@ var require = {
 
         // *** general custom bindings
         'datepicker-binding'        : 'app/ko-extensions/datepicker-binding',
+        'knockout.table'            : 'lib/knockout-extensions/knockout-table',
 
         // *** apis
         'apis.wikimetrics'          : 'app/apis/wikimetrics',
@@ -91,13 +92,13 @@ var require = {
         },
         d3: { exports: 'd3' },
         nvd3: {
-          exports: 'nv',
-          deps: ['d3']
+            exports: 'nv',
+            deps: ['d3']
         },
         'semantic-popup': {
-          deps: ['jquery']
+            deps: ['jquery']
         },
-        pageviews: {exports:'pageviews'}
+        pageviews: {exports:'pageviews'},
     }
 };
 
