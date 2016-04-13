@@ -37,6 +37,7 @@ define(function (require) {
                 varyPatterns: false,
                 varyColors: false,
                 globalPattern: false,
+                doNotParse: [],
 
             }, options);
 
@@ -84,13 +85,17 @@ define(function (require) {
                 }
 
                 rowsByDate[row[0]].push(
-                    _(value).take(header.length).map(function (v) {
-                        // force numbers, strings, or null
-                        v = v.trim();
-                        if (/^[-+]?([0-9]+(\.[0-9]+)?|\.[0-9]+)$/.test(v)) {
-                            return parseFloat(v);
+                    _(value).take(header.length).map(function (v, i) {
+                        if (_.includes(opt.doNotParse, header[i])) {
+                            return v;
                         }
-                        return v.length === 0 ? null : v;
+                        v = v.trim();
+                        if (v.length === 0) {
+                            return null;
+                        }
+                        // force numbers if possible
+                        var parsed = parseFloat(v);
+                        return isNaN(parsed) ? v : parsed;
                     }).value()
                 );
             });

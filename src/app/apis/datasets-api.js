@@ -58,6 +58,7 @@ define(function (require) {
             var opt = {
                     label: metricInfo.submetric,
                     varyColors: true,
+                    doNotParse: metricInfo.doNotParse,
                 };
 
             deferred.resolve(converter(opt, data));
