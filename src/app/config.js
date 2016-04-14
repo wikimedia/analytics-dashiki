@@ -36,7 +36,7 @@ define(function (require) {
         },
 
         datasetsApi: {
-            endpoint: '//datasets.wikimedia.org/limn-public-data/metrics',
+            endpoint: 'https://datasets.wikimedia.org/limn-public-data/metrics',
             format: 'tsv'
         },
 
