@@ -16,6 +16,9 @@ define(function (require) {
             categorizedMetricsPage: 'Dashiki:CategorizedMetrics',
             dashboardPage: buildConfig ? buildConfig.dashboardArticle : null,
             defaultDashboardPageRoot: 'Dashiki:DefaultDashboard',
+            //https://meta.wikimedia.org/wiki/Dashiki:OutOfService
+            outOfService: 'Dashiki:OutOfService'
+
         },
 
         // format are specified per API for now, in the future they can be specified per metric if needed

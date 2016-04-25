@@ -17,6 +17,7 @@ if (typeof window === 'undefined') {
             bundles: {
                 // If you want parts of the site to load on demand, remove them from the 'include' list
                 // above, and group them into bundles here.
+                'out-of-service' :['components/out-of-service/out-of-service'],
                 'sunburst': ['components/visualizers/sunburst/sunburst'],
                 'stacked-bars': ['components/visualizers/stacked-bars/stacked-bars'],
                 'filter-timeseries': [

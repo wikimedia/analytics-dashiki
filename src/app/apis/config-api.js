@@ -31,7 +31,7 @@ define(function (require) {
         var dashboardPage =
             this.config.dashboardPage ||
             this.config.defaultDashboardPageRoot +
-                (layout ? '/' + layout : '');
+            (layout ? '/' + layout : '');
 
         // NOTE: don't cache these promises, it makes tests much harder
         // Instead, rely on cache headers being set up properly
@@ -60,6 +60,18 @@ define(function (require) {
         mediawikiStorage.get({
             host: this.config.endpoint,
             pageName: this.config.categorizedMetricsPage
+        }).done(callback);
+    };
+
+    /**
+     * Retrieves the out of service configuration
+     * This configuration is shared across all dashboards
+     **/
+    ConfigApi.prototype.getOutOfService = function (callback) {
+
+        mediawikiStorage.get({
+            host: this.config.endpoint,
+            pageName: this.config.outOfService
         }).done(callback);
     };
 

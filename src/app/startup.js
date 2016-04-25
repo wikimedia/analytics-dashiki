@@ -11,6 +11,10 @@ define(function(require) {
     require('ajaxWrapper');
     require('logger');
     require('app/ko-extensions/global-bindings');
+    
+    // out-of-service component is common
+    ko.components.register('out-of-service', {require: 'components/out-of-service/out-of-service'    });
+
     // separate layouts, TODO: make each layout register its own components
 
     // *********** BEGIN Metrics By Project Layout Components ********** //

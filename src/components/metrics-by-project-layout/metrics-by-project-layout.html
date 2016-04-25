@@ -1,5 +1,12 @@
 <section>
+    <out-of-service></out-of-service>
+</section>
+
+<section>
+
     <div>
+
+
         <section class="page column projects">
             <project-selector params="projectOptions:projectOptions,
                                       languageOptions:languageOptions,
@@ -12,6 +19,8 @@
             <breakdown-toggle params="metric: selectedMetric, breakdownState:breakdownState, patterns:patterns"></breakdown-toggle>
             <!-- /ko -->
         </section>
+
+
         <section class="page column main">
             <div class="ui segment metric">
                 <metric-selector params="selectedMetric: selectedMetric,
@@ -27,3 +36,5 @@
         </section>
     </div>
 </section>
+
+
