@@ -97,13 +97,11 @@ a.header:hover {
 }
 section.page.column {
     position: absolute;
-    top: 0;
-    bottom: 0;
     padding: 10px;
 }
 section.projects {
     background-color: #6D6D6D;
-    width: 300px;
+    width: 280px;
 }
 section.main {
     background-color: #EEEEEE;
