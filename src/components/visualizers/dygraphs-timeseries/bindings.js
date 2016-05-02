@@ -25,7 +25,7 @@ define(function (require) {
                 data = ko.unwrap(val.data),
                 annotations = ko.unwrap(val.annotations),
                 colors = val.colors,
-                patterns = val.patterns,
+                patterns = ko.unwrap(val.patterns),
                 graph = $element.find('div.graph')[0];
 
             if (data && data.header.length) {

@@ -94,19 +94,21 @@ define(function (require) {
             return visualizer.colors[i % visualizer.colors.length];
         };
 
-        this.patternProject = [];
+        // The patternScale assigns patterns to the labels passed,
+        // and remembers them so that they are reusable.
+        // Whenever the dataset changes, resets to empty.
+        this.patternScale = ko.computed(function () {
+            ko.unwrap(this.datasets);
+            var patternProject = [];
 
-
-        // patterns differentiate 'all-access' versus 'mobile-web'
-        // data for one project
-        this.patternScale = function (patternLabel) {
-            // repeat pattern if more than dashes.length
-            var i = _.indexOf(visualizer.patternProject, patternLabel);
-            if (i === -1) {
-                i = visualizer.patternProject.push(patternLabel) - 1;
-            }
-            return visualizer.patterns[i % visualizer.patterns.length];
-        }
+            return function (patternLabel) {
+                var i = _.indexOf(patternProject, patternLabel);
+                if (i === -1) {
+                    i = patternProject.push(patternLabel) - 1;
+                }
+                return visualizer.patterns[i % visualizer.patterns.length];
+            };
+        }, this);
 
         this.format = numberUtils.numberFormatter('kmb');
 
