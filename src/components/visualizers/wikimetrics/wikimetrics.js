@@ -30,8 +30,6 @@ define(function (require) {
         this.breakdownState = params.breakdownState;
         this.patterns = params.patterns;
 
-
-
         this.datasets = ko.computed(function () {
             var projects = ko.unwrap(this.projects),
                 breakdown = [],
@@ -94,24 +92,34 @@ define(function (require) {
             return visualizer.colors[i % visualizer.colors.length];
         };
 
-        // The patternScale assigns patterns to the labels passed,
-        // and remembers them so that they are reusable.
-        // Whenever the dataset changes, resets to empty.
-        this.patternScale = ko.computed(function () {
-            ko.unwrap(this.datasets);
-            var patternProject = [];
+        // Stores the patterns of the current breakdown.
+        // Whenever the breakdown changes, resets them.
+        this.breakdownPatterns = [];
+        ko.computed(function () {
+            var breakdownState = ko.unwrap(visualizer.breakdownState),
+                mergedData = visualizer.mergedData(),
+                breakdownPatterns = visualizer.breakdownPatterns;
 
-            return function (patternLabel) {
-                var i = _.indexOf(patternProject, patternLabel);
-                if (i === -1) {
-                    i = patternProject.push(patternLabel) - 1;
-                }
-                return visualizer.patterns[i % visualizer.patterns.length];
-            };
+            if (breakdownState && breakdownState.display()) {
+                _.forEach(mergedData.patternLabels, function (patternLabel) {
+                    if (_.indexOf(breakdownPatterns, patternLabel) === -1) {
+                        breakdownPatterns.push(patternLabel);
+                    }
+                });
+            } else {
+                visualizer.breakdownPatterns = [];
+            }
         }, this);
 
-        this.format = numberUtils.numberFormatter('kmb');
+        // The patternScale assigns patterns to the labels passed.
+        this.patternScale = function (patternLabel) {
+            var i = _.indexOf(visualizer.breakdownPatterns, patternLabel);
+            if (i !== -1) {
+                return visualizer.patterns[i % visualizer.patterns.length];
+            }
+        };
 
+        this.format = numberUtils.numberFormatter('kmb');
 
         this.applyColors = function (projects) {
             projects.forEach(function (project) {
