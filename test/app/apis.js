@@ -2,7 +2,7 @@ define(function (require) {
     'use strict';
 
     var wikimetrics = require('apis.wikimetrics'),
-        pageviewApi = require('apis.pageview'),
+        aqsApi = require('apis.aqs'),
         configApi = require('apis.config'),
         annotationsApi = require('apis.annotations'),
         datasetsApi = require('apis.datasets'),
@@ -57,7 +57,7 @@ define(function (require) {
 
     });
 
-    describe('Pageview API', function () {
+    describe('AQS', function () {
         var xhr, requests,
             sitematrixData = {
                 'sitematrix': {
@@ -83,7 +83,7 @@ define(function (require) {
                 }
             };
 
-        // mocking native object as pageview API bower module
+        // mocking native object as pageviews.js bower module
         // does not use jquery
         beforeEach(function () {
             xhr = sinon.useFakeXMLHttpRequest();
@@ -98,60 +98,68 @@ define(function (require) {
             xhr.restore();
         });
 
-        it('should fetch the correct project on pageview API URL if project exist', function () {
+        it('should fetch the correct project on AQS URL if project exist', function () {
             var deferred = new $.Deferred();
 
             deferred.resolveWith(null, [sitematrixData]);
 
             // mocking ajax cause sitematrix does use jquery for ajax
             sinon.stub($, 'ajax').returns(deferred);
-            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {
-                return;
-            });
 
             var metric = {
                 name: 'Pageviews'
             };
 
-            pageviewApi.getData(metric, 'aawiktionary');
+            aqsApi.getData(metric, 'aawiktionary');
 
             //given that ajax is a fake it shoudld resolve imediately
             expect(requests[0].url.match(/aa.wiktionary/).toString()).toBe(['aa.wiktionary'].toString());
 
             // should also match all-access
             expect(requests[0].url.match(/all-access/).toString()).toBe(['all-access'].toString());
-
-            pageviewApi.getDataConverter.restore();
         });
 
-
-
-        it('Should requests for mobile and desktop data breakdowns', function () {
+        it('Should request pageviews for mobile and desktop data breakdowns', function () {
             var deferred = new $.Deferred();
 
             deferred.resolveWith(null, [sitematrixData]);
 
             // mocking ajax cause sitematrix does use jquery for ajax
             sinon.stub($, 'ajax').returns(deferred);
-            sinon.stub(pageviewApi, 'getDataConverter').returns(function () {
-                return;
-            });
 
             var metric = {
                 name: 'Pageviews'
             };
 
-            // request breakfdowns
-            pageviewApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
+            // request breakdowns
+            aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
 
             // request for mobile and desktop data
             expect(/all-access/.test(requests[0].url)).toBe(true, 'all-access fetched');
             expect(/desktop/.test(requests[1].url)).toBe(true, 'desktop fetched');
             expect(/mobile-web/.test(requests[2].url)).toBe(true, 'mobile-web fetched');
-
-            pageviewApi.getDataConverter.restore();
         });
 
+        it('Should request unique devices for mobile and desktop data breakdowns', function () {
+            var deferred = new $.Deferred();
+
+            deferred.resolveWith(null, [sitematrixData]);
+
+            // mocking ajax cause sitematrix does use jquery for ajax
+            sinon.stub($, 'ajax').returns(deferred);
+
+            var metric = {
+                name: 'UniqueDevices'
+            };
+
+            // request breakdowns
+            aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
+
+            // request for mobile and desktop data
+            expect(/all-sites/.test(requests[0].url)).toBe(true, 'all-sites fetched');
+            expect(/desktop-site/.test(requests[1].url)).toBe(true, 'desktop-site fetched');
+            expect(/mobile-site/.test(requests[2].url)).toBe(true, 'mobile-site fetched');
+        });
 
         it('should return empty TimeseriesData if getting data fails', function (done) {
             var deferred = new $.Deferred();
@@ -163,15 +171,12 @@ define(function (require) {
                 breakdown: {}
             };
 
-
-            pageviewApi.getData(metric, 'project').done(function (data) {
+            aqsApi.getData(metric, 'project').done(function (data) {
                 expect(data.header).toEqual([]);
                 done();
             });
         });
-
     });
-
 
     //mmm.. not api per se but close to how config works
     describe('Sitematrix', function () {

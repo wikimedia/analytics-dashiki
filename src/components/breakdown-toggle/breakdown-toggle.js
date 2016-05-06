@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * This component does not show if metric does not include a breakdown
  * Component should be as dumb as possible and does not even
@@ -17,28 +18,28 @@ define(function (require) {
                 return item.toString();
             });
 
-
-        this.metric = ko.unwrap(params.metric);
-
-
         this.breakdownState = params.breakdownState;
 
         var state = {};
         state.display = ko.observable(false);
         state.columns = ko.observableArray([]);
-
         this.breakdownState(state);
 
-        // update state object with breakdown display specifics
-        this.metric.breakdown.columns.forEach(function (label, index) {
-            // repeat pattern if more than dashes.length
-            var _index = index % dashes.length;
-            this.breakdownState().columns().push({
-                selected: ko.observable(true),
-                label: label,
-
-                pattern: dashes[_index]
-            });
+        // Update state object with breakdown display specifics
+        // anytime the metric changes.
+        ko.computed(function () {
+            this.metric = ko.unwrap(params.metric);
+            this.breakdownState().display(false);
+            this.breakdownState().columns([]);
+            this.metric.breakdown.columns.forEach(function (label, index) {
+                // repeat pattern if more than dashes.length
+                var _index = index % dashes.length;
+                this.breakdownState().columns().push({
+                    selected: ko.observable(true),
+                    label: label,
+                    pattern: dashes[_index]
+                });
+            }.bind(this));
         }.bind(this));
 
         this.toggle = function () {
@@ -59,9 +60,6 @@ define(function (require) {
 
             return breakdownsSelected === 1;
         }.bind(this));
-
-
-
     }
 
     return {

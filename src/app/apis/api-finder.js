@@ -10,14 +10,15 @@ define(function (require) {
     'use strict';
 
     var wikimetricsApi = require('apis.wikimetrics'),
-        pageviewApi = require('apis.pageview'),
+        aqsApi = require('apis.aqs'),
         datasetsApi = require('apis.datasets');
 
     /* matches metric.api to an api instance */
     return function (metric) {
         var mapping = {
             wikimetrics: wikimetricsApi,
-            pageviewApi: pageviewApi,
+            aqsApi: aqsApi,
+            pageviewApi: aqsApi,
             datasets: datasetsApi,
         };
 

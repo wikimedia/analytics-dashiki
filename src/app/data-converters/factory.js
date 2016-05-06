@@ -1,14 +1,15 @@
+'use strict';
+
 /**
  * A simple factory that determines what converter is needed based on
  *   different inputs
  */
 define(function (require) {
-    'use strict';
 
     var separatedValues = require('converters.separated-values'),
         wikimetricsTimeseries = require('converters.wikimetrics-timeseries'),
         buildHierarchy = require('converters.hierarchy-data'),
-        pageviewApiResponse = require('converters.pageview-api-response');
+        aqsApiResponse = require('converters.aqs-api-response');
 
     function ConverterFactory() {
         return;
@@ -20,9 +21,11 @@ define(function (require) {
      * as an argument.
      *
      * Parameters
-     *  format: enum (tsv, cvs, json)
+     *  format: enum - (tsv, cvs, json)
+     *  valueField: string - The field in the results that contains the values.
+     *                       For now only used in the AQS.
      */
-    ConverterFactory.prototype.getDataConverter = function (format) {
+    ConverterFactory.prototype.getDataConverter = function (format, valueField) {
 
         // note that the data converter modules return a function
 
@@ -36,8 +39,8 @@ define(function (require) {
         case 'json':
             return wikimetricsTimeseries();
 
-        case 'pageview-api-response':
-            return pageviewApiResponse();
+        case 'aqs-api-response':
+            return aqsApiResponse(valueField);
 
         case 'hierarchy':
             return buildHierarchy;

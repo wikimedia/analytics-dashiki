@@ -55,7 +55,7 @@ var require = {
         // *** apis
         'apis.wikimetrics'          : 'app/apis/wikimetrics',
         'apis.annotations'          : 'app/apis/annotations-api',
-        'apis.pageview'             : 'app/apis/pageview-api',
+        'apis.aqs'                  : 'app/apis/aqs-api',
         'apis.datasets'             : 'app/apis/datasets-api',
         'apis.config'               : 'app/apis/config-api',
 
@@ -66,7 +66,7 @@ var require = {
         'converters.hierarchy-data'         : 'app/data-converters/hierarchy-data',
         'converters.timeseries'             : 'app/data-converters/timeseries-data',
         'converters.annotations'            : 'app/data-converters/annotations-data',
-        'converters.pageview-api-response': 'app/data-converters/pageview-api-response',
+        'converters.aqs-api-response'       : 'app/data-converters/aqs-api-response',
 
         // *** utils
         'utils.arrays'              : 'app/utils/arrays',

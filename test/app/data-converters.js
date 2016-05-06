@@ -226,11 +226,12 @@ define(function (require) {
         });
     });
 
-    describe('pageview-api response converter', function () {
+    describe('aqs-api response converter', function () {
 
         it('happy case ', function () {
 
-            var converterPageviewApi = factory.getDataConverter('pageview-api-response');
+            var converterAQSApi = factory.getDataConverter(
+                'aqs-api-response', 'views');
 
             var sample = {
                 'items': [{
@@ -260,7 +261,7 @@ define(function (require) {
 
 
             //TimeseriesData{header: ['blah'], colorLabels: ['blah'], patternLabels: [0], rowsByDate: Object{2015-08-01: [...], 2015-08-02: [...]}, duplicateDates: undefined}
-            var converted = converterPageviewApi(opt, sample);
+            var converted = converterAQSApi(opt, sample);
 
             //there should be 2 records
             expect(converted.rowsByDate['2015-08-01'][0]).toEqual([104621367]);

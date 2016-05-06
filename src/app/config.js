@@ -1,4 +1,5 @@
 'use strict';
+
 /**
  * Static configuration object
  */
@@ -18,7 +19,6 @@ define(function (require) {
             defaultDashboardPageRoot: 'Dashiki:DefaultDashboard',
             //https://meta.wikimedia.org/wiki/Dashiki:OutOfService
             outOfService: 'Dashiki:OutOfService'
-
         },
 
         // format are specified per API for now, in the future they can be specified per metric if needed
@@ -29,22 +29,38 @@ define(function (require) {
             /** not sure if teh below url should also lawfully live on configAPI */
             urlProjectLanguageChoices: 'https://metrics.wmflabs.org/static/public/datafiles/available-projects.json',
             format: 'json'
-
         },
 
-        pageviewApi: {
-            endpoint: '', // not used
-            format: 'pageview-api-response',
-            // api knows how to translate from general config (labels) to api semantics
-            // to retrieve data
-            breakdown: {
-                'All': 'all-access',
-                'Desktop site': 'desktop',
-                'Mobile site': 'mobile-web',
-                'Mobile App': 'mobile-app'
-
+        aqsApi: {
+            'Pageviews': {
+                endpoint: 'getAggregatedPageviews',
+                valueField: 'views',
+                dateFormat: 'YYYYMMDDHH',
+                // Api knows how to translate from general breakdown
+                // labels to api semantics to retrieve data.
+                breakdownOptions: {
+                    'All': 'all-access',
+                    'Desktop site': 'desktop',
+                    'Mobile site': 'mobile-web',
+                    'Mobile App': 'mobile-app'
+                },
+                breakdownParameter: 'access',
+                dataStart: '2015010100'
+            },
+            'UniqueDevices': {
+                endpoint: 'getUniqueDevices',
+                valueField: 'devices',
+                dateFormat: 'YYYYMMDD',
+                // Api knows how to translate from general breakdown
+                // labels to api semantics to retrieve data.
+                breakdownOptions: {
+                    'All': 'all-sites',
+                    'Desktop site': 'desktop-site',
+                    'Mobile site': 'mobile-site'
+                },
+                breakdownParameter: 'access-site',
+                dataStart: '20160101'
             }
-
         },
 
         datasetsApi: {
