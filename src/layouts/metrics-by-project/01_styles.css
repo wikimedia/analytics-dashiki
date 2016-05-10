@@ -6,6 +6,9 @@ body {
     font-family: "Nimbus Sans L","Liberation Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
     }
 
+.clickable {
+    cursor: pointer;
+}
 /* patches to semantic */
 .delete.icon {
     cursor: pointer;

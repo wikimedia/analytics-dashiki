@@ -26,8 +26,8 @@ define(function (require) {
         self.breakdownState = ko.observable();
         self.patterns = [
             '', [5, 5],
-            [15, 15],
-            [30, 5],
+            [15, 5],
+            [45, 5],
         ];
 
         self.defaultMetrics = ko.observable([]);
