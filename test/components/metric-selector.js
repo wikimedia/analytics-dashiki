@@ -10,7 +10,7 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
         it('should process params', function() {
             var metricA = {name: 'a', submetric: 'a_1'},
                 metricB = {name: 'b', submetric: 'b_1'},
-                metricC = {name: 'c', submetric: 'c_1'},
+                metricC = {name: 'c', submetric: 'c_1', displayName: 'display'},
                 metricsConfig = [
                     {name: 'Something', metrics: [metricA, metricB]},
                     {name: 'Else', metrics: [metricC]},
@@ -34,6 +34,11 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
             params.defaultSelection = ['b'];
             instance = new MetricSelector(params);
             expect(instance.addedMetrics()).toEqual([metricB]);
+
+            // both name or displayName can be used to set metrics
+            params.defaultSelection = ['display'];
+            instance = new MetricSelector(params);
+            expect(instance.addedMetrics()).toEqual([metricC]);
 
             // defaultSelection can be observable, and the instance reacts to changes
             params.defaultSelection = ko.observable();

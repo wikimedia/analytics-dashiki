@@ -46,7 +46,8 @@ define(function (require) {
             var defaultMetrics = [];
             metrics.forEach(function (category) {
                 category.metrics.forEach(function (metric) {
-                    if ($.inArray(metric.name, names) >= 0) {
+                    if ($.inArray(metric.name, names) >= 0 ||
+                        $.inArray(metric.displayName, names) >= 0) {
                         defaultMetrics.push(metric);
                     }
                 });
