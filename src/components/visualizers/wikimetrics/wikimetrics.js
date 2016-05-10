@@ -27,7 +27,7 @@ define(function (require) {
         this.metric = params.metric;
         this.projects = params.projects;
         this.mergedData = ko.observable();
-        this.breakdownState = params.breakdownState;
+        this.breakdownColumns = params.breakdownColumns;
         this.patterns = params.patterns;
 
         this.datasets = ko.computed(function () {
@@ -39,9 +39,9 @@ define(function (require) {
                 // make sure to listen to changes to the breakdown
                 // mmm..don't like that this requires too much inside knowledge
                 // of breakdown state
-                if (this.breakdownState() && this.breakdownState().display()) {
-                    for (var i = 0; i < this.breakdownState().columns().length; i++) {
-                        var column = this.breakdownState().columns()[i];
+                if (metric.breakdown && this.breakdownColumns().length > 0) {
+                    for (var i = 0; i < this.breakdownColumns().length; i++) {
+                        var column = this.breakdownColumns()[i];
                         if (column.selected()) {
                             breakdown.push(column.label)
                         }
@@ -96,11 +96,11 @@ define(function (require) {
         // Whenever the breakdown changes, resets them.
         this.breakdownPatterns = [];
         ko.computed(function () {
-            var breakdownState = ko.unwrap(visualizer.breakdownState),
+            var columns = ko.unwrap(visualizer.breakdownColumns),
                 mergedData = visualizer.mergedData(),
                 breakdownPatterns = visualizer.breakdownPatterns;
 
-            if (breakdownState && breakdownState.display()) {
+            if (columns && columns.length > 1) {
                 _.forEach(mergedData.patternLabels, function (patternLabel) {
                     if (_.indexOf(breakdownPatterns, patternLabel) === -1) {
                         breakdownPatterns.push(patternLabel);

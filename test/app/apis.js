@@ -161,6 +161,30 @@ define(function (require) {
             expect(/mobile-site/.test(requests[2].url)).toBe(true, 'mobile-site fetched');
         });
 
+        it('Should request correct date format depending on granularity', function () {
+            var deferred = new $.Deferred();
+
+            deferred.resolveWith(null, [sitematrixData]);
+
+            // mocking ajax cause sitematrix does use jquery for ajax
+            sinon.stub($, 'ajax').returns(deferred);
+
+            // hourly granularity
+            var metric = {name: 'Pageviews', granularity: 'hourly'};
+            aqsApi.getData(metric, 'aawiktionary', ['All']);
+            expect(/[0-9]{10}\/[0-9]{10}/.test(requests[0].url)).toBe(true);
+
+            // daily granularity
+            var metric = {name: 'Pageviews', granularity: 'daily'};
+            aqsApi.getData(metric, 'aawiktionary', ['All']);
+            expect(/[0-9]{8}00\/[0-9]{8}00/.test(requests[1].url)).toBe(true);
+
+            // monthly granularity
+            var metric = {name: 'UniqueDevices', granularity: 'monthly'};
+            aqsApi.getData(metric, 'aawiktionary', ['All']);
+            expect(/[0-9]{6}01\/[0-9]{6}01/.test(requests[2].url)).toBe(true);
+        });
+
         it('should return empty TimeseriesData if getting data fails', function (done) {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));

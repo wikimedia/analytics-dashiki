@@ -35,7 +35,11 @@ define(function (require) {
             'Pageviews': {
                 endpoint: 'getAggregatedPageviews',
                 valueField: 'views',
-                dateFormat: 'YYYYMMDDHH',
+                dateFormat: {
+                    'hourly': 'YYYYMMDDHH',
+                    'daily': 'YYYYMMDD00',
+                    'monthly': 'YYYYMM0100'
+                },
                 // Api knows how to translate from general breakdown
                 // labels to api semantics to retrieve data.
                 breakdownOptions: {
@@ -50,7 +54,10 @@ define(function (require) {
             'UniqueDevices': {
                 endpoint: 'getUniqueDevices',
                 valueField: 'devices',
-                dateFormat: 'YYYYMMDD',
+                dateFormat: {
+                    'daily': 'YYYYMMDD',
+                    'monthly': 'YYYYMM01'
+                },
                 // Api knows how to translate from general breakdown
                 // labels to api semantics to retrieve data.
                 breakdownOptions: {

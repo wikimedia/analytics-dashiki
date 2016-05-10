@@ -14,9 +14,11 @@ define(function(require) {
             return {controlsDescendantBindings: true};
         },
         update: function(element, valueAccessor) {
-            var metric = ko.unwrap(valueAccessor()),
-                metricName = metric.displayName || metric.name.replace(re, '$1 $2');
-            ko.utils.setTextContent(element, metricName);
+            var metric = ko.unwrap(valueAccessor());
+            if (metric) {
+                var metricName = metric.displayName || metric.name.replace(re, '$1 $2');
+                ko.utils.setTextContent(element, metricName);
+            }
         }
     };
 });

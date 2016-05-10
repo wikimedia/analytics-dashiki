@@ -59,7 +59,8 @@ define(function (require) {
         var sitematrixPromise = sitematrix.getProjectUrl(this.config, project);
         sitematrixPromise.done(function (projectUrl) {
             var promises = [],
-                endDate = moment().format(apiConfig.dateFormat),
+                granularity = metric.granularity || 'daily',
+                endDate = moment().format(apiConfig.dateFormat[granularity]),
                 breakdownParameter = _.camelCase(apiConfig.breakdownParameter);
 
             // Perform the requests.
@@ -67,7 +68,7 @@ define(function (require) {
                 var params = {
                     project: projectUrl,
                     agent: 'user',  // Only used in the Pageviews endpoint.
-                    granularity: metric.granularity || 'daily',
+                    granularity: granularity,
                     start: apiConfig.dataStart,
                     end: endDate
                 };

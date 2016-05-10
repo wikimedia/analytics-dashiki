@@ -78,11 +78,16 @@ define(function (require) {
         // Observing whether a or b are supposed to show separately would
         // cause thrashing, so we make a single computed that changes both
         // together
-        this.showAB = ko.pureComputed(function () {
-            return {
-                a: this.comparable.selected() !== this.config.b,
-                b: this.comparable.selected() !== this.config.a,
-            };
+        this.showAB = ko.computed(function () {
+            var selected = this.comparable.selected();
+            if (this.config) {
+                return {
+                    a: selected !== this.config.b,
+                    b: selected !== this.config.a,
+                };
+            } else {
+                return {a: false, b: false};
+            }
         }, this);
 
         this.comparisons = ko.observable([]);
@@ -147,7 +152,7 @@ define(function (require) {
                             promises = _.pluck(apiPromises(), 'promise'),
                             // don't filter when showAB changes, let
                             // the promises deal with that dependency
-                            showAB = this.showAB.peek();
+                            showAB = this.showAB();
 
                         $.when.apply(this, promises).then(function (data1, data2) {
                             data1.filter(from, to);

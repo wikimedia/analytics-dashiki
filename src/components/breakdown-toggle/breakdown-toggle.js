@@ -10,55 +10,70 @@ define(function (require) {
     var ko = require('knockout');
     var templateMarkup = require('text!./breakdown-toggle.html');
 
-    function BreakdownToggle(params) {
-        var self = this;
-        var patterns = params.patterns;
-        var dashes = patterns.map(
-            function (item) {
-                return item.toString();
-            });
-
-        this.breakdownState = params.breakdownState;
-
-        var state = {};
-        state.display = ko.observable(false);
-        state.columns = ko.observableArray([]);
-        this.breakdownState(state);
-
-        // Update state object with breakdown display specifics
-        // anytime the metric changes.
-        ko.computed(function () {
-            this.metric = ko.unwrap(params.metric);
-            this.breakdownState().display(false);
-            this.breakdownState().columns([]);
-            this.metric.breakdown.columns.forEach(function (label, index) {
+    function getBreakdownColumns(metric, dashes) {
+        var breakdownColumns = [];
+        if (metric && metric.breakdown) {
+            metric.breakdown.columns.forEach(function (label, index) {
                 // repeat pattern if more than dashes.length
                 var _index = index % dashes.length;
-                this.breakdownState().columns().push({
+                breakdownColumns.push({
                     selected: ko.observable(true),
                     label: label,
                     pattern: dashes[_index]
                 });
-            }.bind(this));
+            });
+        }
+        return breakdownColumns;
+    }
+
+    function BreakdownToggle(params) {
+        this.patterns = params.patterns;
+
+        this.metric = params.metric;
+
+        this.dashes = this.patterns.map(
+            function (item) {
+                return item.toString();
+            });
+
+        this.display = ko.observable(false);
+
+        //observable defined by parent component
+        this.columns = params.breakdownColumns;
+
+
+        // Update UI state when metric changes.
+        params.metric.subscribe(function () {
+            // metric gets passed but we do not really need it
+            this.display(false);
+            this.columns([]);
         }.bind(this));
 
         this.toggle = function () {
-            self.breakdownState().display(!self.breakdownState().display());
+            //showing, compute columns
+            if (!this.display()) {
+                this.columns(getBreakdownColumns(this.metric(), this.dashes));
+            } else {
+                this.columns([]);
+            }
+
+            this.display(!this.display());
         };
 
         // if we are down to 1 checkbox disable it as we need
         // at least 1 breakdown to show data
         this.isOnlyOneSelected = ko.computed(function () {
-            var possibleBreakdowns = this.breakdownState().columns().length;
-            var breakdownsSelected = 0;
-            for (var i = 0; i < possibleBreakdowns; i++) {
-                var column = this.breakdownState().columns()[i];
-                if (column.selected()) {
-                    breakdownsSelected++;
+            if (this.columns) {
+                var possibleBreakdowns = this.columns().length;
+                var breakdownsSelected = 0;
+                for (var i = 0; i < possibleBreakdowns; i++) {
+                    var column = this.columns()[i];
+                    if (column.selected()) {
+                        breakdownsSelected++;
+                    }
                 }
+                return breakdownsSelected === 1;
             }
-
-            return breakdownsSelected === 1;
         }.bind(this));
     }
 

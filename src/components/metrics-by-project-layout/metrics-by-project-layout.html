@@ -16,7 +16,7 @@
 
             </project-selector>
             <!-- ko if: selectedMetric() && selectedMetric().breakdown -->
-            <breakdown-toggle params="metric: selectedMetric, breakdownState:breakdownState, patterns:patterns"></breakdown-toggle>
+            <breakdown-toggle params="metric: selectedMetric, breakdownColumns:breakdownColumns, patterns:patterns"></breakdown-toggle>
             <!-- /ko -->
         </section>
 
@@ -30,7 +30,7 @@
             </div>
             <div class="ui segment">
                 <wikimetrics params="projects: selectedProjects,
-                                                metric: selectedMetric, breakdownState: breakdownState, patterns:patterns">
+                                                metric: selectedMetric, breakdownColumns: breakdownColumns, patterns:patterns">
                 </wikimetrics>
             </div>
         </section>

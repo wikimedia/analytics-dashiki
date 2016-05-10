@@ -54,6 +54,9 @@ define(function(require) {
     ko.components.register('table-timeseries', { require: 'components/visualizers/table-timeseries/table-timeseries' });
     // *********** END Tabs Layout Components ************ //
 
+    // Setup knockout to globally defer updates
+    ko.options.deferUpdates = true;
+
     // Start the application
     ko.applyBindings();
 });

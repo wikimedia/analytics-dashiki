@@ -23,7 +23,7 @@ define(function (require) {
 
         // breakdown component state gets initialized here cause it needs to have
         // page scope as other components subscribe to its changes
-        self.breakdownState = ko.observable();
+        self.breakdownColumns = ko.observableArray();
         self.patterns = [
             '', [5, 5],
             [15, 5],

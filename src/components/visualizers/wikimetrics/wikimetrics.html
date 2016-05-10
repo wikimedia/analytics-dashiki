@@ -1,4 +1,5 @@
-<!-- ko if: mergedData && mergedData() && mergedData().header.length -->
+<!-- ko if: metric && metric() && (mergedData && mergedData() && mergedData().header.length) -->
+
 
 <a class="header"
    data-bind="attr: {href: metric().definition}"
@@ -7,6 +8,7 @@
     <i class="external url icon"></i>
 </a>
 
+
 <dygraphs-timeseries params="
     data: mergedData,
     colors: colorScale,
@@ -14,8 +16,8 @@
     annotations: annotations,
     format: format,
 "></dygraphs-timeseries>
-
 <!-- /ko -->
+
 
 
 <!-- ko ifnot: mergedData && mergedData() && mergedData().header.length -->

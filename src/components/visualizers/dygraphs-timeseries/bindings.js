@@ -28,7 +28,7 @@ define(function (require) {
                 patterns = val.patterns,
                 graph = $element.find('div.graph')[0];
 
-            if (data && data.header.length) {
+            if (data && data.header && data.header.length) {
                 var rows = data.rowData({
                     convertToDate: true
                 });

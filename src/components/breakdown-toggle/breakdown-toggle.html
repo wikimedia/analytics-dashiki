@@ -1,13 +1,13 @@
 <div class="ui secondary inverted vertical fluid menu">
-    <a class="header item" data-bind="css: {'off': !breakdownState().display()}, click: toggle">
+    <a class="header item" data-bind="css: {'off': !display()}, click: toggle">
         <span class="default text">
             <i class="block layout icon"></i>
             Data Breakdowns
         </span>
     </a>
-    <!-- ko if: breakdownState().display() -->
+    <!-- ko if: display() -->
     <div class="colored menu">
-    <!-- ko foreach: breakdownState().columns()-->
+    <!-- ko foreach: columns()-->
         <div class="item">
             <label class="clickable">
                 <i class="circle icon"></i>
