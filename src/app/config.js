@@ -8,6 +8,24 @@ define(function (require) {
     // load any config files written by the build system
     var buildConfig = require('./config-from-build');
 
+    var uniqueDevicesConfig = {
+        endpoint: 'getUniqueDevices',
+        valueField: 'devices',
+        dateFormat: {
+            'daily': 'YYYYMMDD',
+            'monthly': 'YYYYMM01'
+        },
+        // Api knows how to translate from general breakdown
+        // labels to api semantics to retrieve data.
+        breakdownOptions: {
+            'All': 'all-sites',
+            'Desktop site': 'desktop-site',
+            'Mobile site': 'mobile-site'
+        },
+        breakdownParameter: 'access-site',
+        dataStart: '20160101'
+    };
+
     return {
 
         // indicates which mediawiki host and pages contain the configuration
@@ -51,23 +69,10 @@ define(function (require) {
                 breakdownParameter: 'access',
                 dataStart: '2015010100'
             },
-            'UniqueDevices': {
-                endpoint: 'getUniqueDevices',
-                valueField: 'devices',
-                dateFormat: {
-                    'daily': 'YYYYMMDD',
-                    'monthly': 'YYYYMM01'
-                },
-                // Api knows how to translate from general breakdown
-                // labels to api semantics to retrieve data.
-                breakdownOptions: {
-                    'All': 'all-sites',
-                    'Desktop site': 'desktop-site',
-                    'Mobile site': 'mobile-site'
-                },
-                breakdownParameter: 'access-site',
-                dataStart: '20160101'
-            }
+            // these two metrics come from the same place
+            // just granularity is different and that is configured on metric itself
+            'UniqueDevices': uniqueDevicesConfig,
+            'MonthlyUniqueDevices': uniqueDevicesConfig
         },
 
         datasetsApi: {
