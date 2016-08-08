@@ -5,12 +5,21 @@
                 'click to show all graphs' :
                 'click to show only this graph' },
 ">
-    <span data-bind="text: title"></span>
+    <span data-bind="text: title"></span> <span  style="float:right"> Showing data from  <span data-bind="text: prettyDate(startDate)"></span>
+    <!-- ko if: endDate -->
+      to <span data-bind="text: prettyDate(endDate)"></span>
+    <!-- /ko -->
+    <!-- ko ifnot: endDate -->
+      to today
+    <!-- /ko -->
+
+  </span>
 </div>
 <div class="ui attached segment grid">
     <div class="ui three wide column flexer">
+
         <div class="ui fluid icon input">
-            <input placeholder="filter by date" data-bind="datepicker: {start: startDate, end: endDate}" />
+            <input placeholder="filter by date" data-bind="datepicker: {start: startDate, end: endDate, minDate: minDate}" />
             <i class="calendar icon" />
         </div>
         <hr/>

@@ -20,7 +20,13 @@ npm install
 bower install
 sudo npm install -g gulp
 
+How to build some dashboards:
+gulp --layout metrics-by-project --config VitalSigns
+
 gulp --layout compare --config VisualEditorAndWikitext
+
+gulp --layout tabs --config SimpleRequestBreakdowns
+
 
 python -m SimpleHTTPServer 5000
 ```

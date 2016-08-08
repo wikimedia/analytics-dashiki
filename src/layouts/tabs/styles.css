@@ -74,3 +74,14 @@ tabs-layout > .bottom.pane .attached.segment {
 .ui.simple.reveal:hover .hidden.content {
     opacity: 1;
 }
+
+
+/* patches to datepicker layout and input padding */
+.daterangepicker.dropdown-menu {
+    min-width: 670px;
+}
+
+.ui.icon.input .daterangepicker .ranges input.input-mini {
+    font-size: 11px!important;
+    padding-right: 4px!important;
+}

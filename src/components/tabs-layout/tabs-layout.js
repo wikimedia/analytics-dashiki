@@ -53,14 +53,19 @@ define(function (require) {
                     g.selected = ko.computed(function () {
                         return g === dashboard.selectedGraph();
                     });
+
+                    if (t.dataRange) {
+                        g.startDate = t.dataRange.startDate;
+                    }
                     // TODO: define this kind of property on the visualizers themselves
                     // and just reference here by looking up e.g. visualizers[g.type].typeIcon
                     g.typeIcon =
                         (g.type === 'sunburst' || g.type === 'hierarchy') ? 'pie' :
-                        g.type === 'stacked-bars'                         ? 'bar' :
-                        g.type === 'dygraphs-timeseries'                  ? 'line' :
-                        g.type === 'table-timeseries'                     ? 'table' : '';
+                        g.type === 'stacked-bars' ? 'bar' :
+                        g.type === 'dygraphs-timeseries' ? 'line' :
+                        g.type === 'table-timeseries' ? 'table' : '';
                 });
+
             }, this);
 
             if (config.tabs.length > 0) {
@@ -72,9 +77,13 @@ define(function (require) {
                     tabId = selectIds[0];
                     graphId = selectIds[1];
                 }
-                tab = _.find(config.tabs, function (t) { return t.id === tabId; });
+                tab = _.find(config.tabs, function (t) {
+                    return t.id === tabId;
+                });
                 if (graphId) {
-                    graph = _.find(tab.graphs, function (g) { return g.id === graphId; });
+                    graph = _.find(tab.graphs, function (g) {
+                        return g.id === graphId;
+                    });
                 }
                 this.select(tab, graph);
             }

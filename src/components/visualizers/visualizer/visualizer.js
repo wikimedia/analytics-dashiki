@@ -7,12 +7,15 @@ define(function (require) {
         apiFinder = require('api-finder'),
         colorUtils = require('utils.colors'),
         numberUtils = require('utils.numbers'),
-        TimeseriesData = require('converters.timeseries');
+        TimeseriesData = require('converters.timeseries'),
+        moment = require('moment');
 
     require('datepicker-binding');
 
-    function Visualizer (params) {
-        var api = apiFinder({api: 'datasets'}),
+    function Visualizer(params) {
+        var api = apiFinder({
+                api: 'datasets'
+            }),
             graph = ko.unwrap(params);
 
         this.type = graph.type;
@@ -25,7 +28,8 @@ define(function (require) {
 
         var colorScale = colorUtils.category10();
         if (graph.colors) {
-            var domain = [], range = [];
+            var domain = [],
+                range = [];
             _.forEach(graph.colors, function (val, key) {
                 range.push(val);
                 domain.push(key);
@@ -36,8 +40,17 @@ define(function (require) {
         this.data = ko.observable(new TimeseriesData());
         api.getData(graph, 'all').done(this.data);
 
-        this.startDate = ko.observable();
+        this.startDate = ko.observable(graph.startDate);
+        this.minDate = ko.observable(graph.startDate);
         this.endDate = ko.observable();
+
+        /** If date is a unix tiemstamp change it to ISO format **/
+        this.prettyDate = function (value) {
+            if (Number.isInteger(value())) {
+                return moment(value()).format("YYYY-MM-DD");
+            }
+            return value;
+        };
 
         // turn the header into a list of items that can be selected / deselected
         // make it a computed so if the parent changes the data, this updates
@@ -48,7 +61,7 @@ define(function (require) {
                 return [];
             }
 
-            var header = data.header.map(function (h, i){
+            var header = data.header.map(function (h, i) {
                 return {
                     index: i,
                     title: h,
@@ -94,7 +107,9 @@ define(function (require) {
                 _.pluck(newHeader, 'title'),
                 _.pluck(newHeader, 'patternLabel')
             );
-        }, this).extend({ rateLimit: 0 });
+        }, this).extend({
+            rateLimit: 0
+        });
 
         // make params for the underlying visualizer
         this.params = {
