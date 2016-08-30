@@ -47,7 +47,7 @@ define(function (require) {
         /** If date is a unix tiemstamp change it to ISO format **/
         this.prettyDate = function (value) {
             if (Number.isInteger(value())) {
-                return moment(value()).format("YYYY-MM-DD");
+                return moment(value()).format('YYYY-MM-DD');
             }
             return value;
         };
@@ -85,7 +85,7 @@ define(function (require) {
                 };
             });
 
-            return header;
+            return _.sortBy(header, function(h){ return h.title.toLowerCase(); });
         }, this);
 
         this.filteredData = ko.computed(function () {
