@@ -1,7 +1,9 @@
 define(function (require) {
     'use strict';
 
-    var factory = require('dataConverterFactory');
+    var factory = require('dataConverterFactory'),
+        // TODO: karma or something has problems with buildHierarchy = factory.getDataConverter('hierarchy');
+        buildHierarchy = require('converters.hierarchy-data');
 
 
     describe('sv converter', function () {
@@ -172,8 +174,7 @@ define(function (require) {
     });
 
     describe('hierarchy-data converter', function () {
-        var converterCSV = factory.getDataConverter('csv'),
-            buildHierarchy = factory.getDataConverter('hierarchy');
+        var converterCSV = factory.getDataConverter('csv');
 
         it('should convert tsv to hierarchy', function () {
             var csvData = (

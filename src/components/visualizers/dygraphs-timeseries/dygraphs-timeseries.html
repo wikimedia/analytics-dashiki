@@ -24,9 +24,15 @@
         padding: 1px 1px 1px 2px;
         text-align: left;
     }
+    .graph {
+        margin-bottom: 12px;
+        min-height: 200px;
+        min-width: 300px;
+        background-color: white;
+    }
 </style>
 
-<div class="parent-of-resizable" data-bind="
+<div class="columnar flexer flexed" data-bind="
     if: data && data.header,
     dygraphs: {
         height: $data.height,

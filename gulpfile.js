@@ -162,7 +162,7 @@ gulp.task('default', ['html'], function () {
     gutil.log('');
 });
 
-gulp.task('html', ['js', 'css', 'fonts'], function () {
+gulp.task('html', ['js', 'css', 'themes'], function () {
     // restore the build config to return nothing so it doesn't break
     // automated or local testing
     writeBuildConfig(null);
@@ -204,24 +204,17 @@ gulp.task('css', ['clean'], function () {
         .pipe(gulp.dest(layout.destPath));
 });
 
-/** Copies semantic fonts where the css expects them to be**/
-gulp.task('fonts', ['clean'], function () {
-    var semanticFonts = 'src/fonts/*',
-        semantic2Fonts = 'src/themes/default/**/*';
+/** Copies semantic themes where the css expects them to be**/
+gulp.task('themes', ['clean'], function () {
+    var semantic2Themes = 'src/themes/default/**/*';
 
-    // put fonts in both places
+    // put themes in both places
     // not pretty but needed for self-contained deploys
-    gulp.src([
-        semantic2Fonts,
+    return gulp.src([
+        semantic2Themes,
     ])
         .pipe(gulp.dest(layout.destPath + 'themes/default/'))
         .pipe(gulp.dest(layout.destPath + '../themes/default/'));
-
-    return gulp.src([
-        semanticFonts,
-    ])
-        .pipe(gulp.dest(layout.destPath + 'fonts/'))
-        .pipe(gulp.dest(layout.destPath + '../fonts/'));
 });
 
 gulp.task('lint', function () {

@@ -1,6 +1,18 @@
+<style>
+.annotation.label {
+    cursor: pointer;
+    margin: 5px 3px 3px 3px;
+}
+.annotation-list-title {
+    margin-left: 10px;
+    vertical-align: -2px;
+    font-size: 14px;
+}
+</style>
+
 <!-- ko if: annotations && annotations() && annotations().length -->
-	<span class="annotation-list-title">Notes</span>
-	<!-- ko foreach: annotations -->
-	<div class="ui small label annotation" data-bind="text: $data.dateRange, popup: $data.htmlNote"></div>
-	<!-- /ko -->
+    <span class="annotation-list-title">Notes</span>
+    <!-- ko foreach: annotations -->
+    <div class="ui small label annotation" data-bind="text: $data.dateRange, popup: $data.htmlNote"></div>
+    <!-- /ko -->
 <!-- /ko -->

@@ -32,7 +32,6 @@ define(function (require) {
 
         this.metricsByCategory = params.metrics;
         this.selectedMetric = params.selectedMetric;
-        this.selectedCategory = ko.observable();
         this.addedMetrics = ko.observableArray([]);
 
         this.defaultSelection = ko.computed(function () {
@@ -73,9 +72,6 @@ define(function (require) {
                 return c.metrics.length;
             });
 
-            if (categories.length) {
-                this.selectedCategory(categories[0]);
-            }
             return categories;
         }, this);
 
@@ -83,10 +79,6 @@ define(function (require) {
         this.setDefault = function () {
             self.addedMetrics(self.defaultSelection() || []);
             self.reassignSelected();
-        };
-
-        this.selectCategory = function (category) {
-            self.selectedCategory(category);
         };
 
         this.addMetric = function (metric) {

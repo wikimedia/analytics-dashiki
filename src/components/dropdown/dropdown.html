@@ -1,12 +1,14 @@
-<div class="ui compact small menu">
+<style>
+    dropdown .ui.compact.menu {
+        box-shadow: none;
+    }
+</style>
+<div class="ui compact menu">
     <div class="ui simple dropdown item">
         <span data-bind="text: format(selectOne.selected())"></span>
         <i class="dropdown icon"></i>
         <div class="scrolling menu" data-bind="foreach: selectOne.options">
-            <div class="item" data-bind="
-                text: $parent.format($data),
-                click: $parent.select"
-            ></div>
+            <div class="item" data-bind="text: $parent.format($data), click: $parent.select"></div>
         </div>
     </div>
 </div>

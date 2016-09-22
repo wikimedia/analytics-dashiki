@@ -4,33 +4,11 @@
     <i class="dropdown icon vertically" data-bind="css: {flipped: open}"></i>
 </div>
 
-<div class="ui pointing white offset above label categories target" data-bind="css: {open: open}">
-    <div class="ui two column grid">
-        <div class="column">
-            <div class="ui vertical pointing black menu">
-            <!-- ko foreach: categories -->
-                <a class="item" data-bind="
-                    css: {active: name === $parent.selectedCategory().name},
-                    text: name,
-                    click: $parent.selectCategory
-                "></a>
-            <!-- /ko -->
-            </div>
-        </div>
-        <div class="column">
-            <div class="ui vertical menu">
-            <!-- ko if: selectedCategory -->
-            <!-- ko foreach: categories -->
-                <!-- ko if: $parent.selectedCategory().name !== 'All metrics' &&
-                            (name === 'All metrics' || name < $parent.selectedCategory().name) -->
-                <div class="item">&nbsp;</div>
-                <!-- /ko -->
-            <!-- /ko -->
-            <!-- ko foreach: selectedCategory().metrics -->
-                <a class="item" data-bind="metricName: $data, click: $parent.addMetric"></a>
-            <!-- /ko -->
-            <!-- /ko -->
-            </div>
+<div class="ui vertical offset pointing menu target" data-bind="css: {open: open}, foreach: categories">
+    <div class="ui simple dropdown item">
+        <span data-bind="text: name"></span>
+        <div class="menu" data-bind="foreach: metrics">
+            <a class="item" data-bind="metricName: $data, click: $parents[1].addMetric"></a>
         </div>
     </div>
 </div>
@@ -38,7 +16,7 @@
 <!-- ko foreach: addedMetrics -->
 <div class="ui large label metric" data-bind="css: {black: $data === $parent.selectedMetric()}">
     <a data-bind="click: $parent.selectMetric, metricName: $data"></a>
-    <i class="separate icon">|</i>
+    &nbsp;&nbsp;&nbsp;|
     <i class="delete icon" data-bind="click: $parent.removeMetric"></i>
 </div>
 <!-- /ko -->

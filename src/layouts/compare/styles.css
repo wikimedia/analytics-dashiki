@@ -1,0 +1,75 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+}
+.columnar.flexer {
+    display: flex;
+    flex-direction: column;
+}
+.flexed {
+    flex: 1;
+}
+
+filters, comparisons, graph {
+    display: block;
+}
+filters.ui.segment {
+    padding: 0.5em 0.2em 0.5em 1em;
+    box-shadow: none;
+    height: 10vh;
+}
+comparisons.ui.attached.segment {
+    background-color: #f7f7f7;
+    height: 90vh;
+}
+comparisons .ui.top.attached.header {
+    background-color: #ffffff;
+    font-size: 1.5em;
+}
+.ui.tight.grid {
+    margin: 0;
+}
+.scrolling.menu {
+    overflow-y: scroll!important;
+    border: 2px solid #eaeaea!important;
+}
+.scrolling.menu > .item {
+    border-width: 0 0 2px 0!important;
+    border-color: #eaeaea!important;
+    border-style: solid!important;
+}
+.scrolling.segment {
+    overflow-y: scroll!important;
+    overflow-x: hidden!important;
+}
+.ui.small.buttons .button, .ui.small.label {
+    text-transform: uppercase;
+}
+
+/*
+
+
+.resizable.container {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+}
+
+.ui.height540 {
+    min-height: 540px;
+    max-height: 540px;
+    height: 540px;
+}
+
+.full.height.column {
+    height: 100%;
+}
+
+*/
+
+.dygraph-roller input {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    display: inline !important;
+}

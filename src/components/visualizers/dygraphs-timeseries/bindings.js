@@ -17,7 +17,7 @@ define(function (require) {
                 $(element).height(val.height);
             }
 
-            $(element).append('<div class="resizable container graph"></div>');
+            $(element).append('<div class="flexed graph"></div>');
         },
         update: function (element, valueAccessor) {
             var $element = $(element),

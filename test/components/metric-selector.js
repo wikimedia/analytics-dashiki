@@ -1,4 +1,8 @@
-define(['components/metric-selector/metric-selector', 'knockout'], function(component, ko) {
+'use strict';
+define(function(require) {
+    var component = require('components/metric-selector/metric-selector'),
+        ko = require('knockout');
+
     var MetricSelector = component.viewModel;
 
     describe('MetricSelector view model', function() {
@@ -76,12 +80,6 @@ define(['components/metric-selector/metric-selector', 'knockout'], function(comp
             // adding a metric selects it
             instance.addMetric(metricC);
             expect(instance.selectedMetric()).toEqual(metricC);
-
-            // categories work properly
-            instance = new MetricSelector(params);
-            expect(instance.selectedCategory().name).toEqual('All metrics');
-            instance.selectCategory(metricsConfig[1]);
-            expect(instance.selectedCategory().name).toEqual('Else');
         });
     });
 });

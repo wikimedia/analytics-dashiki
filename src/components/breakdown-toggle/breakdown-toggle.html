@@ -1,7 +1,7 @@
-<div class="ui secondary inverted vertical fluid menu">
-    <a class="header item" data-bind="css: {'off': !display()}, click: toggle">
-        <span class="default text">
-            <i class="block layout icon"></i>
+<div class="ui inverted vertical fluid main menu">
+    <a class="item" data-bind="css: {'active': display()}, click: toggle">
+        <span>
+            <i class="large block layout icon"></i>
             Data Breakdowns
         </span>
     </a>
@@ -13,7 +13,7 @@
                 <i class="circle icon"></i>
                 <span data-bind="text: label"></span>
 
-                <input type="checkbox" data-bind="disable: selected() && $parents[0].isOnlyOneSelected(),checked: selected ">
+                <input type="checkbox" data-bind="disable: selected() && $parents[0].isOnlyOneSelected(), checked: selected">
                 <svg height="10" width="100%">
                     <path stroke="white"
                           data-bind="attr: {'stroke-dasharray': pattern}"

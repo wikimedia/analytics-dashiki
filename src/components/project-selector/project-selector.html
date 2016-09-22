@@ -12,6 +12,7 @@
                      }"/>
     <i class="search icon"></i>
 </div>
+<hr/>
 
 <span class="tt-dropdown-menu"
       data-bind="css: {open: displaySuboptions}">
@@ -29,39 +30,37 @@
     </div>
 </span>
 
-<hr/>
-
 <!-- ko foreach: selectedProjectsByCategory -->
-<div class="ui secondary inverted vertical fluid menu">
-    <div class="header item">
-        <span class="default text" data-bind="text: name"></span>
-        <!-- menu goes here -->
-        <div class="ui simple dropdown">
-            <i class="dropdown icon"></i>
-            <div class="menu ui">
-                <div class="item small" data-bind="click: $parent.removeCategory.bind($parent, false)">
-                    <i class="trash icon"></i> Remove
-                </div>
-                <div class="item small" data-bind="click: $parent.removeCategory.bind($parent, true)">
-                    <i class="star icon"></i> Show this alone
+<div class="ui inverted secondary vertical menu">
+    <div class="item">
+        <div class="inverted header">
+            <span data-bind="text: name"></span>
+            <div class="ui simple dropdown">
+                <i class="huge dropdown icon"></i>
+                <div class="ui menu">
+                    <div class="item small" data-bind="click: $parent.removeCategory.bind($parent, false)">
+                        <i class="trash icon"></i> Remove
+                    </div>
+                    <div class="item small" data-bind="click: $parent.removeCategory.bind($parent, true)">
+                        <i class="star icon"></i> Show this alone
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- menu goes here -->
-    </div>
-    <div class="colored menu">
-    <!-- ko foreach: languages -->
-        <div class="item">
-            <span>
-                <i class="swatch" data-bind="style: {backgroundColor: color}"></i>
-                <span data-bind="text: name"></span>
-                <span class="subtext" data-bind="text: shortName"></span>
-            </span>
-            <a data-bind="click: $parents[1].removeProject.bind($parents[1])">
-                <i class="faded destructive delete icon"></i>
-            </a>
+        <div class="colored menu">
+        <!-- ko foreach: languages -->
+            <div class="item">
+                <span>
+                    <i class="swatch" data-bind="style: {backgroundColor: color}"></i>
+                    <span data-bind="text: name"></span>
+                    <span class="subtext" data-bind="text: shortName"></span>
+                </span>
+                <a data-bind="click: $parents[1].removeProject.bind($parents[1])">
+                    <i class="faded destructive delete icon"></i>
+                </a>
+            </div>
+        <!-- /ko -->
         </div>
-    <!-- /ko -->
     </div>
 </div>
 <hr/>

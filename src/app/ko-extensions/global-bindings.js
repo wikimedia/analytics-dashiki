@@ -3,7 +3,7 @@ define(function (require) {
     var ko = require('knockout');
 
     require('jquery');
-    require('semantic-popup');
+    require('semantic2-popup');
     require('semantic2-dropdown');
     require('semantic2-transition');
 

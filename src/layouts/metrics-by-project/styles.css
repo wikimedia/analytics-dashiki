@@ -1,0 +1,282 @@
+/* generally useful styles */
+body {
+    font-family: "Nimbus Sans L","Liberation Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
+}
+.clickable {
+    cursor: pointer;
+}
+.ui.label,
+.ui.input input {
+    border-radius: 2px;
+}
+
+/* page layout */
+.page.container {
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+.page.container > .left {
+    background-color: #6D6D6D;
+    width: 280px;
+    padding: 10px;
+}
+
+.page.container > .right {
+    background-color: #EEEEEE;
+    padding: 10px;
+    min-height: 500px;
+    min-width: 360px;
+}
+
+.page.container > .right .visualizer {
+    margin-top: 0;
+}
+
+.columnar.flexer {
+    display: flex;
+    flex-direction: column;
+}
+.flexed {
+    flex: 1;
+}
+
+/* our custom styles */
+
+/* visualizer(s) */
+dygraphs-timeseries {
+    display: block;
+    margin-top: 20px;
+}
+dygraphs-timeseries .dygraph-roller input {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    display: inline !important;
+}
+
+/* metric selector */
+.ui.segment.metric {
+    padding: 0.7em;
+}
+.ui.label.navy {
+    background-color: #347BFE;
+    color: white;
+}
+.ui.segment.metric .ui.label a {
+    opacity: 0.8;
+}
+.ui.segment.metric .ui.label.metric {
+    margin: 0.25em;
+}
+.ui.offset.pointing:before {
+    content: "";
+    transition: background .1s linear;
+    transform: rotate(45deg);
+    position: absolute;
+    width: 1em;
+    height: 1em;
+    background-image: none;
+
+    left: 11%!important;
+    top: -0.55em;
+    background-color: white;
+    border: 2px solid #E5E5E5;
+    border-bottom: none;
+    border-right: none;
+}
+
+/* project selector */
+project-selector .ui.inverted.input {
+    margin-bottom: 6px;
+}
+project-selector .ui.input input.typeahead {
+    font-size: 1.1em;
+    background-color: #7C7C7C;
+    color: white;
+    width: 260px;
+}
+project-selector .colored i.swatch {
+    vertical-align: bottom;
+    display: inline-block;
+    margin: 0 .35em 0 0;
+    width: 20px;
+    height: 20px;
+    opacity: 1;
+}
+project-selector > .menu {
+    width: auto!important;
+    margin: 0!important;
+}
+project-selector > .menu > .item {
+    padding: 0!important;
+}
+project-selector > .menu .inverted.header {
+    font-size: 1.2em!important;
+    background-color: rgba(0,0,0,.3);
+    padding: 0.6em 0.8em;
+}
+project-selector .colored.menu .item {
+    color: white!important;
+    font-size: 1.1em!important;
+}
+project-selector .colored.menu .icon.faded {
+    opacity: 0.1;
+}
+project-selector .colored.menu .item:hover .icon.faded {
+    opacity: 1;
+}
+project-selector .colored.menu .destructive:hover {
+    cursor: pointer;
+    color: #D42E2A;
+}
+project-selector .colored.menu .subtext {
+    color: #b2b2b2;
+    font-size: x-small;
+    text-transform: uppercase;
+    margin-left: 8px;
+}
+
+/* breakdown toggle */
+breakdown-toggle {
+    display: block;
+    margin-top: 30px;
+}
+
+breakdown-toggle .ui.main.menu > a.item {
+    font-size: 1.1em;
+    border-radius: 0!important;
+    padding: 0.6em 0.8em;
+}
+breakdown-toggle .colored.menu > .item {
+    color: white!important;
+}
+breakdown-toggle .colored.menu > .item span {
+    margin-right: 5px;
+    font-size: 1.3em;
+}
+breakdown-toggle .ui.main.menu > a.item.active,
+breakdown-toggle .ui.main.menu > a.item.active:hover {
+    background-color: #4D4D4D;
+    color: #BDBDBD;
+}
+breakdown-toggle .ui.main.menu > a.item,
+breakdown-toggle .ui.main.menu > a.item:hover {
+    background-color: #808080;
+    color: #454545;
+}
+
+/* anything with the target ko binding */
+.target {
+    position: absolute!important;
+    z-index: 100!important;
+    display: none!important;
+}
+.target.open {
+    display: block!important;
+}
+.target.label .grid {
+    margin: 0px;
+}
+.target.label .grid .column {
+    padding: 0px;
+    margin: 0px;
+}
+
+/* responsive media queries */
+@media only screen and (max-width:640px) {
+
+    .page.container {
+        flex-direction: column;
+    }
+
+    .page.container > .left {
+        /* move the projects menu to the bottom */
+        order: 2;
+        width: auto;
+    }
+    .page.container > .right {
+        padding: 0;
+    }
+
+    .graph {
+        margin: 0 -5%; /* push margins into left and right side */
+    }
+}
+
+/**
+ * Twitter typeahead stuff
+ */
+.tt-query,
+.tt-hint {
+    width: 390px;
+    height: 30px;
+    padding: 8px 12px;
+    font-size: 24px;
+    line-height: 30px;
+    border: 2px solid #ccc;
+    border-radius: 2px;
+    outline: none;
+}
+.tt-query {
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.tt-hint {
+    color: #999
+}
+.tt-dropdown-menu {
+    width: 300px;
+    margin: 1px 0 0 1px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+    max-height: 24em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+.tt-suggestion {
+    padding: 3px 20px;
+    font-size: 16px;
+    line-height: 30px;
+    border-bottom: #ccc 1px solid;
+}
+.tt-suggestion .footnote {
+    float: right;
+    font-size:0.8em;
+}
+.tt-suggestion.tt-is-under-cursor { /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
+    color: #fff;
+    background-color: #0097cf;
+
+}
+.tt-suggestion:hover {
+    font-weight: bold;
+    cursor: pointer;
+}
+.tt-suggestion p {
+    margin: 0;
+}
+.tt-back:hover{
+    font-weight: bold;
+}
+.tt-dropdown-menu {
+    display: none;
+}
+.tt-dropdown-menu .header {
+    margin: 0 0 0 10px;
+    font-size: 1.5em;
+    color: #888;
+}
+.tt-dropdown-menu > * {
+    margin: 0 0 14px 0;
+}
+.tt-dropdown-menu.open {
+    display: block;
+    position: absolute;
+    z-index: 100;
+}
+/* End Twitter Typeahead stuff */

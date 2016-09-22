@@ -15,8 +15,7 @@ var require = {
         'datepicker'            : 'bower_modules/semantic-datepicker/daterangepicker',
         'topojson'              : 'bower_modules/topojson/topojson',
         'moment'                : 'bower_modules/moment/moment',
-        'semantic-dropdown'     : 'bower_modules/semantic/build/uncompressed/modules/dropdown',
-        'semantic-popup'        : 'bower_modules/semantic/build/uncompressed/modules/popup',
+        'semantic2-popup'       : 'bower_modules/semantic-2/dist/components/popup',
         'semantic2-dropdown'    : 'bower_modules/semantic-2/dist/components/dropdown',
         'semantic2-transition'  : 'bower_modules/semantic-2/dist/components/transition',
         'mediawiki-storage'     : 'bower_modules/mediawiki-storage/dist/mediawiki-storage',
@@ -95,7 +94,7 @@ var require = {
             exports: 'nv',
             deps: ['d3']
         },
-        'semantic-popup': {
+        'semantic2-popup': {
             deps: ['jquery']
         },
         pageviews: {exports:'pageviews'},
