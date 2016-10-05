@@ -15,7 +15,7 @@ var gulp        = require('gulp'),
     rjs         = require('gulp-requirejs-bundler'),
     uglify      = require('gulp-uglify'),
     concat      = require('gulp-concat'),
-    minifyCSS   = require('gulp-minify-css'),
+    minifyCSS   = require('gulp-clean-css'),
     htmlreplace = require('gulp-html-replace'),
     jshint      = require('gulp-jshint');
 
@@ -199,7 +199,7 @@ gulp.task('js', ['lint', 'clean'], function () {
 
 gulp.task('css', ['clean'], function () {
     return gulp.src(layout.cssSources)
-        .pipe(minifyCSS())
+        .pipe(minifyCSS({processImportFrom: ['!fonts.googleapis.com']}))
         .pipe(concat('styles.css'))
         .pipe(gulp.dest(layout.destPath));
 });

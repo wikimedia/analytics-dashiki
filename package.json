@@ -2,7 +2,6 @@
   "name": "dashiki",
   "version": "0.0.0",
   "devDependencies": {
-    "pageviews": "~1.1.0",
     "chalk": "~0.4.0",
     "cheerio": "^0.19.0",
     "deeply": "~0.1.0",
@@ -10,10 +9,10 @@
     "event-stream": "~3.1.0",
     "git-rev-sync": "^1.0.0",
     "gulp": "^3.8.5",
+    "gulp-clean-css": "^2.0.13",
     "gulp-concat": "~2.2.0",
     "gulp-html-replace": "~1.0.0",
     "gulp-jshint": "~1.8.0",
-    "gulp-minify-css": "^1.0.0",
     "gulp-rename": "~1.2.0",
     "gulp-replace": "~0.4.0",
     "gulp-requirejs-bundler": "^0.1.1",
@@ -26,6 +25,7 @@
     "karma-requireglobal-preprocessor": "0.0.0",
     "karma-requirejs": "^0.2.1",
     "karma-sinon": "^1.0.3",
+    "pageviews": "~1.1.0",
     "requirejs": "^2.1.11",
     "sinon": "^1.10.3",
     "yargs": "^3.7.2"

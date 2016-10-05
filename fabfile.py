@@ -172,7 +172,7 @@ def deploy():
 
     # Also transfer shared resources to the root of the dashboard
     # (This setup may change later)
-    put('{}/fonts'.format(source), root, use_sudo=True)
+    put('{}/themes'.format(source), root, use_sudo=True)
 
 
 @task
