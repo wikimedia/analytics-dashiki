@@ -3,33 +3,27 @@
 var require = {
     baseUrl: '/src',
     paths: {
-        'jquery'                : 'bower_modules/jquery/dist/jquery',
-        'lodash'                : 'bower_modules/lodash/main',
-        // NOTE: the minified ko build is broken in 3.2.0
-        // (Issue reported https://github.com/knockout/knockout/issues/1528)
-        'knockout'              : 'bower_modules/knockout/dist/knockout.debug',
-        'text'                  : 'bower_modules/requirejs-text/text',
-        'numeral'               : 'bower_modules/numeral/numeral',
-        'd3'                    : 'bower_modules/d3/d3',
-        'vega'                  : 'bower_modules/vega/vega',
-        'datepicker'            : 'bower_modules/semantic-datepicker/daterangepicker',
-        'topojson'              : 'bower_modules/topojson/topojson',
-        'moment'                : 'bower_modules/moment/moment',
-        'semantic2-popup'       : 'bower_modules/semantic-2/dist/components/popup',
-        'semantic2-dropdown'    : 'bower_modules/semantic-2/dist/components/dropdown',
-        'semantic2-transition'  : 'bower_modules/semantic-2/dist/components/transition',
-        'mediawiki-storage'     : 'bower_modules/mediawiki-storage/dist/mediawiki-storage',
-        'marked'                : 'bower_modules/marked/lib/marked',
-        'twix'                  : 'bower_modules/twix/dist/twix',
-        'dygraphs'              : 'bower_modules/dygraphs/dygraph-combined',
-        'nvd3'                  : 'bower_modules/nvd3/build/nv.d3',
-        'rickshaw'              : 'bower_modules/rickshaw/rickshaw',
-        'pageviews'             : 'bower_modules/pageviews/pageviews.min',
-        // NOTE: if you want functions like uri.expand, you must include both
-        // URI and URITemplate like define(['uri/URI', 'uri/URITemplate'] ...
-        // because URITemplate modifies URI when it's parsed
-        'uri'                   : 'bower_modules/URIjs/src',
-        'typeahead'             : 'bower_modules/typeahead.js/dist/typeahead.bundle',
+        'd3'                    : '../node_modules/d3/d3',
+        'datepicker'            : '../node_modules/semantic-datepicker/daterangepicker',
+        'dygraphs'              : '../node_modules/dygraphs/dygraph-combined',
+        'jquery'                : '../node_modules/jquery/dist/jquery',
+        'knockout'              : '../node_modules/knockout/build/output/knockout-latest',
+        'lodash'                : '../node_modules/lodash/lodash',
+        'marked'                : '../node_modules/marked/lib/marked',
+        'mediawiki-storage'     : '../node_modules/mediawiki-storage/dist/mediawiki-storage',
+        'moment'                : '../node_modules/moment/moment',
+        'numeral'               : '../node_modules/numeral/numeral',
+        'pageviews'             : '../node_modules/pageviews/pageviews',
+        'text'                  : '../node_modules/requirejs-text/text',
+        'topojson'              : '../node_modules/topojson/topojson',
+        'twix'                  : '../node_modules/twix/dist/twix',
+        'typeahead'             : '../node_modules/typeahead.js/dist/typeahead.jquery',
+        'uri'                   : '../node_modules/urijs/src',
+        'vega'                  : '../node_modules/vega/vega',
+
+        'semantic-dropdown'     : '../semantic/dist/components/dropdown',
+        'semantic-popup'        : '../semantic/dist/components/popup',
+        'semantic-transition'   : '../semantic/dist/components/transition',
 
         // *** app
         'config'                : 'app/config',
@@ -85,25 +79,24 @@ var require = {
         'utils.elements'            : 'lib/utils/elements',
     },
     shim: {
-        'ajaxWrapper': {
-            //These script dependencies should be loaded before loading
-            //ajaxWrapper.js
+        ajaxWrapper: {
             deps: ['jquery']
         },
-        'typeahead': {
-            //These script dependencies should be loaded before loading
-            //typeahead
+        typeahead: {
             deps: ['jquery']
         },
-        d3: { exports: 'd3' },
-        nvd3: {
-            exports: 'nv',
-            deps: ['d3']
+        d3: {
+            exports: 'd3',
         },
-        'semantic2-popup': {
+        vega: {
+            deps: ['d3'],
+        },
+        'semantic-popup': {
             deps: ['jquery']
         },
-        pageviews: {exports:'pageviews'},
+        pageviews: {
+            exports: 'pageviews',
+        },
     }
 };
 

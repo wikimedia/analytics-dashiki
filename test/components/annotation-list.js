@@ -1,7 +1,8 @@
 'use strict';
 define(function (require) {
     var component = require('components/visualizers/annotation-list/annotation-list'),
-        annotationsApi = require('apis.annotations');
+        annotationsApi = require('apis.annotations'),
+        sinon = require('sinon');
 
     var AnnotationList = component.viewModel;
 

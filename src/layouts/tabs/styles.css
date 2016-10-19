@@ -1,8 +1,5 @@
-html, body {
-    padding: 0;
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
+body {
+    font-family: "Nimbus Sans L","Liberation Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
 }
 
 h1 small {

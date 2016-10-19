@@ -1,8 +1,8 @@
 <!doctype html>
 <!-- Conventions for Layout index.html:
     * URLs must be relative to the root, as in, they should start with /src
-    * CSS that you want concatenated and minified should be in a head section with class="minify"
-    * build:title, build:css, and build:js will be replaced by the build system with build artifacts
+    * all CSS in <head> will be concatenated and minified in the order included
+    * build:... sections will be replaced by the build system
 -->
 <html lang="en">
     <head>
@@ -13,36 +13,39 @@
         <title>Compare</title>
         <!-- endbuild -->
 
-        <section class="minify">
-        <!-- build:css -->
-        <!-- always pick and choose semantic ui components, full build includes things like chatrooms! -->
-        <!-- we have symlinked the modules used from bower_modules into style directory -->
-        <link href="/src/css/semantic2.reset.css" rel="stylesheet">
-        <link href="/src/css/semantic2.site.css" rel="stylesheet">
+        <!-- build:piwik -->
+        <!-- endbuild -->
 
-        <link href="/src/css/semantic2.grid.css" rel="stylesheet">
-        <link href="/src/css/semantic2.menu.css" rel="stylesheet">
-        <link href="/src/css/semantic2.dropdown.css" rel="stylesheet">
-        <link href="/src/css/semantic2.label.css" rel="stylesheet">
-        <link href="/src/css/semantic2.icon.css" rel="stylesheet">
-        <link href="/src/css/semantic2.input.css" rel="stylesheet">
-        <link href="/src/css/semantic2.segment.css" rel="stylesheet">
-        <link href="/src/css/semantic2.transition.css" rel="stylesheet">
-        <link href="/src/css/semantic2.popup.css" rel="stylesheet">
-        <link href="/src/css/semantic2.header.css" rel="stylesheet">
-        <link href="/src/css/semantic2.divider.css" rel="stylesheet">
-        <link href="/src/css/semantic2.button.css" rel="stylesheet">
-        <link href="/src/css/semantic2.checkbox.css" rel="stylesheet">
-        <link href="/src/css/semantic2.list.css" rel="stylesheet">
+        <!-- build:css -->
+        <!-- stylesheets in this section will be replaced by a single minified one in the build -->
+        <link href="/src/css/semantic.reset.css" rel="stylesheet">
+        <link href="/src/css/semantic.site.css" rel="stylesheet">
+
+        <link href="/src/css/semantic.grid.css" rel="stylesheet">
+        <link href="/src/css/semantic.menu.css" rel="stylesheet">
+        <link href="/src/css/semantic.dropdown.css" rel="stylesheet">
+        <link href="/src/css/semantic.label.css" rel="stylesheet">
+        <link href="/src/css/semantic.icon.css" rel="stylesheet">
+        <link href="/src/css/semantic.input.css" rel="stylesheet">
+        <link href="/src/css/semantic.segment.css" rel="stylesheet">
+        <link href="/src/css/semantic.transition.css" rel="stylesheet">
+        <link href="/src/css/semantic.popup.css" rel="stylesheet">
+        <link href="/src/css/semantic.header.css" rel="stylesheet">
+        <link href="/src/css/semantic.divider.css" rel="stylesheet">
+        <link href="/src/css/semantic.button.css" rel="stylesheet">
+        <link href="/src/css/semantic.checkbox.css" rel="stylesheet">
+        <link href="/src/css/semantic.list.css" rel="stylesheet">
         <!-- end semantic ui -->
 
-        <link href="styles.css" rel="stylesheet">
+        <link href="/src/layouts/compare/styles.css" rel="stylesheet">
         <!-- endbuild -->
-        </section>
+    </head>
+    <body>
+        <compare-layout/>
 
         <!-- build:js -->
         <script src="/src/app/require.config.js"></script>
-        <script data-main="/src/app/startup.js" src="/src/bower_modules/requirejs/require.js"></script>
+        <script data-main="/src/app/startup.js" src="/node_modules/requirejs/require.js"></script>
         <!-- endbuild -->
     </head>
     <body>

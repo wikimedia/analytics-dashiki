@@ -1,30 +1,35 @@
+'use strict';
 module.exports = function(config) {
     config.set({
-
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine', 'requirejs', 'sinon'],
+        frameworks: ['jasmine', 'requirejs'],
 
         // list of files / patterns to load in the browser
         files: [
-            'src/app/require.config.js',
-            'test/require.config.js',
-            'test/SpecRunner.karma.js',
-            { pattern: 'src/**/*.js', included: false },
-            { pattern: 'src/**/*.html', included: false },
-            { pattern: 'test/**/*.js', included: false }
+            'node_modules/babel-polyfill/dist/polyfill.js',
+            'node_modules/pageviews/pageviews.js',
+            {pattern: 'node_modules/d3/d3.js', included: false, watched: false},
+            {pattern: 'node_modules/**/*.js', included: false, watched: false},
+            {pattern: 'node_modules/sinon/lib/sinon/*.js', included: false, watched: false},
+            {pattern: 'semantic/dist/components/*.js', included: false, watched: false},
+
+            {pattern: 'src/**/*.js', included: false},
+            {pattern: 'src/**/*.html', included: false},
+            {pattern: 'test/**/*.js', included: false},
+            'test/test-main.js'
         ],
 
         // list of files to exclude
-        exclude: [],
+        exclude: [
+        ],
 
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            '**/require.config.js': ['requireglobal']
         },
 
         // test results reporter to use
@@ -47,10 +52,14 @@ module.exports = function(config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
+        browsers: ['PhantomJS'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
-        singleRun: false
+        singleRun: false,
+
+        // Concurrency level
+        // how many browser should be started simultaneous
+        concurrency: Infinity
     });
 };

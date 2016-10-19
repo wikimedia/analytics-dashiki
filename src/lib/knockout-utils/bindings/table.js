@@ -77,10 +77,10 @@ define(function (require) {
             }
 
             // By here, rows and cols must be defined
-            if (!(numRows >= 0)) {
+            if (numRows < 0) {
                 throw Error('table binding requires row information (either "rows" or a "data" array)');
             }
-            if (!(numCols >= 0)) {
+            if (numCols < 0) {
                 throw Error('table binding requires column information (either "columns" or "header")');
             }
 
@@ -100,12 +100,12 @@ define(function (require) {
                 if (ko.isObservable(itemValue)) {
                     itemSubs.push(itemValue.subscribe(function (newValue) {
                         if (tableBody) {
-                            tableBody.rows[rowIndex1].cells[colIndex1][elemTextProp] = newValue == null ? '' : newValue;
+                            tableBody.rows[rowIndex1].cells[colIndex1][elemTextProp] = newValue === null ? '' : newValue;
                         }
                     }));
                     itemValue = itemValue.peek();
                 }
-                return itemValue == null ? '' : ko.utils.escape(itemValue);
+                return itemValue === null ? '' : ko.utils.escape(itemValue);
             }
 
             function getItemClass(rowIndex1, colIndex1) {

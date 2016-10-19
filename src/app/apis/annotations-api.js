@@ -2,8 +2,8 @@
  * This module gets metric annotations that reside in Mediawiki.
  * To get them, it uses mediawiki-storage library.
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var mediawikiStorage = require('mediawiki-storage'),
         moment = require('moment'),

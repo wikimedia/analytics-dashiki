@@ -14,8 +14,8 @@
  *  startRangePrefix    : Prefixed to notes that have a range. default 'Start: '
  *  endRangePrefix      : Prefixed to notes that have a range. default 'End: '
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var _ = require('lodash'),
         TimeseriesData = require('models.timeseries');

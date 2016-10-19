@@ -20,6 +20,7 @@
             colorScale      : undefined (pass a ko.observable to monitor color)
         "/>
  */
+'use strict';
 define(function(require) {
 
     var templateMarkup = require('text!./vega-timeseries.html'),

@@ -5,8 +5,8 @@
 
         <sunburst params="data: new TimeseriesData(), height: 500"/>
  */
+'use strict';
 define(function(require) {
-    'use strict';
 
     var ko = require('knockout'),
         d3 = require('d3'),

@@ -2,8 +2,8 @@
  * This module returns an instance of an object that knows how to get
  * reports run by WikimetricsBot on wikimetrics.  Methods commented inline
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var siteConfig = require('config'),
         converterFinder = require('finders.converter'),

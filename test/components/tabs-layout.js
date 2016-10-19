@@ -1,7 +1,8 @@
 'use strict';
 define(function(require) {
     var component = require('components/layouts/tabs/tabs'),
-        configApi = require('apis.config');
+        configApi = require('apis.config'),
+        sinon = require('sinon');
 
     var TabsLayout = component.viewModel;
 

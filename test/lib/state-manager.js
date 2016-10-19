@@ -1,9 +1,9 @@
-/*var studentsStub = { getEnrolled: function(subject){} };
-define("students", [], studentsStub);
-*/
+'use strict';
 
-define(['knockout', 'stateManager'], function (ko, stateManagerFactory) {
-    'use strict';
+define(function (require) {
+    var ko = require('knockout'),
+        stateManagerFactory = require('stateManager'),
+        URI = require('mocks.URI');
 
     describe('State Manager URL parsing functions', function () {
         beforeEach(function () {
@@ -19,14 +19,14 @@ define(['knockout', 'stateManager'], function (ko, stateManagerFactory) {
             setFakeLocation("http: //dashiki.com/#projects=enwiki,dewiki/metrics=newlyregister,rollingactive");
 
             var defaultProjects = ['enwiki', 'dewiki'];
-            var defaultMetric = 'newlyregister';
+            var defaultMetrics = ['newlyregistered'];
 
 
             var stateManager = stateManagerFactory.getManager(ko.observable([]), ko.observable(),
-                ko.observable([]), ko.observable());
+                ko.observable(defaultProjects), ko.observable(defaultMetrics));
 
             expect(stateManager.defaultProjects()[0]).toEqual('enwiki');
-            expect(stateManager.defaultMetrics()[0]).toEqual('newlyregister');
+            expect(stateManager.defaultMetrics()[0]).toEqual('newlyregistered');
 
         });
 

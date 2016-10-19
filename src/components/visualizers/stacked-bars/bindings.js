@@ -108,7 +108,7 @@ define(function (require) {
                 side = ko.unwrap(val.label);
 
             // need at least two columns for this visualization
-            if (!timeseriesData || !(timeseriesData.header.length > 1)) {
+            if (!timeseriesData || timeseriesData.header.length <= 1) {
                 return;
             }
             var data = unfoldData(timeseriesData);
@@ -122,7 +122,7 @@ define(function (require) {
                     width = 550 - margin.left - margin.right,
                     height = 400 - margin.top - margin.bottom;
 
-                var x = d3.scale.ordinal().rangeRoundBands([0, width], .1),
+                var x = d3.scale.ordinal().rangeRoundBands([0, width], 0.1),
                     yAbsolute = d3.scale.linear().rangeRound([height, 0]),
                     yRelative = d3.scale.linear().rangeRound([height, 0]);
 

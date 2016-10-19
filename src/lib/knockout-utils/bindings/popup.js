@@ -2,8 +2,8 @@
 define(function (require) {
     var ko = require('knockout');
 
-    require('semantic2-popup');
-    require('semantic2-transition');
+    require('semantic-popup');
+    require('semantic-transition');
 
     ko.bindingHandlers.popup = {
         init: function (element, valueAccessor) {

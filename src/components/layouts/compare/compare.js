@@ -152,7 +152,7 @@ define(function (require) {
                     ko.computed(function () {
                         var from = ko.unwrap(this.fromDate.selected),
                             to = ko.unwrap(this.toDate.selected),
-                            promises = _.pluck(apiPromises(), 'promise'),
+                            promises = _.map(apiPromises(), 'promise'),
                             // don't filter when showAB changes, let
                             // the promises deal with that dependency
                             showAB = this.showAB();

@@ -104,8 +104,8 @@ define(function (require) {
             data.filter(start, end);
 
             return data.pickColumns(
-                _.pluck(newHeader, 'title'),
-                _.pluck(newHeader, 'patternLabel')
+                _.map(newHeader, 'title'),
+                _.map(newHeader, 'patternLabel')
             );
         }, this).extend({
             rateLimit: 0

@@ -42,8 +42,8 @@ div.sunburst span.percentage {
     </div>
     <div class="resizable container">
         <div data-bind="visible: percentage, style: {
-                top: (height/2 - radius()/4.5) + 'px',
-                left: (width()/2 - radius()/4) + 'px',
+                top: (height/2 - radius()/4.5 + 15) + 'px',
+                left: (width()/2 - radius()/4 + 2) + 'px',
                 width: (radius()/2) + 'px',
             }" class="explanation">
             <span data-bind="text: percentage" class="percentage"></span>

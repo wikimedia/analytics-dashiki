@@ -9,7 +9,8 @@ define(function (require) {
         mediawikiStorage = require('mediawiki-storage'),
         config = require('config'),
         sitematrix = require('sitematrix'),
-        $ = require('jquery');
+        $ = require('jquery'),
+        sinon = require('sinon');
 
     describe('Wikimetrics API', function () {
         var converter;
@@ -83,7 +84,7 @@ define(function (require) {
                 }
             };
 
-        // mocking native object as pageviews.js bower module
+        // mocking native object as pageviews.js module
         // does not use jquery
         beforeEach(function () {
             xhr = sinon.useFakeXMLHttpRequest();

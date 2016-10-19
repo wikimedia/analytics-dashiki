@@ -5,7 +5,8 @@ define(function (require) {
         $ = require('jquery'),
         api = require('apis.wikimetrics'),
         ko = require('knockout'),
-        TimeseriesData = require('models.timeseries');
+        TimeseriesData = require('models.timeseries'),
+        sinon = require('sinon');
 
     var WikimetricsVisualizer = component.viewModel,
         selectedMetric,
@@ -76,6 +77,7 @@ define(function (require) {
 
             // but after a metric is set
             selectedMetric(metric);
+
             // promises will result in merged data being available (2 records x 2 datasets = 4):
             expect(visualizer.mergedData().rowData()).toEqual([
                 [1408665600000, v1, v1],

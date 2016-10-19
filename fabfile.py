@@ -138,13 +138,14 @@ def get_dest_path():
 @task
 def setup():
     """
-    Setup npm, bower and gulp in local environment,
+    Setup npm and gulp in the local environment,
+    build the ui library components and packages,
     only needs to be done once
     """
     print 'Setting up your local environment'
     local('npm install')
-    local('bower install')
     local('npm install -g gulp')
+    local('cd semantic && gulp build')
 
 
 @task

@@ -5,8 +5,8 @@
  * Configuration files now reside in mediawiki.
  * To get them, this module uses mediawiki-storage library.
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var siteConfig = require('config'),
         mediawikiStorage = require('mediawiki-storage');

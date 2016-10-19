@@ -2,8 +2,8 @@
  * Retrieves flat files from datasets.wikimedia.org
  *   (this url is configurable but unlikely to change)
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var siteConfig = require('config'),
         converterFinder = require('finders.converter'),

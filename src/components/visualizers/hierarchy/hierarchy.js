@@ -1,10 +1,9 @@
-'use strict';
-
 /**
  * Generic component that displays hierarchical data.
  * Example usage with default parameter values:
  *     <hierarchy params="data: new TimeseriesData(), height: 500"/>
  */
+'use strict';
 define(function(require) {
 
     var ko = require('knockout'),
@@ -89,8 +88,8 @@ define(function(require) {
         // Color of the text depending on the box color.
         this.getTextColor = function (boxColor) {
             var rgb = boxColor.rgb();
-            return rgb.r + rgb.g + rgb.b > 384 ? "black" : "white";
-        }
+            return rgb.r + rgb.g + rgb.b > 384 ? 'black' : 'white';
+        };
         // Properties of the text within the boxes.
         this.crumb = {
             dy: '0.35em',

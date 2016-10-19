@@ -1,5 +1,5 @@
+'use strict';
 define(function () {
-    'use strict';
 
     function SingleSelect(params) {
         this.selectOne = params.selectOne;

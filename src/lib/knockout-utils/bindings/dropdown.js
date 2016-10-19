@@ -2,7 +2,7 @@
 define(function (require) {
     var ko = require('knockout');
 
-    require('semantic2-dropdown');
+    require('semantic-dropdown');
 
     ko.bindingHandlers.dropdown = {
         init: function (element, valueAccessor) {

@@ -24,6 +24,7 @@
  * The getHierarchyPath function would split the middle column by '-' and
  * return the resulting array, i.e.: ['path', 'separated', 'by', 'dashes'].
  */
+'use strict';
 define(function () {
 
     var _ = require('lodash');
@@ -39,7 +40,7 @@ define(function () {
                 currentNode = root;
 
             if (isNaN(size)) { return; }
-            
+
             _.forEach(hierarchyPath, function (name, index) {
                 name = name.toString();
                 var last = (index === hierarchyPath.length - 1),

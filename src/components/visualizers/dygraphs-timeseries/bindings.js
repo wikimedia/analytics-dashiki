@@ -2,9 +2,7 @@
 define(function (require) {
 
     var ko = require('knockout'),
-        _ = require('lodash'),
-        moment = require('moment'),
-        numeral = require('numeral');
+        moment = require('moment');
 
     require('dygraphs');
     require('./dygraphs.patch');

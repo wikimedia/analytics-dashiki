@@ -1,8 +1,8 @@
 /**
  * Different async observables that simplify data fetching and transformation
  **/
+'use strict';
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         TimeseriesData = require('models.timeseries');

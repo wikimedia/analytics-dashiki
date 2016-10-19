@@ -26,8 +26,8 @@
  *  ['col1', 'col2'],           // colorLabels
  *  ['dataset1', 'dataset1'],   // patternLabels
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var _ = require('lodash'),
         moment = require('moment');
@@ -232,13 +232,15 @@ define(function (require) {
     TimeseriesData.prototype.rowData = function (options) {
         options = options || {};
 
+        var self = this;
+
         var output = _(this.rowsByDate).transform(function (result, rows, key) {
             var date = _.attempt(function () {
                 return moment.utc(key).toDate().getTime();
             });
             // don't output invalid dates or dates out of the filter
             if (!(
-                    _.isError(date) || isNaN(date) || (this.fromDate && date < this.fromDate) || (this.toDate && date > this.toDate)
+                    _.isError(date) || isNaN(date) || (self.fromDate && date < self.fromDate) || (self.toDate && date > self.toDate)
                 )) {
 
                 // output all rows for this date
@@ -254,7 +256,7 @@ define(function (require) {
                 }));
             }
 
-        }, [], this).sortBy(function (row) {
+        }, []).sortBy(function (row) {
             return row[0];
         });
 

@@ -68,8 +68,8 @@ define(function(require) {
             var pt = sel_points[i];
             if (pt.yval === 0 && !showZeros) { continue; }
             if (!window.Dygraph.isOK(pt.canvasy)) { continue; }
-            var series = g.getPropertiesForSeries(pt.name);
-            var yOptView = yOptViews[series.axis - 1];
+            var seriesProps = g.getPropertiesForSeries(pt.name);
+            var yOptView = yOptViews[seriesProps.axis - 1];
             var fmtFunc = yOptView('valueFormatter');
             var yval = fmtFunc.call(g, pt.yval, yOptView, pt.name, g, row, labels.indexOf(pt.name));
 
@@ -78,7 +78,7 @@ define(function(require) {
             // todo(danvk): use a template string here and make it an attribute.
             html += '<span' + cls + '>' +
                         '<span>' + yval + '</span>' +
-                        '<label style="color: ' + series.color + ';">' +
+                        '<label style="color: ' + seriesProps.color + ';">' +
                             escapeHTML(pt.name) +
                         '</label>' +
                     '</span>';

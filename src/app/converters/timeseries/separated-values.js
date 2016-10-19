@@ -2,8 +2,8 @@
  * This module returns a method that knows how to parse a file with values
  *   separated by arbitrary characters on lines separated by arbitrary characters
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var _ = require('lodash'),
         TimeseriesData = require('models.timeseries');
@@ -41,8 +41,8 @@ define(function (require) {
 
             }, options);
 
-            if (rawData.indexOf(opt.valueSeparator) < 0
-                || rawData.indexOf(opt.lineSeparator) < 0) {
+            if (rawData.indexOf(opt.valueSeparator) < 0 ||
+                rawData.indexOf(opt.lineSeparator) < 0) {
                 return new TimeseriesData();
             }
 
@@ -60,13 +60,11 @@ define(function (require) {
                                 return col.trim();
                             }),
 
-                colorLabels = opt.varyColors
-                    ? header
-                    : _.fill(Array(header.length), opt.label),
+                colorLabels = opt.varyColors ?
+                    header : _.fill(Array(header.length), opt.label),
 
-                patternLabels = opt.varyPatterns
-                    ? header
-                    : _.fill(Array(header.length), opt.globalPattern ? 0 : opt.label),
+                patternLabels = opt.varyPatterns ?
+                    header : _.fill(Array(header.length), opt.globalPattern ? 0 : opt.label),
 
                 rowsByDate = {},
                 duplicateDates = false;

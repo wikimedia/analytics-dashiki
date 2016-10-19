@@ -17,8 +17,10 @@ cd dashiki
 
 # If you have fabric(from PyPI) installed you can also run `fab setup` instead of the following three
 npm install
-bower install
 sudo npm install -g gulp
+cd semantic && gulp build
+
+NOTE: yarn install is under consideration, some incompabilities remain
 
 How to build some dashboards:
 gulp --layout metrics-by-project --config VitalSigns

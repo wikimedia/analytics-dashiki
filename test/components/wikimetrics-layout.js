@@ -2,7 +2,8 @@
 define(function(require) {
 
     var component = require('components/layouts/metrics-by-project/metrics-by-project'),
-        wikimetricsApi = require('apis.wikimetrics');
+        wikimetricsApi = require('apis.wikimetrics'),
+        sinon = require('sinon');
 
     var MetricsByProjectLayout = component.viewModel;
 

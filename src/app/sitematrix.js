@@ -54,7 +54,7 @@ define(function (require) {
                     //otherwise jquery takes the liberty of not caching your jsonp requests
                     cache: true
 
-                }).then(function (data) {
+                }).done(function (data) {
                     // transform sitematrix in structure that allows easy o(1) lookups
                     var sitematrix = {};
                     _.forEach(data.sitematrix, function (languageGroup) {

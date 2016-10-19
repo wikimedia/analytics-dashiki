@@ -2,8 +2,8 @@
  * This module returns a method that knows how to translate json data from
  *   wikimetrics to the canonical timeseries format understood by dashiki
  */
+'use strict';
 define(function (require) {
-    'use strict';
 
     var _ = require('lodash'),
         TimeseriesData = require('models.timeseries');

@@ -1,8 +1,7 @@
-'use strict';
-
 /**
  * Retrieves pageview and unique devices counts from AQS.
  */
+'use strict';
 define(function (require) {
 
     var siteConfig = require('config'),
@@ -61,7 +60,7 @@ define(function (require) {
             var promises = [],
                 granularity = metric.granularity || 'daily',
                 endDate = moment().format(apiConfig.dateFormat[granularity]),
-                breakdownParameter = _.camelCase(apiConfig.breakdownParameter);
+                breakdownCamelCase = _.camelCase(apiConfig.breakdownParameter);
 
             // Perform the requests.
             _.forEach(accessMethods, function (method) {
@@ -72,20 +71,21 @@ define(function (require) {
                     start: apiConfig.dataStart,
                     end: endDate
                 };
-                params[breakdownParameter] = method;
+                params[breakdownCamelCase] = method;
                 promises.push(pageviews[apiConfig.endpoint](params));
             });
 
             // Return when we have all data.
             Promise.all(promises).then(function (data) {
-                var timeseries = []
-                    breakdownParameter = _.kebabCase(apiConfig.breakdownParameter);
+                var timeseries = [],
+                    breakdownKebabCase = _.kebabCase(apiConfig.breakdownParameter);
+
                 _.forEach(data, function (dataForMethod) {
                     // Use the dbname as the label, to match colors with Project Selector
                     // if we want to re-label, we need to change both.
                     var opt = {
                         label: project,
-                        pattern: dataForMethod.items[0][breakdownParameter]
+                        pattern: dataForMethod.items[0][breakdownKebabCase]
                     };
                     timeseries.push(converter(opt, dataForMethod));
                 });
@@ -94,7 +94,7 @@ define(function (require) {
                 // the timeseries object makes sense.
                 deferred.resolve(timeseries);
 
-            }.bind(this), function (reason) {
+            }, function (reason) {
                 deferred.resolve(new TimeseriesData());
                 logger.error(reason);
             }).catch(function (error) {
@@ -102,7 +102,7 @@ define(function (require) {
                 logger.error(error);
             });
 
-        }.bind(this));
+        });
 
         sitematrixPromise.fail(function () {
             //something went wrong, make sure to return empty data

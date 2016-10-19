@@ -56,12 +56,11 @@ define(function (require) {
                 });
 
                 //invoqued when all promises are done
-                $.when.apply(this, promises).then(function () {
+                $.when.apply(this, promises).done(function () {
                     var timeseriesData = _.flatten(arguments);
                     this.mergedData(TimeseriesData.mergeAll(_.toArray(timeseriesData)));
                     this.applyColors(projects);
                 }.bind(this));
-
 
             } else {
                 this.mergedData(new TimeseriesData([]));

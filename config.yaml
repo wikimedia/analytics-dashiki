@@ -3,8 +3,8 @@ config:
     browser-reports:
         layout: tabs
         config: SimpleRequestBreakdowns
-        piwikHost: piwik.wikimedia.org 
-        piwikId: 7 
+        piwikHost: piwik.wikimedia.org
+        piwikId: 7
         hostname: browser-reports-test.wmflabs.org
         subfolder:
 
@@ -19,8 +19,8 @@ config:
     edit-analysis:
         layout: compare
         config: VisualEditorAndWikitext
-        piwikHost:
-        piwikId:
+        piwikHost: piwik.wikimedia.org
+        piwikId: 10
         hostname: edit-analysis-test.wmflabs.org
         subfolder: compare
 
@@ -35,15 +35,15 @@ config:
     multimedia-health:
         layout: metrics-by-project
         config: MultimediaHealth
-        piwikHost:
-        piwikId:
+        piwikHost: piwik.wikimedia.org
+        piwikId: 10
         hostname: edit-analysis-test.wmflabs.org
         subfolder: multimedia-health
 
     flow-by-wiki:
         layout: metrics-by-project
         config: FlowByWiki
-        piwikHost:
-        piwikId:
+        piwikHost: piwik.wikimedia.org
+        piwikId: 10
         hostname: edit-analysis-test.wmflabs.org
         subfolder: beta-enables

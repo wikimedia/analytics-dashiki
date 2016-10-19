@@ -3,7 +3,8 @@
 *swo
 .DS_Store
 node_modules/
-bower_modules/
+semantic/
+yarn-error.log
 npm-debug.log
 
 # personal dev stuff
@@ -15,7 +16,6 @@ dashiki.sublime-workspace
 # ignore the distribution directory because we are now
 # able to build different configurations
 dist/
-fonts/
 
 # ignore python stuff fabric generates
 *pyc

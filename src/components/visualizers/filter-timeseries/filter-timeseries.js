@@ -1,5 +1,5 @@
+'use strict';
 define(function (require) {
-    'use strict';
 
     var ko = require('knockout'),
         _ = require('lodash'),
@@ -56,8 +56,8 @@ define(function (require) {
             });
 
             return data.pickColumns(
-                _.pluck(newHeader, 'title'),
-                _.pluck(newHeader, 'patternLabel')
+                _.map(newHeader, 'title'),
+                _.map(newHeader, 'patternLabel')
             );
         }, this);
 
