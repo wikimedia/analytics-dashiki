@@ -2,11 +2,11 @@
 (function () {
     // Reference your test modules here
     var testModules = [
-        'components/metrics-by-project-layout',
+        'components/layouts/metrics-by-project',
         'components/visualizers/wikimetrics',
-        'components/vega-timeseries',
-        'components/project-selector',
-        'app/data-converters',
+        'components/visualizers/vega-timeseries',
+        'components/selectors/project',
+        'app/converters',
         'app/apis',
         'lib/state-manager'
     ];

@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Defines a function that can find an api from a metric object
  *
@@ -7,19 +8,22 @@
  *                data for that metric.  metric.api defaults to wikimetrics
  */
 define(function (require) {
-    'use strict';
 
     var wikimetricsApi = require('apis.wikimetrics'),
         aqsApi = require('apis.aqs'),
-        datasetsApi = require('apis.datasets');
+        datasetsApi = require('apis.datasets'),
+        annotationsApi = require('apis.annotations'),
+        configApi = require('apis.config');
 
     /* matches metric.api to an api instance */
     return function (metric) {
         var mapping = {
-            wikimetrics: wikimetricsApi,
+            annotations: annotationsApi,
             aqsApi: aqsApi,
-            pageviewApi: aqsApi,
+            config: configApi,
             datasets: datasetsApi,
+            pageviewApi: aqsApi,
+            wikimetrics: wikimetricsApi,
         };
 
         return mapping[metric.api || 'wikimetrics'];

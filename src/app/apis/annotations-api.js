@@ -9,7 +9,7 @@ define(function (require) {
         moment = require('moment'),
         logger = require('logger'),
         converter = require('converters.annotations'),
-        TimeseriesData = require('converters.timeseries');
+        TimeseriesData = require('models.timeseries');
 
     function AnnotationsApi () {}
 

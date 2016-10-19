@@ -1,0 +1,27 @@
+<div class="ui inverted vertical fluid main menu">
+    <a class="item" data-bind="css: {'active': display()}, click: toggle">
+        <span>
+            <i class="large block layout icon"></i>
+            Break Down by Site
+        </span>
+    </a>
+    <!-- ko if: display() -->
+    <div class="colored menu">
+    <!-- ko foreach: columns()-->
+        <div class="item">
+            <label class="clickable">
+                <i class="circle icon"></i>
+                <span data-bind="text: label"></span>
+
+                <input type="checkbox" data-bind="disable: selected() && $parents[0].isOnlyOneSelected(), checked: selected">
+                <svg height="10" width="100%">
+                    <path stroke="white"
+                          data-bind="attr: {'stroke-dasharray': pattern}"
+                          d="M6 5 l215 0" />
+                </svg>
+            </label>
+        </div>
+    <!-- /ko -->
+    </div>
+    <!-- /ko -->
+</div>

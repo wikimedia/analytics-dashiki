@@ -29,54 +29,60 @@ var require = {
         // URI and URITemplate like define(['uri/URI', 'uri/URITemplate'] ...
         // because URITemplate modifies URI when it's parsed
         'uri'                   : 'bower_modules/URIjs/src',
-        'config'                : 'app/config',
-        'logger'                : 'lib/logger',
-
-        'api-finder'            : 'app/apis/api-finder',
-        'dataConverterFactory'  : 'app/data-converters/factory',
         'typeahead'             : 'bower_modules/typeahead.js/dist/typeahead.bundle',
+
+        // *** app
+        'config'                : 'app/config',
+        'sitematrix'            : 'app/sitematrix',
+
+        // *** lib
+        'lib.polyfills'         : 'lib/polyfills',
         'ajaxWrapper'           : 'lib/ajax-wrapper',
         'window'                : 'lib/window',
         'stateManager'          : 'lib/state-manager',
-        'sitematrix'            : 'app/sitematrix',
+        'logger'                : 'lib/logger',
 
-        // *** viewmodels
-        'viewmodels.copy-params'    : 'app/ko-extensions/common-viewmodels/copy-params',
-        'viewmodels.single-select'  : 'app/ko-extensions/common-viewmodels/single-select',
-
-        // *** custom observables
-        'observables.async'         : 'app/ko-extensions/async-observables',
-
-        // *** general custom bindings
-        'datepicker-binding'        : 'app/ko-extensions/datepicker-binding',
-        'knockout.table'            : 'lib/knockout-extensions/knockout-table',
+        // *** finders
+        'finders.api'           : 'app/apis/api-finder',
+        'finders.converter'     : 'app/converters/converter-finder',
 
         // *** apis
-        'apis.wikimetrics'          : 'app/apis/wikimetrics',
-        'apis.annotations'          : 'app/apis/annotations-api',
-        'apis.aqs'                  : 'app/apis/aqs-api',
-        'apis.datasets'             : 'app/apis/datasets-api',
-        'apis.config'               : 'app/apis/config-api',
+        'apis.wikimetrics'      : 'app/apis/wikimetrics',
+        'apis.annotations'      : 'app/apis/annotations-api',
+        'apis.aqs'              : 'app/apis/aqs-api',
+        'apis.datasets'         : 'app/apis/datasets-api',
+        'apis.config'           : 'app/apis/config-api',
 
         // *** converters
-        'converters.separated-values'       : 'app/data-converters/separated-values',
-        'converters.simple-separated-values': 'app/data-converters/simple-separated-values',
-        'converters.wikimetrics-timeseries' : 'app/data-converters/wikimetrics-timeseries',
-        'converters.hierarchy-data'         : 'app/data-converters/hierarchy-data',
-        'converters.timeseries'             : 'app/data-converters/timeseries-data',
-        'converters.annotations'            : 'app/data-converters/annotations-data',
-        'converters.aqs-api-response'       : 'app/data-converters/aqs-api-response',
+        'converters.hierarchy-data'         : 'app/converters/hierarchy/hierarchy-data',
+        'converters.annotations'            : 'app/converters/timeseries/annotations-data',
+        'converters.aqs-api-response'       : 'app/converters/timeseries/aqs-api-response',
+        'converters.separated-values'       : 'app/converters/timeseries/separated-values',
+        'converters.wikimetrics-timeseries' : 'app/converters/timeseries/wikimetrics-timeseries',
+
+        // *** models
+        'models.timeseries'         : 'app/models/timeseries-data',
+
+        // *** knockout utils
+        // custom bindings
+        'knockout.datepicker'       : 'lib/knockout-utils/bindings/datepicker',
+        'knockout.dropdown'         : 'lib/knockout-utils/bindings/dropdown',
+        'knockout.popup'            : 'lib/knockout-utils/bindings/popup',
+        'knockout.table'            : 'lib/knockout-utils/bindings/table',
+        'knockout.toggle'           : 'lib/knockout-utils/bindings/toggle',
+        // viewmodels
+        'viewmodels.copy-params'    : 'lib/knockout-utils/viewmodels/copy-params',
+        'viewmodels.single-select'  : 'lib/knockout-utils/viewmodels/single-select',
+        // custom observables
+        'observables.async'         : 'lib/knockout-utils/async-observables',
 
         // *** utils
-        'utils.arrays'              : 'app/utils/arrays',
-        'utils.strings'             : 'app/utils/strings',
-        'utils.datetime'            : 'app/utils/datetime',
-        'utils.numbers'             : 'app/utils/numbers',
-        'utils.colors'              : 'app/utils/colors',
-        'utils.elements'            : 'app/utils/elements',
-
-        // *** lib
-        'lib.polyfills'             : 'lib/polyfills',
+        'utils.arrays'              : 'lib/utils/arrays',
+        'utils.strings'             : 'lib/utils/strings',
+        'utils.datetime'            : 'lib/utils/datetime',
+        'utils.numbers'             : 'lib/utils/numbers',
+        'utils.colors'              : 'lib/utils/colors',
+        'utils.elements'            : 'lib/utils/elements',
     },
     shim: {
         'ajaxWrapper': {

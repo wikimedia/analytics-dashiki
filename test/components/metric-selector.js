@@ -1,6 +1,6 @@
 'use strict';
 define(function(require) {
-    var component = require('components/metric-selector/metric-selector'),
+    var component = require('components/selectors/metric/metric'),
         ko = require('knockout');
 
     var MetricSelector = component.viewModel;

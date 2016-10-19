@@ -1,14 +1,12 @@
 define(function (require) {
     'use strict';
 
-    var factory = require('dataConverterFactory'),
-        // TODO: karma or something has problems with buildHierarchy = factory.getDataConverter('hierarchy');
-        buildHierarchy = require('converters.hierarchy-data');
+    var converterFinder = require('finders.converter');
 
 
     describe('sv converter', function () {
-        var converterCSV = factory.getDataConverter('csv');
-        var converterTSV = factory.getDataConverter('tsv');
+        var converterCSV = converterFinder('csv');
+        var converterTSV = converterFinder('tsv');
 
 
         it('should convert comma separated', function () {
@@ -128,7 +126,7 @@ define(function (require) {
 
 
     describe('wikimetrics-timeseries converter', function () {
-        var converterWikimetrics = factory.getDataConverter('json');
+        var converterWikimetrics = converterFinder('json');
         // pass the configuration to the converter
         var options = {
             defaultSubmetrics: {
@@ -174,7 +172,8 @@ define(function (require) {
     });
 
     describe('hierarchy-data converter', function () {
-        var converterCSV = factory.getDataConverter('csv');
+        var converterCSV = converterFinder('csv'),
+            buildHierarchy = converterFinder('hierarchy');
 
         it('should convert tsv to hierarchy', function () {
             var csvData = (
@@ -231,7 +230,7 @@ define(function (require) {
 
         it('happy case ', function () {
 
-            var converterAQSApi = factory.getDataConverter(
+            var converterAQSApi = converterFinder(
                 'aqs-api-response', 'views');
 
             var sample = {

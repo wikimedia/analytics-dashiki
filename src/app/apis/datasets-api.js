@@ -6,8 +6,8 @@ define(function (require) {
     'use strict';
 
     var siteConfig = require('config'),
-        converters = require('dataConverterFactory'),
-        TimeseriesData = require('converters.timeseries'),
+        converterFinder = require('finders.converter'),
+        TimeseriesData = require('models.timeseries'),
         uri = require('uri/URI'),
         logger = require('logger');
 
@@ -30,7 +30,7 @@ define(function (require) {
     DatasetsApi.prototype.getData = function (metricInfo, project) {
         var deferred = new $.Deferred(),
             address = '',
-            converter = converters.getDataConverter(this.config.format),
+            converter = converterFinder(this.config.format),
             handleFailure = function (error) {
                 // resolve as done with empty results and log the error
                 // to avoid crashing the ui when a metric has problems

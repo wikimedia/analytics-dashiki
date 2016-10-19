@@ -1,4 +1,8 @@
-define(['components/breakdown-toggle/breakdown-toggle', 'knockout'], function (component, ko) {
+'use strict';
+define(function (require) {
+    var component = require('components/controls/breakdown-toggle/breakdown-toggle'),
+        ko = require('knockout');
+
     var BreakdownToggle = component.viewModel;
 
     describe('BreakdownToggle view model', function () {

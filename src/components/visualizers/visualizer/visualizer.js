@@ -4,13 +4,13 @@ define(function (require) {
     var templateMarkup = require('text!./visualizer.html'),
         ko = require('knockout'),
         _ = require('lodash'),
-        apiFinder = require('api-finder'),
+        apiFinder = require('finders.api'),
         colorUtils = require('utils.colors'),
         numberUtils = require('utils.numbers'),
-        TimeseriesData = require('converters.timeseries'),
+        TimeseriesData = require('models.timeseries'),
         moment = require('moment');
 
-    require('datepicker-binding');
+    require('knockout.datepicker');
 
     function Visualizer(params) {
         var api = apiFinder({

@@ -1,7 +1,7 @@
 'use strict';
 define(function(require) {
 
-    var component = require('components/metrics-by-project-layout/metrics-by-project-layout'),
+    var component = require('components/layouts/metrics-by-project/metrics-by-project'),
         wikimetricsApi = require('apis.wikimetrics');
 
     var MetricsByProjectLayout = component.viewModel;

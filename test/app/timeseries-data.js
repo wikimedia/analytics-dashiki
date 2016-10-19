@@ -1,7 +1,7 @@
 define(function (require) {
     'use strict';
 
-    var TimeseriesData = require('converters.timeseries'),
+    var TimeseriesData = require('models.timeseries'),
         _ = require('lodash');
 
     describe('TimeseriesData class', function () {

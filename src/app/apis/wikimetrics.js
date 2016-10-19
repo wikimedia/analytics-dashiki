@@ -6,9 +6,9 @@ define(function (require) {
     'use strict';
 
     var siteConfig = require('config'),
-        dataConverterFactory = require('dataConverterFactory'),
+        converterFinder = require('finders.converter'),
         uri = require('uri/URI'),
-        TimeseriesData = require('converters.timeseries');
+        TimeseriesData = require('models.timeseries');
 
     require('uri/URITemplate');
     require('logger');
@@ -18,7 +18,7 @@ define(function (require) {
         this.config = config;
         // note that dataCoverter is a function that will need to be executed
         // in the context of the metric
-        this.dataConverter = dataConverterFactory.getDataConverter(config.wikimetricsApi.format);
+        this.dataConverter = converterFinder(config.wikimetricsApi.format);
     }
 
     function ProjectOption(data, prettyNames) {

@@ -1,4 +1,8 @@
-define(['components/visualizers/vega-timeseries/vega-timeseries', 'knockout'], function(component, ko) {
+'use strict';
+define(function (require) {
+    var component = require('components/visualizers/vega-timeseries/vega-timeseries'),
+        ko = require('knockout');
+
     var VegaTimeseries = component.viewModel;
 
     describe('VegaTimeseries view model', function() {

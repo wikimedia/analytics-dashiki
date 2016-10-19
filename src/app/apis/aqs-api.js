@@ -6,12 +6,12 @@
 define(function (require) {
 
     var siteConfig = require('config'),
-        dataConverterFactory = require('dataConverterFactory'),
+        converterFinder = require('finders.converter'),
         logger = require('logger'),
         moment = require('moment'),
         pageviews = require('pageviews'),
         _ = require('lodash'),
-        TimeseriesData = require('converters.timeseries'),
+        TimeseriesData = require('models.timeseries'),
         sitematrix = require('sitematrix');
 
     require('uri/URITemplate');
@@ -21,7 +21,7 @@ define(function (require) {
         // Note that dataConverters are functions that will need
         // to be executed in the context of the metric.
         this.dataConverters = _.mapValues(config.aqsApi, function (apiConfig) {
-            return dataConverterFactory.getDataConverter(
+            return converterFinder(
                 'aqs-api-response',
                 apiConfig.valueField
             );

@@ -15,11 +15,12 @@ define(function (require) {
 
     var ko = require('knockout'),
         _ = require('lodash'),
-        TimeseriesData = require('converters.timeseries'),
+        TimeseriesData = require('models.timeseries'),
         templateMarkup = require('text!./wikimetrics.html'),
-        annotationsApi = require('apis.annotations'),
-        apiFinder = require('app/apis/api-finder'),
+        apiFinder = require('finders.api'),
         numberUtils = require('utils.numbers');
+
+    var annotationsApi = apiFinder({api: 'annotations'});
 
     function WikimetricsVisualizer(params) {
         var visualizer = this;
@@ -43,7 +44,7 @@ define(function (require) {
                     for (var i = 0; i < this.breakdownColumns().length; i++) {
                         var column = this.breakdownColumns()[i];
                         if (column.selected()) {
-                            breakdown.push(column.label)
+                            breakdown.push(column.label);
                         }
                     }
                 }

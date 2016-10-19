@@ -1,5 +1,7 @@
-define(['components/project-selector/project-selector', 'knockout'], function (component, ko) {
-    'use strict';
+'use strict';
+define(function (require) {
+    var component = require('components/selectors/project/project'),
+        ko = require('knockout');
 
     var ProjectSelector = component.viewModel;
 

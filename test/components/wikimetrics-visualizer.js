@@ -1,11 +1,11 @@
+'use strict';
 define(function (require) {
-    'use strict';
 
     var component = require('components/visualizers/wikimetrics/wikimetrics'),
         $ = require('jquery'),
         api = require('apis.wikimetrics'),
         ko = require('knockout'),
-        TimeseriesData = require('converters.timeseries');
+        TimeseriesData = require('models.timeseries');
 
     var WikimetricsVisualizer = component.viewModel,
         selectedMetric,

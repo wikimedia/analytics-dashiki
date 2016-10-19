@@ -1,7 +1,9 @@
+'use strict';
 define(function (require) {
-    var component = require('components/annotation-list/annotation-list'),
-        annotationsApi = require('apis.annotations'),
-        AnnotationList = component.viewModel;
+    var component = require('components/visualizers/annotation-list/annotation-list'),
+        annotationsApi = require('apis.annotations');
+
+    var AnnotationList = component.viewModel;
 
     describe('AnnotationList view model', function () {
 
@@ -27,6 +29,7 @@ define(function (require) {
             });
 
             var instance = new AnnotationList(params);
+            expect(instance instanceof Object).toBe(true);
         });
 
         it('should render annotations returned by annotations api', function () {
