@@ -16,13 +16,54 @@
 'use strict';
 define(function (require) {
 
-    var _ = require('lodash'),
-        logger = require('logger');
-
+    var _ = require('lodash');
 
     function Sitematrix() {}
 
-    Sitematrix.cache = null;
+    // this will be a promise to the loaded cache
+    Sitematrix.loaded = null;
+
+    /**
+     * Fetch the sitematrix and keep the cache in a promise for anyone who needs it
+     */
+    Sitematrix.prototype.loadCache = function (config) {
+        if (Sitematrix.loaded === null) {
+            // in the special case when project is "all", resolve to "all-projects"
+            var cache = {
+                all: 'all-projects',
+            };
+
+            Sitematrix.loaded = new $.Deferred();
+
+            $.ajax({
+                url: config.sitematrix.endpoint,
+                // Tell jQuery we're expecting JSONP
+                dataType: 'jsonp',
+                //otherwise jquery takes the liberty of not caching your jsonp requests
+                cache: true
+
+            }).done(function (data) {
+                // transform sitematrix in structure that allows easy o(1) lookups
+                _.forEach(data.sitematrix, function (languageGroup) {
+                    // special projects like commons are reported differently
+                    var next = languageGroup.site || languageGroup;
+
+                    _.forEach(next, function (site) {
+                        // Each site record is as explained in this module comment
+                        var urlEndpoint = site.url.replace(/https:\/\/(www\.)?/, '');
+                        cache[site.dbname] = urlEndpoint;
+                        cache[urlEndpoint] = site.dbname;
+                    });
+                });
+
+            // fail or succeed, we resolve with the cache to make lookups easy
+            }).then(function () {
+                Sitematrix.loaded.resolve(cache);
+            });
+        }
+
+        return Sitematrix.loaded.promise();
+    };
 
     /**
      * Given a project db will return the project url as defined in teh sitematrix
@@ -32,86 +73,20 @@ define(function (require) {
      * from non-whitelisted domains
      */
     Sitematrix.prototype.getProjectUrl = function (config, dbname) {
-        var endpoint = config.sitematrix.endpoint;
-        var deferred = new $.Deferred();
+        var urlPromise = new $.Deferred();
 
-        if (Sitematrix.cache) {
-            var projectUrl = Sitematrix.cache[dbname];
+        this.loadCache(config).then(function (cache) {
+            var found = cache[dbname];
 
-            if (projectUrl) {
-                deferred.resolve(projectUrl);
+            if (found) {
+                urlPromise.resolve(found);
             } else {
-                deferred.reject('Could not find url for project!');
+                urlPromise.reject('Could not find url for project!');
             }
+        });
 
-        } else {
-
-
-            $.ajax({
-                    url: endpoint,
-                    // Tell jQuery we're expecting JSONP
-                    dataType: 'jsonp',
-                    //otherwise jquery takes the liberty of not caching your jsonp requests
-                    cache: true
-
-                }).done(function (data) {
-                    // transform sitematrix in structure that allows easy o(1) lookups
-                    var sitematrix = {};
-                    _.forEach(data.sitematrix, function (languageGroup) {
-                        // special projects like commons are reported differently
-                        var next;
-                        if (languageGroup.site) {
-                            next = languageGroup.site;
-
-                        } else {
-                            next = languageGroup;
-                        }
-                        _.forEach(next, function (site) {
-
-
-                            /*
-                            Each site record is like:
-                            closed: ''
-                            code: 'wiki'
-                            dbname: 'aawiki'
-                            sitename: 'Wikipedia'
-                            url: 'https://aa.wikipedia.org'
-                            url needs to be transform to: aa.wikipedia
-                            */
-                            var urlEndpoint = site.url.replace(/https:\/\/(www\.)?/, '');
-                            //building lookup both ways
-                            sitematrix[site.dbname] = urlEndpoint;
-                            sitematrix[urlEndpoint] = site.dbname;
-
-                        });
-
-                    });
-                    // can we populate an application wide cache now? or is this bad practice?
-                    if (!Sitematrix.cache) {
-                        // there is a special case where project is "all"
-                        // in that case that translates to "all-projects"
-                        sitematrix.all = 'all-projects';
-                        Sitematrix.cache = sitematrix;
-                    }
-
-                    if (sitematrix[dbname]) {
-                        deferred.resolve(sitematrix[dbname]);
-                    } else {
-                        deferred.reject('Could not find url for project!');
-                    }
-                })
-                .fail(function (error) {
-
-                    logger.error(error);
-                    deferred.reject(error);
-                });
-
-        }
-
-        return deferred.promise();
+        return urlPromise.promise();
     };
-
-
 
     return new Sitematrix();
 });
