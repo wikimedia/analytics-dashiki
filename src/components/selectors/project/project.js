@@ -19,38 +19,34 @@ define(function (require) {
 
         this.databaseOptions = ko.computed(function () {
             var reverse = ko.unwrap(this.reverseLookup);
+
             if (!reverse) {
                 return [];
             }
+
             return Object.getOwnPropertyNames(reverse).map(function (database) {
                 return {name: database, description: ''};
             });
         }, this);
 
-        var self = this,
-            updateDefault = function () {
-                var defaultDatabases = ko.unwrap(params.defaultProjects),
-                    reverse = ko.unwrap(params.reverseLookup),
-                    defaultProjects;
 
-                if (!reverse || !defaultDatabases) {
-                    return;
-                }
+        ko.computed(function () {
+            var defaultDatabases = ko.unwrap(params.defaultProjects),
+                reverse = ko.unwrap(params.reverseLookup);
 
-                defaultProjects = Object.getOwnPropertyNames(reverse)
-                    .filter(function (database) {
-                        return defaultDatabases.indexOf(database) >= 0;
-                    }).map(function (database) {
-                        return reverse[database];
-                    });
+            if (!reverse || !defaultDatabases) {
+                return;
+            }
 
-                self.selectedProjects(defaultProjects);
-            };
-        params.defaultProjects.subscribe(updateDefault);
-        if (ko.isObservable(params.reverseLookup)) {
-            params.reverseLookup.subscribe(updateDefault);
-        }
-        updateDefault();
+            this.selectedProjects(Object.getOwnPropertyNames(reverse)
+                .filter(function (database) {
+                    return defaultDatabases.indexOf(database) >= 0;
+                }).map(function (database) {
+                    return reverse[database];
+                })
+            );
+
+        }, this);
 
         /**
          * Transform selected projects to display by category in the UI

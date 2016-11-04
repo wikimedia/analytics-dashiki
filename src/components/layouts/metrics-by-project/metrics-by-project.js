@@ -13,13 +13,16 @@ define(function (require) {
 
         // project and language observables
         self.selectedProjects = ko.observableArray([]);
+        self.defaultProjects = ko.observable([]);
         self.projectOptions = ko.observable([]);
         self.languageOptions = ko.observable([]);
-        self.defaultProjects = ko.observable([]);
         self.reverseLookup = ko.observable();
 
         // metric observables
         self.selectedMetric = ko.observable();
+        self.defaultMetrics = ko.observable([]);
+        self.metricFilter = ko.observable([]);
+        self.allMetrics = ko.observable([]);
 
         // breakdown component state gets initialized here cause it needs to have
         // page scope as other components subscribe to its changes
@@ -30,9 +33,6 @@ define(function (require) {
             [45, 5],
         ];
 
-        self.defaultMetrics = ko.observable([]);
-        self.metricFilter = ko.observable([]);
-        self.allMetrics = ko.observable([]);
         self.metrics = ko.computed(function () {
             var filter = ko.unwrap(this.metricFilter),
                 all = ko.unwrap(this.allMetrics);
@@ -64,8 +64,10 @@ define(function (require) {
 
         // state manager should be observing the selections of project and metric
         // returns a statemanager obj if you need it
-        stateManagerFactory.getManager(this.selectedProjects, this.selectedMetric,
-            this.defaultProjects, this.defaultMetrics);
+        stateManagerFactory.getManager(
+            this.selectedProjects, this.selectedMetric,
+            this.defaultProjects, this.defaultMetrics
+        );
 
         configApi.getCategorizedMetrics(function (config) {
             if (config.categorizedMetrics) {

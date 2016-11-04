@@ -94,19 +94,17 @@ define(function (require) {
     }
      **/
     State.splitStateURL = function (hash) {
-        var projects = [];
-        var metrics = [];
+        var state = { projects: [], metrics: [] };
         var defaults = hash.split('/');
+
         defaults.forEach(function (item) {
             var choice = item.split('=');
-            //some translation needed from 'projects' to 'defaultProjects'
-            if (choice[0] === 'projects' && choice.length > 1) {
-                projects = choice[1].split(',');
-            } else if (choice[0] === 'metrics' && choice.length > 1) {
-                metrics = choice[1].split(',').map(decodeURIComponent);
+
+            if (choice.length > 1) {
+                state[choice[0]] = choice[1].split(',').map(decodeURIComponent);
             }
         });
-        return new State(projects, metrics);
+        return new State(state.projects, state.metrics);
     };
 
 
@@ -172,7 +170,10 @@ define(function (require) {
                 }
                 if (projects) {
                     projectNames = projects.map(function (p) {
-                        return p.database;
+                        // TODO: this is a hack to keep the URL from flickering
+                        // The proper fix is a better state manager that behaves
+                        // more predictably in the knockout data flow
+                        return p.database || p;
                     });
                 }
 
