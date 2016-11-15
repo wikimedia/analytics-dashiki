@@ -8,6 +8,9 @@ body {
 .ui.input input {
     border-radius: 2px;
 }
+.ui.vertical.menu .dropdown.item .menu {
+    top: 0% !important;
+}
 
 /* page layout */
 .page.container {
