@@ -36,7 +36,10 @@ define(function (require) {
             dashboardPage: buildConfig ? buildConfig.dashboardArticle : null,
             defaultDashboardPageRoot: 'Dashiki:DefaultDashboard',
             //https://meta.wikimedia.org/wiki/Dashiki:OutOfService
-            outOfService: 'Dashiki:OutOfService'
+            outOfService: 'Dashiki:OutOfService',
+            // this is a digest of sitematrix taylored to the UI,
+            // can be cached a long time and makes for a snappier UI
+            projectLanguageChoices: 'Dashiki:AvailableProjects'
         },
 
         // format are specified per API for now, in the future they can be specified per metric if needed
@@ -44,8 +47,6 @@ define(function (require) {
         // this asumption makes code simpler for now
         wikimetricsApi: {
             endpoint: 'metrics.wmflabs.org',
-            /** not sure if teh below url should also lawfully live on configAPI */
-            urlProjectLanguageChoices: 'https://metrics.wmflabs.org/static/public/datafiles/available-projects.json',
             format: 'json'
         },
 

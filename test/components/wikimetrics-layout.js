@@ -1,26 +1,26 @@
 'use strict';
-define(function(require) {
+define(function (require) {
 
     var component = require('components/layouts/metrics-by-project/metrics-by-project'),
-        wikimetricsApi = require('apis.wikimetrics'),
+        configApi = require('apis.config'),
         sinon = require('sinon');
 
     var MetricsByProjectLayout = component.viewModel;
 
-    describe('MetricsByProjectLayout view model', function() {
+    describe('MetricsByProjectLayout view model', function () {
 
-        beforeEach(function() {
+        beforeEach(function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
             sinon.stub($, 'ajax').returns(deferred);
-            sinon.stub(wikimetricsApi, 'getProjectAndLanguageChoices');
+            sinon.stub(configApi, 'getProjectAndLanguageChoices');
         });
         afterEach(function () {
             $.ajax.restore();
-            wikimetricsApi.getProjectAndLanguageChoices.restore();
+            configApi.getProjectAndLanguageChoices.restore();
         });
 
-        it('should create observables needed by others', function() {
+        it('should create observables needed by others', function () {
             var layout = new MetricsByProjectLayout();
 
             expect(typeof layout.selectedMetric).toEqual('function');

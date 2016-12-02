@@ -3,7 +3,6 @@ define(function (require) {
 
     var ko = require('knockout'),
         _ = require('lodash'),
-        wikimetricsApi = require('apis.wikimetrics'),
         configApi = require('apis.config'),
         stateManagerFactory = require('stateManager'),
         templateMarkup = require('text!./metrics-by-project.html');
@@ -50,7 +49,7 @@ define(function (require) {
         }, this);
 
         // Eagerly fetching the available projects to display in the project-selector
-        wikimetricsApi.getProjectAndLanguageChoices(function (config) {
+        configApi.getProjectAndLanguageChoices(function (config) {
             self.languageOptions(config.languageOptions);
             self.projectOptions(config.projectOptions);
             self.reverseLookup(config.reverseLookup);

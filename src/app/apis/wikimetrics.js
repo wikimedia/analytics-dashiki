@@ -6,6 +6,7 @@
 define(function (require) {
 
     var siteConfig = require('config'),
+        configApi = require('apis.config'),
         converterFinder = require('finders.converter'),
         uri = require('uri/URI'),
         TimeseriesData = require('models.timeseries');
@@ -19,28 +20,6 @@ define(function (require) {
         // note that dataCoverter is a function that will need to be executed
         // in the context of the metric
         this.dataConverter = converterFinder(config.wikimetricsApi.format);
-    }
-
-    function ProjectOption(data, prettyNames) {
-        // no need for these to be observables as they are fixed values
-        this.code = data.name;
-        this.name = prettyNames && prettyNames[data.name] ? prettyNames[data.name] : data.name;
-        this.languages = data.languages;
-        this.description = data.description;
-    }
-
-    function LanguageOption(data) {
-        // no need for these to be observables as they are fixed values
-        this.name = data.name;
-        this.projects = data.projects;
-        this.description = data.description;
-        this.shortName = data.shortName;
-    }
-
-    function ProjectLanguage(data) {
-        this.database = data.database;
-        this.project = data.project;
-        this.language = data.language;
     }
 
     /**
@@ -82,18 +61,6 @@ define(function (require) {
     };
 
     /**
-     * Retrieves the static list of projects and languages for which we support metrics
-     * Options do not change once retrieved so we only retrieve them at most once
-     **/
-    WikimetricsApi.prototype.getProjectAndLanguageChoices = function (callback) {
-
-        var url = this.config.wikimetricsApi.urlProjectLanguageChoices;
-        return this._getJSON(url)
-            .pipe(this._convertSiteMap.bind(this))
-            .done(callback);
-    };
-
-    /**
      * Returns
      *   a promise to the url passed in
      **/
@@ -104,44 +71,7 @@ define(function (require) {
         });
     };
 
-    WikimetricsApi.prototype._convertSiteMap = function (json) {
-        var map = Array.prototype.map;
-        var self = this,
-            databases = Object.getOwnPropertyNames(json.reverse),
-            projectOptions = {},
-            languageOptions = {};
 
-        self.defaultProjects = json.defaultProjects;
-        self.reverseLookup = {};
-
-        // keep track of objects created below so we can make the reverse
-        // lookup a unified object with minimal memory footprint.  Ultimately,
-        // grouping by languages and projects may be useful, enwiki may
-        // inherit color shades from the wiki project or english language, etc
-
-        self.projectOptions = map.call(json.projects, function (data) {
-            var option = new ProjectOption(data, json.prettyProjectNames);
-            projectOptions[option.code] = option;
-            return option;
-        });
-
-        self.languageOptions = map.call(json.languages, function (data) {
-            var option = new LanguageOption(data);
-            languageOptions[option.name] = option;
-            return option;
-        });
-
-        databases.forEach(function (database) {
-            var reverse = json.reverse[database];
-            self.reverseLookup[database] = new ProjectLanguage({
-                database: database,
-                project: projectOptions[reverse.project],
-                language: languageOptions[reverse.language],
-            });
-        });
-
-        return self;
-    };
 
     return new WikimetricsApi(siteConfig);
 });

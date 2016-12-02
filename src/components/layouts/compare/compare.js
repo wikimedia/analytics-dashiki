@@ -19,7 +19,6 @@ define(function (require) {
     require('knockout.popup');
 
     var configApi = apiFinder({api: 'config'}),
-        wikimetricsApi = apiFinder({api: 'wikimetrics'}),
         datasetsApi = apiFinder({api: 'datasets'});
 
     function FunnelLayout() {
@@ -28,7 +27,7 @@ define(function (require) {
             options: ko.observable([]),
             selected: ko.observable(),
         };
-        var wikiPromise = wikimetricsApi.getProjectAndLanguageChoices(function (data) {
+        var wikiPromise = configApi.getProjectAndLanguageChoices(function (data) {
                 var databases = Object.getOwnPropertyNames(data.reverseLookup).sort();
                 this.wiki.options(['all'].concat(databases));
             }.bind(this));
