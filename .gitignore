@@ -9,6 +9,7 @@ npm-debug.log
 
 # personal dev stuff
 .jslintrc
+.jsbeautifyrc
 (OSX).sublime-keymap
 dashiki.sublime-project
 dashiki.sublime-workspace
