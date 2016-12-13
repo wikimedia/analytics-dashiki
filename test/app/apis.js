@@ -1,123 +1,138 @@
+'use strict';
+/**
+ * Please take a look at issues with jasmine test setup,
+ * scope is not what you might think:
+ * Memory leaks on jasmine: https://github.com/jasmine/jasmine/issues/941
+ **/
 define(function (require) {
-    'use strict';
 
-    var wikimetrics = require('apis.wikimetrics'),
-        aqsApi = require('apis.aqs'),
-        configApi = require('apis.config'),
-        annotationsApi = require('apis.annotations'),
-        datasetsApi = require('apis.datasets'),
-        mediawikiStorage = require('mediawiki-storage'),
+    var $ = require('jquery'),
         config = require('config'),
-        sitematrix = require('sitematrix'),
-        $ = require('jquery'),
         sinon = require('sinon');
 
+
     describe('Wikimetrics API', function () {
-        var converter;
+        var sandbox;
 
         beforeEach(function () {
-            sinon.stub($, 'ajax');
-            converter = wikimetrics.dataConverter;
-            wikimetrics.dataConverter = function () {
+            sandbox = sinon.sandbox.create();
+            this.wikimetrics = require('apis.wikimetrics');
+            this.wikimetrics.dataConverter = function () {
                 return;
             };
         });
 
         afterEach(function () {
-            $.ajax.restore();
-            wikimetrics.dataConverter = converter;
+            this.wikimetrics = null;
+            sandbox.restore();
         });
 
         it('should fetch the correct URL', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
+            sandbox.stub($, 'ajax');
             $.ajax.returns(deferred);
 
-            wikimetrics.root = 'something';
+            this.wikimetrics.root = 'something';
             var expected = 'https://something/static/public/datafiles/metric/project.json';
             var metric = {
                 name: 'metric'
             };
-            wikimetrics.getData(metric, 'project');
+            this.wikimetrics.getData(metric, 'project');
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
-        it('should return empty TimeseriesData', function (done) {
+        it('should return empty TimeseriesData', function () {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));
+            sandbox.stub($, 'ajax');
             $.ajax.returns(deferred);
 
             var metric = {
                 name: 'metric'
             };
-            wikimetrics.getData(metric, 'project').done(function (data) {
+            this.wikimetrics.getData(metric, 'project').then(function (data) {
+                // this is being resolved imediately,
+                // no need to use done(), it doesn't work and
+                // makes stack traces nonsensical when tests fail
                 expect(data.header).toEqual([]);
-                done();
             });
         });
 
     });
 
+
+
     describe('AQS', function () {
-        var xhr, requests,
-            sitematrixData = {
-                'sitematrix': {
-                    'count': 894,
-                    '0': {
-                        'code': 'aa',
-                        'name': 'some',
-                        'site': [{
-                            'url': 'https: //aa.wikipedia.org',
-                            'dbname': 'aawiki',
-                            'code': 'wiki',
-                            'sitename': 'Wikipedia',
-                            'closed': ''
-                        }, {
-                            'url': 'https://aa.wiktionary.org',
-                            'dbname': 'aawiktionary',
-                            'code': 'wiktionary',
-                            'sitename': 'Wiktionary',
-                            'closed': ''
-                        }],
-                        'localname': 'Afar'
-                    }
+        var sandbox, sitematrixData = {
+            'sitematrix': {
+                'count': 894,
+                '0': {
+                    'code': 'aa',
+                    'name': 'some',
+                    'site': [{
+                        'url': 'https: //aa.wikipedia.org',
+                        'dbname': 'aawiki',
+                        'code': 'wiki',
+                        'sitename': 'Wikipedia',
+                        'closed': ''
+                    }, {
+                        'url': 'https://aa.wiktionary.org',
+                        'dbname': 'aawiktionary',
+                        'code': 'wiktionary',
+                        'sitename': 'Wiktionary',
+                        'closed': ''
+                    }],
+                    'localname': 'Afar'
                 }
-            };
+            }
+        };
 
         // mocking native object as pageviews.js module
         // does not use jquery
         beforeEach(function () {
-            xhr = sinon.useFakeXMLHttpRequest();
-            requests = [];
-            xhr.onCreate = function (req) {
-                requests.push(req);
+            sandbox = sinon.sandbox.create();
+            this.aqsApi = require('apis.aqs');
+            this.sitematrix = require('sitematrix');
+
+            this.xhr = sinon.useFakeXMLHttpRequest();
+            this.requests = [];
+
+            //* sinon and phantomjs do not coperate to mock xhr
+            // https://github.com/sinonjs/sinon/issues/228
+            var self = this;
+            this.xhr.onCreate = function (req) {
+                self.requests.push(req);
             };
+
+            sandbox.stub(this.sitematrix, 'getProjectUrl', function (options) {
+                var deferred = new $.Deferred();
+                deferred.resolve('aa.wiktionary.org');
+                return deferred.promise();
+            });
+
         });
 
         afterEach(function () {
-            $.ajax.restore();
-            xhr.restore();
+            this.aqsApi = null;
+            sinon.restore();
+            sandbox.restore();
+
         });
 
         it('should fetch the correct project on AQS URL if project exist', function () {
-            var deferred = new $.Deferred();
-
-            deferred.resolveWith(null, [sitematrixData]);
-
-            // mocking ajax cause sitematrix does use jquery for ajax
-            sinon.stub($, 'ajax').returns(deferred);
 
             var metric = {
                 name: 'Pageviews'
             };
 
-            aqsApi.getData(metric, 'aawiktionary');
+            this.aqsApi.getData(metric, 'aawiktionary');
 
             //given that ajax is a fake it shoudld resolve imediately
-            expect(requests[0].url.match(/aa.wiktionary/).toString()).toBe(['aa.wiktionary'].toString());
+            expect(this.requests[0].url.match(/aa.wiktionary/).toString()).toBe(['aa.wiktionary'].toString());
 
             // should also match all-access
-            expect(requests[0].url.match(/all-access/).toString()).toBe(['all-access'].toString());
+            expect(this.requests[0].url.match(/all-access/).toString()).toBe(['all-access'].toString());
         });
 
         it('Should request pageviews for mobile and desktop data breakdowns', function () {
@@ -126,19 +141,19 @@ define(function (require) {
             deferred.resolveWith(null, [sitematrixData]);
 
             // mocking ajax cause sitematrix does use jquery for ajax
-            sinon.stub($, 'ajax').returns(deferred);
+            sandbox.stub($, 'ajax').returns(deferred);
 
             var metric = {
                 name: 'Pageviews'
             };
 
             // request breakdowns
-            aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
+            this.aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
 
             // request for mobile and desktop data
-            expect(/all-access/.test(requests[0].url)).toBe(true, 'all-access fetched');
-            expect(/desktop/.test(requests[1].url)).toBe(true, 'desktop fetched');
-            expect(/mobile-web/.test(requests[2].url)).toBe(true, 'mobile-web fetched');
+            expect(/all-access/.test(this.requests[0].url)).toBe(true, 'all-access fetched');
+            expect(/desktop/.test(this.requests[1].url)).toBe(true, 'desktop fetched');
+            expect(/mobile-web/.test(this.requests[2].url)).toBe(true, 'mobile-web fetched');
         });
 
         it('Should request unique devices for mobile and desktop data breakdowns', function () {
@@ -147,19 +162,19 @@ define(function (require) {
             deferred.resolveWith(null, [sitematrixData]);
 
             // mocking ajax cause sitematrix does use jquery for ajax
-            sinon.stub($, 'ajax').returns(deferred);
+            sandbox.stub($, 'ajax').returns(deferred);
 
             var metric = {
                 name: 'UniqueDevices'
             };
 
             // request breakdowns
-            aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
+            this.aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
 
             // request for mobile and desktop data
-            expect(/all-sites/.test(requests[0].url)).toBe(true, 'all-sites fetched');
-            expect(/desktop-site/.test(requests[1].url)).toBe(true, 'desktop-site fetched');
-            expect(/mobile-site/.test(requests[2].url)).toBe(true, 'mobile-site fetched');
+            expect(/all-sites/.test(this.requests[0].url)).toBe(true, 'all-sites fetched');
+            expect(/desktop-site/.test(this.requests[1].url)).toBe(true, 'desktop-site fetched');
+            expect(/mobile-site/.test(this.requests[2].url)).toBe(true, 'mobile-site fetched');
         });
 
         it('Should request correct date format depending on granularity', function () {
@@ -168,37 +183,38 @@ define(function (require) {
             deferred.resolveWith(null, [sitematrixData]);
 
             // mocking ajax cause sitematrix does use jquery for ajax
-            sinon.stub($, 'ajax').returns(deferred);
+            sandbox.stub($, 'ajax').returns(deferred);
 
             // hourly granularity
-            var metric = {name: 'Pageviews', granularity: 'hourly'};
-            aqsApi.getData(metric, 'aawiktionary', ['All']);
-            expect(/[0-9]{10}\/[0-9]{10}/.test(requests[0].url)).toBe(true);
+            var metric = { name: 'Pageviews', granularity: 'hourly' };
+
+            this.aqsApi.getData(metric, 'aawiktionary', ['All']);
+            expect(/[0-9]{10}\/[0-9]{10}/.test(this.requests[0].url)).toBe(true);
 
             // daily granularity
-            var metric = {name: 'Pageviews', granularity: 'daily'};
-            aqsApi.getData(metric, 'aawiktionary', ['All']);
-            expect(/[0-9]{8}00\/[0-9]{8}00/.test(requests[1].url)).toBe(true);
+            metric = { name: 'Pageviews', granularity: 'daily' };
+            this.aqsApi.getData(metric, 'aawiktionary', ['All']);
+            expect(/[0-9]{8}00\/[0-9]{8}00/.test(this.requests[1].url)).toBe(true);
 
             // monthly granularity
-            var metric = {name: 'UniqueDevices', granularity: 'monthly'};
-            aqsApi.getData(metric, 'aawiktionary', ['All']);
-            expect(/[0-9]{6}01\/[0-9]{6}01/.test(requests[2].url)).toBe(true);
+            metric = { name: 'UniqueDevices', granularity: 'monthly' };
+
+            this.aqsApi.getData(metric, 'aawiktionary', ['All']);
+            expect(/[0-9]{6}01\/[0-9]{6}01/.test(this.requests[2].url)).toBe(true);
         });
 
-        it('should return empty TimeseriesData if getting data fails', function (done) {
+        it('should return empty TimeseriesData if getting data fails', function () {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));
-            sinon.stub($, 'ajax').returns(deferred);
+            sandbox.stub($, 'ajax').returns(deferred);
 
             var metric = {
                 name: 'metric',
                 breakdown: {}
             };
 
-            aqsApi.getData(metric, 'project').done(function (data) {
+            this.aqsApi.getData(metric, 'project').done(function (data) {
                 expect(data.header).toEqual([]);
-                done();
             });
         });
     });
@@ -206,19 +222,26 @@ define(function (require) {
     //mmm.. not api per se but close to how config works
     describe('Sitematrix', function () {
 
+        var sandbox;
+
+        beforeEach(function () {
+            this.sitematrix = require('sitematrix');
+            sandbox = sinon.sandbox.create();
+        });
+
+
         afterEach(function () {
-            $.ajax.restore();
+            sandbox.restore();
         });
 
         it('sitematrix should raise an error if project does not exist', function () {
-            var deferred = new $.Deferred();
+            sandbox.stub(this.sitematrix, 'getProjectUrl', function (options) {
+                var deferred = new $.Deferred();
+                deferred.reject(new Error('SomeError'));
+                return deferred.promise();
+            });
 
-            deferred.resolveWith(null, []);
-
-            // mocking ajax cause sitematrix does use jquery for ajax
-            sinon.stub($, 'ajax').returns(deferred);
-
-            var p = sitematrix.getProjectUrl(config, 'badbadproject');
+            var p = this.sitematrix.getProjectUrl(config, 'badbadproject');
 
             p.then(function () {
                 // promise should not be sucessful
@@ -236,44 +259,58 @@ define(function (require) {
     });
 
     describe('Config API', function () {
-        var saveConfig = configApi.config;
+        var sandbox;
 
         beforeEach(function () {
-            configApi.config = {
+            this.configApi = require('apis.config');
+            this.mediawikiStorage = require('mediawiki-storage');
+            this.saveConfig = this.configApi.config;
+            sandbox = sinon.sandbox.create();
+
+            this.configApi.config = {
                 endpoint: 'test',
                 dashboardPage: 'dash',
                 defaultDashboardPageRoot: 'defaultDash',
                 categorizedMetricsPage: 'metrics',
             };
-            sinon.stub(mediawikiStorage, 'get').returns(new $.Deferred());
+            sandbox.stub(this.mediawikiStorage, 'get').returns(new $.Deferred());
         });
 
         afterEach(function () {
-            configApi.config = saveConfig;
-            mediawikiStorage.get.restore();
+            this.configApi.config = this.saveConfig;
+            sandbox.restore();
         });
 
         it('should get metrics configuration', function () {
-            configApi.getCategorizedMetrics();
-            expect(mediawikiStorage.get.calledWith({
-                host: configApi.config.endpoint,
-                pageName: configApi.config.categorizedMetricsPage,
+            this.configApi.getCategorizedMetrics();
+
+            expect(this.mediawikiStorage.get.calledWith({
+                host: this.configApi.config.endpoint,
+                pageName: this.configApi.config.categorizedMetricsPage,
             })).toBeTruthy();
         });
 
         it('should get dashboard configuration', function () {
-            configApi.getDefaultDashboard();
+            this.configApi.getDefaultDashboard();
         });
 
     });
 
     describe('Annotations API', function () {
 
-        afterEach(function () {
-            mediawikiStorage.get.restore();
+        var sandbox;
+
+        beforeEach(function () {
+            this.annotationsApi = require('apis.annotations');
+            this.mediawikiStorage = require('mediawiki-storage');
+            sandbox = sinon.sandbox.create();
         });
 
-        it('should get metric annotations', function (done) {
+        afterEach(function () {
+            sandbox.restore();
+        });
+
+        it('should get metric annotations', function () {
             var mediawikiHost = 'some.mediawiki.host',
                 annotationsPage = 'SomeMediawikiPageName',
                 startDate = '2014-01-01 00:00:00',
@@ -285,7 +322,7 @@ define(function (require) {
                     note: note
                 }];
 
-            sinon.stub(mediawikiStorage, 'get', function (options) {
+            sandbox.stub(this.mediawikiStorage, 'get', function (options) {
                 expect(options.host).toBe(mediawikiHost);
                 expect(options.pageName).toBe(annotationsPage);
 
@@ -300,22 +337,21 @@ define(function (require) {
                     pageName: annotationsPage
                 }
             };
-            annotationsApi.get(metric, function (returned) {
+            this.annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(1);
                 expect(typeof returned[0]).toBe('object');
                 expect(returned[0].start).toBe(startDate);
                 expect(returned[0].end).toBe(endDate);
                 expect(returned[0].note).toBe(note);
-                done();
             });
         });
 
-        it('should trigger error callback when annotation page is not a list', function (done) {
+        it('should trigger error callback when annotation page is not a list', function () {
             var mediawikiHost = 'some.mediawiki.host',
                 annotationsPage = 'SomeMediawikiPageName';
 
-            sinon.stub(mediawikiStorage, 'get', function () {
+            sandbox.stub(this.mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
                 deferred.resolve({});
                 return deferred.promise();
@@ -327,33 +363,31 @@ define(function (require) {
                     pageName: annotationsPage
                 }
             };
-            annotationsApi.get(
+            this.annotationsApi.get(
                 metric,
                 function () { // success callback
                     expect(true).toBe(false); // should not get here
                 },
                 function (error) { // error callback
                     expect(error instanceof TypeError).toBe(true);
-                    done();
                 }
             );
         });
 
-        it('should return empty list when metric has no annotations info', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function () {
+        it('should return empty list when metric has no annotations info', function () {
+            sandbox.stub(this.mediawikiStorage, 'get', function () {
                 expect(true).toBe(false); // should not get here
             });
 
             var metric = {}; // metric has no annotations information
-            annotationsApi.get(metric, function (returned) {
+            this.annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(0);
-                done();
             });
         });
 
-        it('should filter out annotations with invalid dates', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function () {
+        it('should filter out annotations with invalid dates', function () {
+            sandbox.stub(this.mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
                 deferred.resolve([{
                     start: 'Bad date',
@@ -371,15 +405,14 @@ define(function (require) {
                     pageName: 'SomeMediawikiPageName'
                 }
             };
-            annotationsApi.get(metric, function (returned) {
+            this.annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(1);
-                done();
             });
         });
 
-        it('should filter out annotations with no note', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function () {
+        it('should filter out annotations with no note', function () {
+            sandbox.stub(this.mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
                 deferred.resolve([{
                     start: '2014-01-01 00:00:00'
@@ -396,15 +429,15 @@ define(function (require) {
                     pageName: 'SomeMediawikiPageName'
                 }
             };
-            annotationsApi.get(metric, function (returned) {
+            this.annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(1);
-                done();
             });
         });
 
-        it('should filter out annotations with bad time interval', function (done) {
-            sinon.stub(mediawikiStorage, 'get', function () {
+        it('should filter out annotations with bad time interval', function () {
+
+            sandbox.stub(this.mediawikiStorage, 'get', function () {
                 var deferred = new $.Deferred();
                 deferred.resolve([
                     // end date before start date
@@ -427,62 +460,68 @@ define(function (require) {
                     pageName: 'SomeMediawikiPageName'
                 }
             };
-            annotationsApi.get(metric, function (returned) {
+            this.annotationsApi.get(metric, function (returned) {
                 expect(returned instanceof Array).toBe(true);
                 expect(returned.length).toBe(1);
-                done();
             });
         });
     });
 
     describe('Datasets API', function () {
 
+        var sandbox;
+
+        beforeEach(function () {
+            this.datasetsApi = require('apis.datasets');
+            sandbox = sinon.sandbox.create();
+        });
+
         afterEach(function () {
-            $.ajax.restore();
+            sandbox.restore();
         });
 
         it('should fetch the correct URL', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
-            sinon.stub($, 'ajax').returns(deferred);
+            sandbox.stub($, 'ajax').returns(deferred);
 
-            datasetsApi.root = 'something';
+            this.datasetsApi.root = 'something';
             var expected = 'something/metric/submetric/project.tsv';
             var metricInfo = {
                 'metric': 'metric',
                 'submetric': 'submetric'
             };
-            datasetsApi.getData(metricInfo, 'project');
+            this.datasetsApi.getData(metricInfo, 'project');
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
         it('should fetch the correct URL when using metric.path', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);
-            sinon.stub($, 'ajax').returns(deferred);
+            sandbox.stub($, 'ajax').returns(deferred);
 
-            datasetsApi.root = 'something';
+            this.datasetsApi.root = 'something';
             var expected = 'something/metric/submetric/project.tsv';
             var metricInfo = {
                 'path': 'metric/submetric/project.tsv',
             };
-            datasetsApi.getData(metricInfo, 'project');
+            this.datasetsApi.getData(metricInfo, 'project');
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
-        it('should return empty list if getting data fails', function (done) {
+        it('should return empty list if getting data fails', function () {
             var deferred = new $.Deferred();
             deferred.reject(new Error('SomeError'));
-            sinon.stub($, 'ajax').returns(deferred);
+            sandbox.stub($, 'ajax').returns(deferred);
 
             var metric = {
                 name: 'metric',
                 breakdown: {}
             };
-            datasetsApi.getData(metric, 'project').done(function (data) {
+            this.datasetsApi.getData(metric, 'project').done(function (data) {
                 expect(data.rowData()).toEqual([]);
-                done();
             });
+
         });
 
     });

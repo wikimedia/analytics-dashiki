@@ -19,14 +19,16 @@ define(function (require) {
                 }
             };
 
-        it('should pass the metric parameter to annotations api', function (done) {
+        afterEach(function () {
+            annotationsApi.get.restore();
+        });
+
+        it('should pass the metric parameter to annotations api', function () {
             sinon.stub(annotationsApi, 'get', function (metric) {
                 expect(metric instanceof Object).toBe(true);
                 expect(metric.annotations instanceof Object).toBe(true);
                 expect(metric.annotations.host).toBe(mediawikiHost);
                 expect(metric.annotations.pageName).toBe(annotationsPage);
-                annotationsApi.get.restore();
-                done();
             });
 
             var instance = new AnnotationList(params);
@@ -45,7 +47,6 @@ define(function (require) {
             var instance = new AnnotationList(params);
             expect(instance.annotations() instanceof Array).toBe(true);
             expect(instance.annotations().length).toBe(3);
-            annotationsApi.get.restore();
         });
 
         it('should create a date range description for each annotation', function() {
@@ -57,7 +58,6 @@ define(function (require) {
 
             var instance = new AnnotationList(params);
             expect(instance.annotations()[0].dateRange).toBe('Jan 1 - 2, 2013');
-            annotationsApi.get.restore();
         });
 
         it('should create an html note for each description', function() {
@@ -69,7 +69,6 @@ define(function (require) {
 
             var instance = new AnnotationList(params);
             expect(instance.annotations()[0].htmlNote).toBe('<p>Some note.</p>\n');
-            annotationsApi.get.restore();
         });
 
         it('should be protected against js injection', function() {
@@ -85,7 +84,6 @@ define(function (require) {
 
             var instance = new AnnotationList(params);
             expect(instance.annotations()[0].htmlNote).toBe(escapedNote);
-            annotationsApi.get.restore();
         });
 
         it('should sort the annotations by start date', function() {
@@ -108,7 +106,6 @@ define(function (require) {
             expect(instance.annotations()[0].htmlNote).toBe(formatted(note1));
             expect(instance.annotations()[1].htmlNote).toBe(formatted(note2));
             expect(instance.annotations()[2].htmlNote).toBe(formatted(note3));
-            annotationsApi.get.restore();
         });
     });
 });
