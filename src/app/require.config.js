@@ -4,6 +4,9 @@ var require = {
     baseUrl: '/src',
     paths: {
         'd3'                    : '../node_modules/d3/d3',
+        'd3-scale-chromatic'    : '../node_modules/d3-scale-chromatic/build/d3-scale-chromatic',
+        'd3-interpolate'        : '../node_modules/d3-interpolate/build/d3-interpolate',
+        'd3-color'              : '../node_modules/d3-color/build/d3-color',
         'datepicker'            : '../node_modules/semantic-datepicker/daterangepicker',
         'dygraphs'              : '../node_modules/dygraphs/dygraph-combined',
         'jquery'                : '../node_modules/jquery/dist/jquery',
@@ -15,7 +18,7 @@ var require = {
         'numeral'               : '../node_modules/numeral/numeral',
         'pageviews'             : '../node_modules/pageviews/pageviews',
         'text'                  : '../node_modules/requirejs-text/text',
-        'topojson'              : '../node_modules/topojson/topojson',
+        'topojson'              : '../node_modules/topojson/build/topojson',
         'twix'                  : '../node_modules/twix/dist/twix',
         'typeahead'             : '../node_modules/typeahead.js/dist/typeahead.jquery',
         'uri'                   : '../node_modules/urijs/src',
@@ -77,6 +80,10 @@ var require = {
         'utils.numbers'             : 'lib/utils/numbers',
         'utils.colors'              : 'lib/utils/colors',
         'utils.elements'            : 'lib/utils/elements',
+
+        // data
+        'data.country-codes'        : 'lib/data/country-codes',
+        'data.world-50m'            : 'lib/data/world-50m'
     },
     shim: {
         ajaxWrapper: {

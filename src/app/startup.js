@@ -19,6 +19,7 @@ define(function(require) {
     // *********** BEGIN Metrics By Project Layout Components ********** //
     ko.components.register('metrics-by-project-layout', { require: 'components/layouts/metrics-by-project/metrics-by-project' });
     ko.components.register('wikimetrics',               { require: 'components/visualizers/wikimetrics/wikimetrics' });
+    ko.components.register('worldmap',                  { require: 'components/visualizers/worldmap/worldmap' });
     ko.components.register('project-selector',          { require: 'components/selectors/project/project' });
     ko.components.register('metric-selector',           { require: 'components/selectors/metric/metric' });
     ko.components.register('breakdown-toggle',          { require: 'components/controls/breakdown-toggle/breakdown-toggle' });

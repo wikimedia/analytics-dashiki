@@ -9,9 +9,9 @@
   "author": "milimetric <dandreescu@wikimedia.org>",
   "license": "MIT",
   "dependencies": {
-    "urijs": "^1.16.1",
-    "dygraphs": "^1.1.1",
     "d3": "^3.5.17",
+    "d3-scale-chromatic": "^1.1.0",
+    "dygraphs": "^1.1.1",
     "jquery": "^3.1.1",
     "knockout": "^3.4.0",
     "lodash": "^4.16.4",
@@ -27,6 +27,7 @@
     "topojson": "^1.6.27",
     "twix": "^1.1.1",
     "typeahead.js": "0.10.5",
+    "urijs": "^1.16.1",
     "vega": "^2.6.3"
   },
   "devDependencies": {
