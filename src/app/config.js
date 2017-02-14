@@ -77,7 +77,7 @@ define(function (require) {
         },
 
         datasetsApi: {
-            endpoint: 'https://datasets.wikimedia.org/limn-public-data/metrics',
+            endpoint: 'https://analytics.wikimedia.org/datasets/periodic/reports/metrics',
             format: 'tsv'
         },
 
