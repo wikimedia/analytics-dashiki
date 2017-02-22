@@ -6,7 +6,6 @@
 define(function (require) {
 
     var siteConfig = require('config'),
-        configApi = require('apis.config'),
         converterFinder = require('finders.converter'),
         uri = require('uri/URI'),
         TimeseriesData = require('models.timeseries');

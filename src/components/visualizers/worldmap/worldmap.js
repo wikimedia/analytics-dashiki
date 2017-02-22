@@ -1,8 +1,6 @@
+'use strict';
 define(function(require) {
-    var ko = require('knockout'),
-        d3 = require('d3'),
-        _ = require('lodash'),
-        template = require('text!./worldmap.html');
+    var template = require('text!./worldmap.html');
 
     require('./bindings');
 
@@ -15,4 +13,4 @@ define(function(require) {
         viewModel: WorldmapVisualizer,
         template: template
     };
-})
+});
