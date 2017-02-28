@@ -27,11 +27,11 @@ define(function (require) {
      **/
     ConfigApi.prototype.getDefaultDashboard = function (callback, layout) {
 
-        // The dashboard page can either be injected by the build or must be a default
+        // The dashboard page can be injected by the build (see gulpfile.js)
+        // For development, samples exist at config.defaultDashboardPageRoot
         var dashboardPage =
             this.config.dashboardPage ||
-            this.config.defaultDashboardPageRoot +
-            (layout ? '/' + layout : '');
+            this.config.defaultDashboardPageRoot + '/' + layout;
         this.getConfig(dashboardPage, callback);
 
     };

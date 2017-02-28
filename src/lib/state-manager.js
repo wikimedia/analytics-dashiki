@@ -149,7 +149,10 @@ define(function (require) {
                 state = new State(config.defaultProjects, config.defaultMetrics);
                 this.defaultProjects(config.defaultProjects);
                 this.defaultMetrics(config.defaultMetrics);
-            }.bind(this));
+            // NOTE: This state manager only supports metrics-by-project, but
+            // we should refactor this and the one from tabs into a general routing
+            // solution that would work with any layout
+            }.bind(this), 'metrics-by-project');
 
         } else {
             state = State.splitStateURL(hash);

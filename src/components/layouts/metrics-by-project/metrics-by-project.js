@@ -32,6 +32,12 @@ define(function (require) {
             [45, 5],
         ];
 
+        configApi.getDefaultDashboard(function (config) {
+            if (config.metrics) {
+                self.metricFilter(config.metrics);
+            }
+        }, 'metrics-by-project');
+
         self.metrics = ko.computed(function () {
             var filter = ko.unwrap(this.metricFilter),
                 all = ko.unwrap(this.allMetrics);
@@ -53,12 +59,6 @@ define(function (require) {
             self.languageOptions(config.languageOptions);
             self.projectOptions(config.projectOptions);
             self.reverseLookup(config.reverseLookup);
-        });
-
-        configApi.getDefaultDashboard(function (config) {
-            if (config.metrics) {
-                self.metricFilter(config.metrics);
-            }
         });
 
         // state manager should be observing the selections of project and metric

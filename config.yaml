@@ -2,48 +2,56 @@
 config:
     browser-reports:
         layout: tabs
-        config: SimpleRequestBreakdowns
+        config: Dashiki:SimpleRequestBreakdowns
         piwikHost: piwik.wikimedia.org
-        piwikId: 7
-        hostname: browser-reports-test.wmflabs.org
+        piwikId: 8
+        hostname: browser-reports.wmflabs.org
         subfolder:
 
     vital-signs:
         layout: metrics-by-project
-        config: VitalSigns
+        config: Dashiki:VitalSigns
         piwikHost: piwik.wikimedia.org
-        piwikId: 6
-        hostname: vital-signs-test.wmflabs.org
+        piwikId: 8
+        hostname: vital-signs.wmflabs.org
         subfolder:
 
     edit-analysis:
         layout: compare
-        config: VisualEditorAndWikitext
+        config: Dashiki:VisualEditorAndWikitext
         piwikHost: piwik.wikimedia.org
         piwikId: 10
-        hostname: edit-analysis-test.wmflabs.org
+        hostname: edit-analysis.wmflabs.org
         subfolder: compare
 
     language-reportcard:
         layout: metrics-by-project
-        config: LanguageReportcard
+        config: Dashiki:LanguageReportcard
         piwikHost:
         piwikId:
-        hostname: language-reportcard-test.wmflabs.org
+        hostname: language-reportcard.wmflabs.org
         subfolder:
 
     multimedia-health:
         layout: metrics-by-project
-        config: MultimediaHealth
+        config: Dashiki:MultimediaHealth
         piwikHost: piwik.wikimedia.org
         piwikId: 10
-        hostname: edit-analysis-test.wmflabs.org
+        hostname: edit-analysis.wmflabs.org
         subfolder: multimedia-health
 
     flow-by-wiki:
         layout: metrics-by-project
-        config: FlowByWiki
+        config: Dashiki:FlowByWiki
         piwikHost: piwik.wikimedia.org
         piwikId: 10
-        hostname: edit-analysis-test.wmflabs.org
+        hostname: edit-analysis.wmflabs.org
         subfolder: beta-enables
+
+    flow-reportcard:
+        layout: tabs
+        config: Dashiki:FlowReportcard
+        piwikHost:
+        piwikId:
+        hostname: flow-reportcard.wmflabs.org
+        subfolder:

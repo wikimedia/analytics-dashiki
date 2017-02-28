@@ -34,7 +34,7 @@ define(function (require) {
             // next two fields are mediawiki page names
             categorizedMetricsPage: 'Dashiki:CategorizedMetrics',
             dashboardPage: buildConfig ? buildConfig.dashboardArticle : null,
-            defaultDashboardPageRoot: 'Dashiki:DefaultDashboard',
+            defaultDashboardPageRoot: 'Config:Dashiki:Sample',
             //https://meta.wikimedia.org/wiki/Dashiki:OutOfService
             outOfService: 'Dashiki:OutOfService',
             // this is a digest of sitematrix taylored to the UI,
