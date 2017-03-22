@@ -70,6 +70,22 @@ define(function (require) {
                 breakdownParameter: 'access',
                 dataStart: '2015010100'
             },
+            'LegacyPagecounts': {
+                endpoint: 'getAggregatedLegacyPagecounts',
+                valueField: 'count',
+                dateFormat: {
+                    'hourly': 'YYYYMMDDHH',
+                    'daily': 'YYYYMMDD00',
+                    'monthly': 'YYYYMM0100'
+                },
+                breakdownOptions: {
+                    'All': 'all-sites',
+                    'Desktop site': 'desktop-site',
+                    'Mobile site': 'mobile-site'
+                },
+                breakdownParameter: 'access-site',
+                dataStart: '2007120918'
+            },
             // these two metrics come from the same place
             // just granularity is different and that is configured on metric itself
             'UniqueDevices': uniqueDevicesConfig,

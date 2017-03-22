@@ -19,7 +19,7 @@
     "mediawiki-storage": "https://github.com/wikimedia/analytics-mediawiki-storage/archive/master.tar.gz",
     "moment": "^2.15.1",
     "numeral": "^1.5.3",
-    "pageviews": "^1.1.0",
+    "pageviews": "^1.3.0",
     "requirejs": "^2.3.2",
     "requirejs-text": "^2.0.12",
     "semantic-datepicker": "https://github.com/milimetric/semantic-ui-daterangepicker/archive/master.tar.gz",

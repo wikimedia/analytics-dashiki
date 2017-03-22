@@ -13,8 +13,9 @@ define(function (require) {
     require('knockout.datepicker');
 
     function Visualizer(params) {
+        var apiType = params.aqs? 'aqsApi' : 'datasets';
         var api = apiFinder({
-                api: 'datasets'
+                api: apiType
             }),
             graph = ko.unwrap(params);
 
@@ -38,7 +39,29 @@ define(function (require) {
         }
 
         this.data = ko.observable(new TimeseriesData());
-        api.getData(graph, 'all').done(this.data);
+
+        // don't love this , the point of having an api finder is to have a common interface
+        // for apis such it doesn't matter which one we are using
+        if (apiType === 'aqsApi'){
+            var aqs = params.aqs;
+            var projects = aqs.projects;
+
+            // no changes should be needed to api if we wait until all promises are resolved to render
+            var promises = projects.map(function (project) {
+                    return api.getData({'name':aqs.name, 'granularity':aqs.granularity}, project);
+            });
+
+            //invoqued when all promises are done
+            Promise.all(promises).then(function (data) {
+                this.data(TimeseriesData.mergeAll(data));
+            }.bind(this));
+
+
+        } else {
+            api.getData(graph, 'all').done(this.data);
+        }
+
+
 
         this.startDate = ko.observable(graph.startDate);
         this.minDate = ko.observable(graph.startDate);

@@ -30,7 +30,8 @@ define(function (require) {
         if (Sitematrix.loaded === null) {
             // in the special case when project is "all", resolve to "all-projects"
             var cache = {
-                all: 'all-projects',
+                'all': 'all-projects',
+                'all-projects':'all-projects'
             };
 
             Sitematrix.loaded = new $.Deferred();

@@ -92,7 +92,8 @@ define(function (require) {
 
                 // Datasets are disjoint but we need to add them so that
                 // the timeseries object makes sense.
-                deferred.resolve(timeseries);
+                var ts = TimeseriesData.mergeAll(timeseries)
+                deferred.resolve(ts);
 
             }, function (reason) {
                 deferred.resolve(new TimeseriesData());
