@@ -39,6 +39,14 @@ config:
         piwikId: 10
         hostname: edit-analysis.wmflabs.org
         subfolder: beta-enables
+   
+    editor-engagement:
+        layout: metrics-by-project
+        config: Dashiki:EditorEngagement
+        piwikHost: piwik.wikimedia.org
+        piwikId: 10
+        hostname: edit-analysis.wmflabs.org
+        subfolder: editor-engagement
 
     flow-reportcard:
         layout: tabs

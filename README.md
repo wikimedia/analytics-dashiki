@@ -23,11 +23,11 @@ cd semantic && gulp build
 NOTE: yarn install is under consideration, some incompabilities remain
 
 How to build some dashboards:
-gulp --layout metrics-by-project --config VitalSigns
+gulp --layout metrics-by-project --config Dashiki:VitalSigns
 
-gulp --layout compare --config VisualEditorAndWikitext
+gulp --layout compare --config Dashiki:VisualEditorAndWikitext
 
-gulp --layout tabs --config SimpleRequestBreakdowns
+gulp --layout tabs --config Dashiki:SimpleRequestBreakdowns
 
 
 python -m SimpleHTTPServer 5000
@@ -38,7 +38,7 @@ And you can now browse to http://localhost:5000/dist/compare-VisualEditorAndWiki
 What is this magic?  When you pass `--layout compare` to the gulp build, you're telling it
 to use the layout defined in src/layouts/compare/.  When you pass `--config
 VisualEditorAndWikitext`, you're telling it to configure this layout with the article found
-at http://meta.wikimedia.org/wiki/Config:VisualEditorAndWikitext.  For all valid layouts,
+at https://meta.wikimedia.org/wiki/Config:Dashiki:VisualEditorAndWikitext.  For all valid layouts,
 see the `src/layouts` folder and the README there.
 
 ### Build and Dev tools
@@ -134,6 +134,9 @@ If you are not using labs - you can have a similar setup - Feel free to adapt th
 * Find the stages you can deploy to - `fab stages`
 * How is a dashboard currently configured - `fab config:<dashboard-name>`
 * Deploy a dashboard - `fab dashboard:<dashboard-name> [staging|production] deploy`
+    Example: 
+    fab dashboard:browser-reports,hostname=browser-reports.wmflabs.org production deploy -u <username>
+
 * Change dashboard config params while deploying: (This uses fabric's [keyword args syntax](http://docs.fabfile.org/en/1.10/usage/fab.html#per-task-arguments)) -
 `fab dashboard:edit-analysis,layout=compare,hostname=edit-analysis-test.wmflabs.org staging deploy`
 
