@@ -8,14 +8,6 @@ config:
         hostname: browser-reports.wmflabs.org
         subfolder:
 
-    vital-signs:
-        layout: metrics-by-project
-        config: Dashiki:VitalSigns
-        piwikHost: piwik.wikimedia.org
-        piwikId: 8
-        hostname: vital-signs.wmflabs.org
-        subfolder:
-
     edit-analysis:
         layout: compare
         config: Dashiki:VisualEditorAndWikitext
