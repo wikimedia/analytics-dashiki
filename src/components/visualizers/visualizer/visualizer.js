@@ -141,6 +141,7 @@ define(function (require) {
             format: numberUtils.numberFormatter(graph.format),
             height: 500,
             id: _.kebabCase([graph.metric, graph.submetric].join('-')),
+            annotations: graph.annotations,
         };
         this.params.downloadLink = graph.downloadLink;
         this.legendHeight = this.params.height - 80 + 'px';

@@ -7,7 +7,8 @@ define(function (require) {
     var ko = require('knockout'),
         _ = require('lodash'),
         templateMarkup = require('text!./tabs.html'),
-        configApi = require('apis.config');
+        configApi = require('apis.config'),
+        annotationsApi = require('apis.annotations');
 
     require('twix');
 
@@ -64,6 +65,15 @@ define(function (require) {
                         g.type === 'stacked-bars' ? 'bar' :
                         g.type === 'dygraphs-timeseries' ? 'line' :
                         g.type === 'table-timeseries' ? 'table' : '';
+
+                    // Fetch annotations if present
+                    var annotationsInfo = g.annotations;
+                    g.annotations = ko.observable();
+                    if (annotationsInfo) {
+                        annotationsApi.getTimeseriesData(
+                            {annotations: annotationsInfo}
+                        ).then(g.annotations);
+                    }
                 });
 
             }, this);

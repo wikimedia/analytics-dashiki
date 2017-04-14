@@ -8,6 +8,8 @@
         margin-left: -120px;
         pointer-events: none;
         width: auto!important;
+        z-index: 15!important;
+        top: 1.5em!important;
     }
 
     div.dygraph-legend > span {
@@ -29,6 +31,44 @@
         min-height: 200px;
         min-width: 300px;
         background-color: white;
+    }
+    /* Patches appearance of annotations */
+    .dygraphDefaultAnnotation {
+        top: 0!important;
+        height: calc(100% - 1.6em)!important;
+        border: none!important;
+        border-left: 0.05em dashed!important;
+        background-color: transparent!important;
+        margin-left: 0.53em!important;
+        padding-left: 0.15em!important;
+        overflow: visible!important;
+        user-select: none;
+        width: 18px!important;
+        text-align: left;
+    }
+    .graph:hover .dygraphDefaultAnnotation {
+        opacity: 0.5;
+    }
+    .graph:hover .dygraphDefaultAnnotation:hover {
+        opacity: 1;
+        font-weight: bold;
+    }
+    .dygraphDefaultAnnotation:hover::before {
+        content: " ";
+        position: absolute;
+        padding: 1px;
+        top: 0px;
+        left: -1px;
+        border: 1px solid;
+        width: 18px;
+        height: 18px;
+    }
+    /* Presence of annotations messes with the averaging days control */
+    .dygraph-roller input {
+        position: relative!important;
+        left: auto!important;
+        top: auto!important;
+        display: inline!important;
     }
 </style>
 

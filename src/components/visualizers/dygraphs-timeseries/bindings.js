@@ -2,7 +2,8 @@
 define(function (require) {
 
     var ko = require('knockout'),
-        moment = require('moment');
+        moment = require('moment'),
+        _ = require("lodash");
 
     require('dygraphs');
     require('./dygraphs.patch');
@@ -73,44 +74,77 @@ define(function (require) {
 
                 if (annotations) {
                     dygraphChart.ready(function () {
-                        var i = 0,
-                            $roller = $(dygraphChart.roller_),
-                            $rollerHolder = $('<span class="dygraph-roller">Averaging: </span>');
+                        var $roller = $(dygraphChart.roller_),
+                            $rollerHolder = $('<span class="dygraph-roller">Averaging: </span>'),
+                            charCode = 65,
+                            snapIndex = -1;
 
-                        dygraphChart.setAnnotations(annotations.rowData().map(function (a) {
-                            // find the closest date in the data that fits
-                            var closestDate = null;
-                            var lastDistance = Math.pow(2, 53) - 1;
-                            for (; i < rows.length; i++) {
-                                var date = rows[i][0];
-                                var thisDistance = Math.min(lastDistance, Math.abs(date.getTime() - a[0]));
-                                // both arrays are sorted so the distance will only get further now
-                                if (thisDistance === lastDistance) {
-                                    i--;
-                                    break;
-                                }
-                                lastDistance = thisDistance;
-                                closestDate = rows[i][0];
-                                // if we're at the end, and no date matched, prefix annotation with date
-                                //   Also, handle other future dates the same by decrementing i
-                                if (i === rows.length - 1) {
-                                    a[1] = moment(a[0]).utc().format('YYYY-MM-DD ') + a[1];
-                                    i--;
+                        // Snap annotation dates to the closest data point
+                        var snappedAnnotations = annotations.rowData().map(function (a) {
+
+                            // Efficiently iterate data points to find closest one
+                            for (var i = snapIndex + 1; i < rows.length; i++) {
+                                if (a[0] >= rows[i][0].getTime()) {
+                                    snapIndex = i;
+                                } else {
                                     break;
                                 }
                             }
+
+                            // Format annotation
+                            var snappedDate, message;
+                            if (snapIndex === -1) {
+                                // The annotation is set before the first data point.
+                                // Attach it to the first data point, prefixed with its date.
+                                snappedDate = rows[0][0].getTime();
+                                message = moment(a[0]).utc().format('YYYY-MM-DD ') + a[1];
+                            } else if (snapIndex === rows.length - 1) {
+                                // The annotation is set after the last data point.
+                                // Attach it to the last data point, prefixed with its date.
+                                snappedDate = rows[rows.length - 1][0].getTime();
+                                message = moment(a[0]).utc().format('YYYY-MM-DD ') + a[1];
+                            } else {
+                                // The annotation is set in between two data points.
+                                // Attach it to the earlier data point, no prefix.
+                                snappedDate = rows[snapIndex][0].getTime();
+                                message = a[1];
+                            }
+
+                            return [snappedDate, message];
+                        });
+
+                        // Merge annotations that got snapped to the same date
+                        var mergedAnnotations = _
+                            .chain(snappedAnnotations)
+                            .groupBy(function (a) { return a[0]; })
+                            .toPairs()
+                            .sortBy(function (g) { return g[0]; })
+                            .map(function (g) {
+                                return [
+                                    g[0],
+                                    g[1].map(function (a) {
+                                        return a[1];
+                                    }).join("\n\n")
+                                ];
+                            })
+                            .value();
+
+                        // Format annotations for dygraphs to parse
+                        dygraphChart.setAnnotations(mergedAnnotations.map(function (a) {
                             return {
                                 // just attach to the first series and show on X axis
                                 series: options.labels[1],
                                 attachAtBottom: true,
-                                shortText: 'A',
+                                tickHeight: 0,
+                                shortText: String.fromCharCode(charCode++),
                                 // annoying thing to learn through experimentation:
                                 //   Dygraphs requires Date instances for the data, but
                                 //   Dygraphs requires milliseconds since epoch for the annotations
-                                x: closestDate.getTime(),
+                                x: a[0],
                                 text: a[1],
                             };
                         }));
+
                         // move the roller to the top and add a label
                         $rollerHolder.append($roller.detach()).append(' day(s)');
                         // remove the previous roller if any
