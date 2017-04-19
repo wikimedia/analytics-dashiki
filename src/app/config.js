@@ -26,6 +26,26 @@ define(function (require) {
         dataStart: '20160101'
     };
 
+    var pageviewsConfig = {
+        endpoint: 'getAggregatedPageviews',
+        valueField: 'views',
+        dateFormat: {
+            'hourly': 'YYYYMMDDHH',
+            'daily': 'YYYYMMDD00',
+            'monthly': 'YYYYMM0100'
+        },
+        // Api knows how to translate from general breakdown
+        // labels to api semantics to retrieve data.
+        breakdownOptions: {
+            'All': 'all-access',
+            'Desktop site': 'desktop',
+            'Mobile site': 'mobile-web',
+            'Mobile App': 'mobile-app'
+        },
+        breakdownParameter: 'access',
+        dataStart: '2015010100'
+    };
+
     return {
 
         // indicates which mediawiki host and pages contain the configuration
@@ -51,25 +71,8 @@ define(function (require) {
         },
 
         aqsApi: {
-            'Pageviews': {
-                endpoint: 'getAggregatedPageviews',
-                valueField: 'views',
-                dateFormat: {
-                    'hourly': 'YYYYMMDDHH',
-                    'daily': 'YYYYMMDD00',
-                    'monthly': 'YYYYMM0100'
-                },
-                // Api knows how to translate from general breakdown
-                // labels to api semantics to retrieve data.
-                breakdownOptions: {
-                    'All': 'all-access',
-                    'Desktop site': 'desktop',
-                    'Mobile site': 'mobile-web',
-                    'Mobile App': 'mobile-app'
-                },
-                breakdownParameter: 'access',
-                dataStart: '2015010100'
-            },
+            'Pageviews': pageviewsConfig,
+            'MonthlyPageviews': pageviewsConfig,
             'LegacyPagecounts': {
                 endpoint: 'getAggregatedLegacyPagecounts',
                 valueField: 'count',
