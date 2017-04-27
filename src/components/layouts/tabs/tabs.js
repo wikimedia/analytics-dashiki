@@ -16,6 +16,15 @@ define(function (require) {
         return g && g.id && g.title;
     }
 
+    var visualizers = {
+        'sunburst'              : { defaultDays: 35, icon: 'pie' },
+        'stacked-bars'          : { defaultDays: 35, icon: 'bar' },
+        'dygraphs-timeseries'   : { defaultDays: 'all', icon: 'line' },
+        'table-timeseries'      : { defaultDays: 'all', icon: 'table' },
+    };
+    // these two graphs work the same
+    visualizers.hierarchy = visualizers.sunburst;
+
     function TabsLayout() {
 
         this.config = ko.observable({});
@@ -55,16 +64,12 @@ define(function (require) {
                         return g === dashboard.selectedGraph();
                     });
 
+                    g.showLastDays = g.showLastDays || visualizers[g.type].defaultDays;
+
                     if (t.dataRange) {
                         g.startDate = t.dataRange.startDate;
                     }
-                    // TODO: define this kind of property on the visualizers themselves
-                    // and just reference here by looking up e.g. visualizers[g.type].typeIcon
-                    g.typeIcon =
-                        (g.type === 'sunburst' || g.type === 'hierarchy') ? 'pie' :
-                        g.type === 'stacked-bars' ? 'bar' :
-                        g.type === 'dygraphs-timeseries' ? 'line' :
-                        g.type === 'table-timeseries' ? 'table' : '';
+                    g.typeIcon = visualizers[g.type].icon;
 
                     // Fetch annotations if present
                     var annotationsInfo = g.annotations;
