@@ -8,6 +8,7 @@ define(function (require) {
     var siteConfig = require('config'),
         converterFinder = require('finders.converter'),
         uri = require('uri/URI'),
+         _ = require('lodash'),
         TimeseriesData = require('models.timeseries');
 
     require('uri/URITemplate');
@@ -23,38 +24,50 @@ define(function (require) {
 
     /**
      * Parameters
-     *   metric  : an object representing a Wikimetrics metric
-     *   project : a Wiki project (English Wikipedia is 'enwiki', Commons is 'commonswiki', etc.)
+     *   metric: An object representing a Wikimetrics metric
+     *   projects: An array of project db names: [enwiki, dewiki]
      *
      * Returns
      *  A promise with that wraps data for the metric/project transformed via the converter
      */
-    WikimetricsApi.prototype.getData = function (metric, project) {
-        var deferred = $.Deferred();
+    WikimetricsApi.prototype.getData = function (metric, projects) {
+        var deferred = $.Deferred(),
+            self = this, timeseries = [];
 
-        var address = uri.expand('https://{root}/static/public/datafiles/{metric}/{project}.json', {
-            root: this.root,
+        var promises  = projects.map(function(_project) {
+            var address = uri.expand('https://{root}/static/public/datafiles/{metric}/{project}.json', {
+            root: self.root,
             metric: metric.name,
-            project: project,
-        }).toString();
+            project: _project,
+             }).toString();
 
-        this._getJSON(address)
-            .done(function (data) {
+            return self._getJSON(address);
+
+        });
+
+        $.when.apply($,promises).then(function(){
+
+            var timeseriesData = _.flatten(arguments);
+
+            for (var i =0;i<timeseriesData.length;i++) {
+                var tdata = timeseriesData[i];
+                                console.log(tdata);
+
                 var submetrics = {};
 
                 submetrics[metric.name] = metric.submetric || metric.defaultSubmetric;
                 var opt = {
-                    defaultSubmetrics: submetrics
+                        defaultSubmetrics: submetrics
                 };
 
-                deferred.resolve(this.dataConverter(opt, data));
-            }.bind(this))
-            .fail(function (error) {
-                // resolve as done with empty results and log the error
-                // to avoid crashing the ui when a metric has problems
-                deferred.resolve(new TimeseriesData());
-                logger.error(error);
-            });
+                timeseries.push(self.dataConverter(opt, tdata));
+
+            }
+
+            var data = TimeseriesData.mergeAll(timeseries);
+
+            return deferred.resolve(data);
+        });
 
         return deferred.promise();
     };
@@ -69,7 +82,6 @@ define(function (require) {
             url: url
         });
     };
-
 
 
     return new WikimetricsApi(siteConfig);

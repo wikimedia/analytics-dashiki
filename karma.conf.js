@@ -60,6 +60,12 @@ module.exports = function(config) {
 
         // Concurrency level
         // how many browser should be started simultaneous
-        concurrency: Infinity
+        concurrency: Infinity,
+
+        browserConsoleLogOptions: {
+                                    level: 'log',
+                                    format: '%b %T: %m',
+                                    terminal: true
+        }
     });
 };

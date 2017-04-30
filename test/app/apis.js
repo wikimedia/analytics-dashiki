@@ -3,13 +3,15 @@
  * Please take a look at issues with jasmine test setup,
  * scope is not what you might think:
  * Memory leaks on jasmine: https://github.com/jasmine/jasmine/issues/941
+ * Also jasmine is prone to solve you the wrong stack trace if tests use done()
+ * utility to resolve promises
  **/
 define(function (require) {
 
     var $ = require('jquery'),
         config = require('config'),
+        pageviews = require('pageviews'),
         sinon = require('sinon');
-
 
     describe('Wikimetrics API', function () {
         var sandbox;
@@ -28,17 +30,18 @@ define(function (require) {
         });
 
         it('should fetch the correct URL', function () {
+
             var deferred = new $.Deferred();
-            deferred.resolveWith(null, ['not important']);
-            sandbox.stub($, 'ajax');
-            $.ajax.returns(deferred);
+            // no need to resolve promise we are just inspecting url
+            deferred.rejectWith(null, ['not important']);
+            sandbox.stub($, 'ajax').returns(deferred);
 
             this.wikimetrics.root = 'something';
             var expected = 'https://something/static/public/datafiles/metric/project.json';
             var metric = {
                 name: 'metric'
             };
-            this.wikimetrics.getData(metric, 'project');
+            this.wikimetrics.getData(metric, ['project']);
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
@@ -51,7 +54,7 @@ define(function (require) {
             var metric = {
                 name: 'metric'
             };
-            this.wikimetrics.getData(metric, 'project').then(function (data) {
+            this.wikimetrics.getData(metric, ['project']).then(function (data) {
                 // this is being resolved imediately,
                 // no need to use done(), it doesn't work and
                 // makes stack traces nonsensical when tests fail
@@ -59,35 +62,16 @@ define(function (require) {
             });
         });
 
+
+
+
+
     });
 
 
-
     describe('AQS', function () {
-        var sandbox, sitematrixData = {
-            'sitematrix': {
-                'count': 894,
-                '0': {
-                    'code': 'aa',
-                    'name': 'some',
-                    'site': [{
-                        'url': 'https: //aa.wikipedia.org',
-                        'dbname': 'aawiki',
-                        'code': 'wiki',
-                        'sitename': 'Wikipedia',
-                        'closed': ''
-                    }, {
-                        'url': 'https://aa.wiktionary.org',
-                        'dbname': 'aawiktionary',
-                        'code': 'wiktionary',
-                        'sitename': 'Wiktionary',
-                        'closed': ''
-                    }],
-                    'localname': 'Afar'
-                }
-            }
-        };
 
+        var sandbox;
         // mocking native object as pageviews.js module
         // does not use jquery
         beforeEach(function () {
@@ -95,6 +79,18 @@ define(function (require) {
             this.aqsApi = require('apis.aqs');
             this.sitematrix = require('sitematrix');
 
+            this.spy = sandbox.spy(pageviews, 'getAggregatedPageviews');
+
+            sandbox.stub(this.sitematrix, 'getProjectUrl', function () {
+                var deferred = new $.Deferred();
+
+                deferred.resolve('aa.wiktionary.org');
+
+                return deferred.promise();
+            });
+
+            //* sinon and phantomjs do not coperate to mock xhr
+            // https://github.com/sinonjs/sinon/issues/228
             this.xhr = sinon.useFakeXMLHttpRequest();
             this.requests = [];
 
@@ -103,13 +99,13 @@ define(function (require) {
             var self = this;
             this.xhr.onCreate = function (req) {
                 self.requests.push(req);
-            };
+                req.setResponseBody("{\"items\":[]}");
+                req.setResponseHeaders({ "Content-Type": "application/json" });
+                req.async = false;
+                req.respond(200);
 
-            sandbox.stub(this.sitematrix, 'getProjectUrl', function (options) {
-                var deferred = new $.Deferred();
-                deferred.resolve('aa.wiktionary.org');
-                return deferred.promise();
-            });
+
+            };
 
         });
 
@@ -117,90 +113,103 @@ define(function (require) {
             this.aqsApi = null;
             sinon.restore();
             sandbox.restore();
+            this.xhr.restore();
 
         });
 
-        it('should fetch the correct project on AQS URL if project exist', function () {
+        it('should fetch the correct project on AQS URL if project exist', function (done) {
 
             var metric = {
                 name: 'Pageviews'
             };
 
-            this.aqsApi.getData(metric, 'aawiktionary');
+            this.aqsApi.getData(metric, ['aawiktionary']).then(function(){
+                expect(this.spy.calledOnce).toBe(true);
+                expect(this.spy.args[0][0].project).toEqual('aa.wiktionary.org');
+                expect(this.spy.args[0][0].access).toEqual('all-access');
 
-            //given that ajax is a fake it shoudld resolve imediately
-            expect(this.requests[0].url.match(/aa.wiktionary/).toString()).toBe(['aa.wiktionary'].toString());
+                done();
+            }.bind(this));
 
-            // should also match all-access
-            expect(this.requests[0].url.match(/all-access/).toString()).toBe(['all-access'].toString());
         });
 
-        it('Should request pageviews for mobile and desktop data breakdowns', function () {
-            var deferred = new $.Deferred();
-
-            deferred.resolveWith(null, [sitematrixData]);
-
-            // mocking ajax cause sitematrix does use jquery for ajax
-            sandbox.stub($, 'ajax').returns(deferred);
+        it('Should request pageviews for mobile and desktop data breakdowns', function (done) {
 
             var metric = {
                 name: 'Pageviews'
             };
 
             // request breakdowns
-            this.aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
+            this.aqsApi.getData(metric, ['aawiktionary'], ['All', 'Desktop site', 'Mobile site']).then(function(){
+                expect(this.spy.calledThrice).toBe(true);
+                expect(this.spy.args[1][0].project).toEqual('aa.wiktionary.org');
+                expect(this.spy.args[1][0].access).toEqual('desktop');
+                expect(this.spy.args[2][0].access).toEqual('mobile-web');
 
-            // request for mobile and desktop data
-            expect(/all-access/.test(this.requests[0].url)).toBe(true, 'all-access fetched');
-            expect(/desktop/.test(this.requests[1].url)).toBe(true, 'desktop fetched');
-            expect(/mobile-web/.test(this.requests[2].url)).toBe(true, 'mobile-web fetched');
+                done();
+
+            }.bind(this));
+
+
         });
 
-        it('Should request unique devices for mobile and desktop data breakdowns', function () {
-            var deferred = new $.Deferred();
-
-            deferred.resolveWith(null, [sitematrixData]);
-
-            // mocking ajax cause sitematrix does use jquery for ajax
-            sandbox.stub($, 'ajax').returns(deferred);
+        it('Should request unique devices for mobile and desktop data breakdowns', function (done) {
 
             var metric = {
                 name: 'UniqueDevices'
             };
 
-            // request breakdowns
-            this.aqsApi.getData(metric, 'aawiktionary', ['All', 'Desktop site', 'Mobile site']);
+            var uniqueDevicesSpy = sinon.spy(pageviews, 'getUniqueDevices');
 
-            // request for mobile and desktop data
-            expect(/all-sites/.test(this.requests[0].url)).toBe(true, 'all-sites fetched');
-            expect(/desktop-site/.test(this.requests[1].url)).toBe(true, 'desktop-site fetched');
-            expect(/mobile-site/.test(this.requests[2].url)).toBe(true, 'mobile-site fetched');
+            // request breakdowns
+            this.aqsApi.getData(metric, ['enwiki'], ['All', 'Desktop site', 'Mobile site']).then(function(){
+                expect(uniqueDevicesSpy.args[0][0].project).toEqual('aa.wiktionary.org');
+                expect(uniqueDevicesSpy.args[0][0].granularity).toEqual('daily');
+                expect(uniqueDevicesSpy.args[0][0].accessSite).toEqual('all-sites');
+                expect(uniqueDevicesSpy.args[1][0].accessSite).toEqual('desktop-site');
+                expect(uniqueDevicesSpy.args[2][0].accessSite).toEqual('mobile-site');
+
+                done();
+            }.bind(this));
+
         });
 
-        it('Should request correct date format depending on granularity', function () {
-            var deferred = new $.Deferred();
-
-            deferred.resolveWith(null, [sitematrixData]);
-
-            // mocking ajax cause sitematrix does use jquery for ajax
-            sandbox.stub($, 'ajax').returns(deferred);
+        it('Should request correct date format depending on granularity', function (done) {
 
             // hourly granularity
             var metric = { name: 'Pageviews', granularity: 'hourly' };
 
-            this.aqsApi.getData(metric, 'aawiktionary', ['All']);
-            expect(/[0-9]{10}\/[0-9]{10}/.test(this.requests[0].url)).toBe(true);
+              // request breakdowns
+            this.aqsApi.getData(metric, ['aawiktionary'], ['All']).then(function(){
+                expect(this.spy.args[0][0].project).toEqual('aa.wiktionary.org');
+                expect(this.spy.args[0][0].granularity).toEqual('hourly');
 
-            // daily granularity
+                done();
+
+            }.bind(this));
+
+
             metric = { name: 'Pageviews', granularity: 'daily' };
-            this.aqsApi.getData(metric, 'aawiktionary', ['All']);
-            expect(/[0-9]{8}00\/[0-9]{8}00/.test(this.requests[1].url)).toBe(true);
 
-            // monthly granularity
-            metric = { name: 'UniqueDevices', granularity: 'monthly' };
+            // request breakdowns
+            this.aqsApi.getData(metric, ['aawiktionary'], ['All']).then(function(){
+                expect(this.spy.args[1][0].project).toEqual('aa.wiktionary.org');
+                expect(this.spy.args[1][0].granularity).toEqual('daily');
 
-            this.aqsApi.getData(metric, 'aawiktionary', ['All']);
-            expect(/[0-9]{6}01\/[0-9]{6}01/.test(this.requests[2].url)).toBe(true);
+                done();
+
+            }.bind(this));
+
+            metric = { name: 'Pageviews', granularity: 'monthly' };
+
+              // request breakdowns
+            this.aqsApi.getData(metric, ['aawiktionary'], ['All']).then(function(){
+                expect(this.spy.args[2][0].project).toEqual('aa.wiktionary.org');
+                expect(this.spy.args[2][0].granularity).toEqual('monthly');
+                done();
+
+            }.bind(this));
+
         });
 
         it('should return empty TimeseriesData if getting data fails', function () {
@@ -213,7 +222,7 @@ define(function (require) {
                 breakdown: {}
             };
 
-            this.aqsApi.getData(metric, 'project').done(function (data) {
+            this.aqsApi.getData(metric, ['project']).done(function (data) {
                 expect(data.header).toEqual([]);
             });
         });
@@ -235,7 +244,7 @@ define(function (require) {
         });
 
         it('sitematrix should raise an error if project does not exist', function () {
-            sandbox.stub(this.sitematrix, 'getProjectUrl', function (options) {
+            sandbox.stub(this.sitematrix, 'getProjectUrl', function () {
                 var deferred = new $.Deferred();
                 deferred.reject(new Error('SomeError'));
                 return deferred.promise();

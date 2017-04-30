@@ -15,6 +15,7 @@ define(function (require) {
 
     var ko = require('knockout'),
         _ = require('lodash'),
+        logger = require('logger'),
         TimeseriesData = require('models.timeseries'),
         templateMarkup = require('text!./wikimetrics.html'),
         apiFinder = require('finders.api'),
@@ -51,19 +52,22 @@ define(function (require) {
 
                 var api = apiFinder(metric);
 
-                var promises = projects.map(function (project) {
-                    return api.getData(metric, project.database, breakdown);
-                });
+                // need to query api using project db
+                var projectDatabases = projects.map(function(p){return p.database;});
 
-                //invoqued when all promises are done
-                $.when.apply(this, promises).done(function () {
+                var promise = api.getData(metric, projectDatabases, breakdown);
+
+                promise.then(function () {
                     var timeseriesData = _.flatten(arguments);
                     this.mergedData(TimeseriesData.mergeAll(_.toArray(timeseriesData)));
                     this.applyColors(projects);
-                }.bind(this));
+                }.bind(this)).catch(function(reason) {
+                    this.mergedData(new TimeseriesData());
+                    logger.error(reason);
+                });
 
             } else {
-                this.mergedData(new TimeseriesData([]));
+                this.mergedData(new TimeseriesData());
             }
 
         }, this);

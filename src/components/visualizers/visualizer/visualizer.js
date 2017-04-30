@@ -46,19 +46,15 @@ define(function (require) {
             var aqs = params.aqs;
             var projects = aqs.projects;
 
-            // no changes should be needed to api if we wait until all promises are resolved to render
-            var promises = projects.map(function (project) {
-                    return api.getData({'name':aqs.name, 'granularity':aqs.granularity}, project);
-            });
+            var promise = api.getData({'name':aqs.name, 'granularity':aqs.granularity}, projects);
 
-            //invoqued when all promises are done
-            Promise.all(promises).then(function (data) {
-                this.data(TimeseriesData.mergeAll(data));
+            promise.then(function (data) {
+                this.data(data);
             }.bind(this));
 
 
         } else {
-            api.getData(graph, 'all').done(this.data);
+            api.getData(graph, ['all']).done(this.data);
         }
 
 
