@@ -8,6 +8,7 @@ define(function (require) {
     var siteConfig = require('config'),
         converterFinder = require('finders.converter'),
         TimeseriesData = require('models.timeseries'),
+         _ = require('lodash'),
         uri = require('uri/URI'),
         logger = require('logger');
 
@@ -17,7 +18,9 @@ define(function (require) {
     function DatasetsApi(config) {
         this.root = config.datasetsApi.endpoint;
         this.config = config.datasetsApi;
+        this.dataConverter = converterFinder(config.datasetsApi.format);
     }
+
 
     /**
      * Fetch and parse a dataset.  Parameters will be used
@@ -25,50 +28,66 @@ define(function (require) {
      * Parameters
      *      metric      : the name of something to measure
      *      submetric   : subcategory being measured
-     *      project     : database name (enwiki, wikidata, etc.)
+     *      project     : An array of project db names: [enwiki, dewiki]
      */
-    DatasetsApi.prototype.getData = function (metricInfo, project) {
-        var deferred = new $.Deferred(),
-            address = '',
-            converter = converterFinder(this.config.format),
-            handleFailure = function (error) {
-                // resolve as done with empty results and log the error
-                // to avoid crashing the ui when a metric has problems
-                deferred.resolve(new TimeseriesData([]));
-                logger.error(error);
-            };
+    DatasetsApi.prototype.getData = function (metricInfo, projects) {
 
-        if (metricInfo.metric) {
-            address = this.root + uri.expand('/{metric}/{submetric}/{project}.{format}', {
-                metric: metricInfo.metric,
-                submetric: metricInfo.submetric,
-                project: project,
-                format: this.config.format,
-            }).toString();
-        } else if (metricInfo.path) {
-            address = uri(this.root + '/' + metricInfo.path).normalize().toString();
-        } else {
-            handleFailure('When calling getData, the metricInfo parameter needs either a metric/submetric or a path');
-            return deferred.promise();
+
+        var deferred = $.Deferred(),
+            address = '',
+            self = this,
+            timeseries = [];
+
+        if (!Array.isArray(projects)) {
+            projects = [projects];
         }
 
-        $.ajax({
-            url: address
-        }).done(function (data) {
-            var opt = {
+
+        var promises  = projects.map(function(_project) {
+
+            if (metricInfo.metric) {
+                address = self.root + uri.expand('/{metric}/{submetric}/{project}.{format}', {
+                metric: metricInfo.metric,
+                submetric: metricInfo.submetric,
+                project: _project,
+                format: self.config.format,
+                }).toString();
+            } else if (metricInfo.path) {
+                address = uri(self.root + '/' + metricInfo.path).normalize().toString();
+            }
+
+            metricInfo.downloadLink = address;
+
+            return $.ajax({ url: address});
+
+        });
+
+
+        $.when.apply($,promises).then(function(){
+            var timeseriesData = _.flatten(arguments);
+
+             for (var i =0;i<timeseriesData.length;i++) {
+                var tdata = timeseriesData[i];
+                var opt = {
                     label: metricInfo.submetric,
                     varyColors: true,
                     doNotParse: metricInfo.doNotParse,
                 };
 
-            deferred.resolve(converter(opt, data));
+                timeseries.push(self.dataConverter(opt, tdata));
+            }
 
-        }).fail(handleFailure);
+            var data = TimeseriesData.mergeAll(timeseries);
 
-        // add the address fetched to the metricInfo, so clients can use it
-        metricInfo.downloadLink = address;
+            return deferred.resolve(data);
+
+        }).catch(function(reason) {
+            deferred.resolve(new TimeseriesData());
+            logger.error(reason);
+        });
 
         return deferred.promise();
+
     };
 
     return new DatasetsApi(siteConfig);

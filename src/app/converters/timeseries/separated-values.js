@@ -41,6 +41,11 @@ define(function (require) {
 
             }, options);
 
+            if (!_.isString(rawData)) {
+                 return new TimeseriesData();
+
+            }
+
             if (rawData.indexOf(opt.valueSeparator) < 0 ||
                 rawData.indexOf(opt.lineSeparator) < 0) {
                 return new TimeseriesData();

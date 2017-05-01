@@ -22,7 +22,7 @@ define(function (require) {
                     from = ko.unwrap(this.fromDate.selected),
                     to = ko.unwrap(this.toDate.selected);
 
-                api.getData(metricInfo, wiki).done(function(data) {
+                api.getData(metricInfo, [wiki]).done(function(data) {
                     result(data.filter(from, to));
                 });
 

@@ -500,7 +500,7 @@ define(function (require) {
                 'metric': 'metric',
                 'submetric': 'submetric'
             };
-            this.datasetsApi.getData(metricInfo, 'project');
+            this.datasetsApi.getData(metricInfo, ['project']);
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
@@ -514,7 +514,7 @@ define(function (require) {
             var metricInfo = {
                 'path': 'metric/submetric/project.tsv',
             };
-            this.datasetsApi.getData(metricInfo, 'project');
+            this.datasetsApi.getData(metricInfo, ['project']);
             expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
         });
 
@@ -527,7 +527,7 @@ define(function (require) {
                 name: 'metric',
                 breakdown: {}
             };
-            this.datasetsApi.getData(metric, 'project').done(function (data) {
+            this.datasetsApi.getData(metric, ['project']).done(function (data) {
                 expect(data.rowData()).toEqual([]);
             });
 

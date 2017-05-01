@@ -89,7 +89,22 @@ define(function (require) {
     /**
      * Merges an array of TimeseriesData objects
      */
-    TimeseriesData.mergeAll = function (arrayOfTimeseries) {
+    TimeseriesData.mergeAll = function (inputArray) {
+
+        var arrayOfTimeseries = [];
+
+        // before merging remove empty entries, defective data ends up
+        // creating an empty timeseries
+         _.forEach(inputArray, function (t) {
+            if (!_.isEmpty(t['rowsByDate'])) {
+                arrayOfTimeseries.push(t);
+            }
+        });
+
+        // if the array only has 1 element there is no need to merge
+        if (arrayOfTimeseries.length <=1){
+            return arrayOfTimeseries[0];
+        }
 
         // check each input, to be merged, they must have one value per date
         _.forEach(arrayOfTimeseries, function (t) {

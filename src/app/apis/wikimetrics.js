@@ -51,7 +51,6 @@ define(function (require) {
 
             for (var i =0;i<timeseriesData.length;i++) {
                 var tdata = timeseriesData[i];
-                                console.log(tdata);
 
                 var submetrics = {};
 
