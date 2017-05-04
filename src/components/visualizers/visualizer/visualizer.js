@@ -12,6 +12,8 @@ define(function (require) {
 
     require('knockout.datepicker');
 
+    var dateFormat = 'YYYY-MM-DD';
+
     function Visualizer(params) {
         var apiType = params.aqs? 'aqsApi' : 'datasets';
         var api = apiFinder({
@@ -52,21 +54,28 @@ define(function (require) {
                 this.data(data);
             }.bind(this));
 
-
         } else {
             api.getData(graph, ['all']).done(this.data);
         }
 
-
-
-        this.startDate = ko.observable(graph.startDate);
-        this.minDate = ko.observable(graph.startDate);
+        graph.minDate = graph.startDate;
+        if (graph.showLastDays) {
+            var days = parseInt(graph.showLastDays, 10) || 0;
+            if (days > 0) {
+                var earliestDate = moment().add(-1 * days, 'days').format(dateFormat);
+                if (graph.startDate < earliestDate) {
+                    graph.startDate = earliestDate;
+                }
+            }
+        }
+        this.startDate = ko.observable(moment(graph.startDate).valueOf());
+        this.minDate = ko.observable(moment(graph.minDate).valueOf());
         this.endDate = ko.observable();
 
         /** If date is a unix tiemstamp change it to ISO format **/
         this.prettyDate = function (value) {
             if (Number.isInteger(value())) {
-                return moment(value()).format('YYYY-MM-DD');
+                return moment(value()).format(dateFormat);
             }
             return value;
         };
