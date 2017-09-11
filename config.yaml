@@ -55,3 +55,11 @@ config:
         piwikId:
         hostname: flow-reportcard.wmflabs.org
         subfolder:
+
+    page-creation:
+        layout: metrics-by-project
+        config: Dashiki:PageCreations
+        piwikHost:
+        piwikId:
+        hostname: page-creation.wmflabs.org
+        subfolder:
