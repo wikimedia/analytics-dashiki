@@ -43,6 +43,7 @@ define(function (require) {
                         y: {
                             valueFormatter: val.format,
                             axisLabelFormatter: val.format,
+                            valueRange: [0]
                         },
                     },
                     labels: ['Date'],
