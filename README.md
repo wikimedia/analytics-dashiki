@@ -20,7 +20,9 @@ npm install
 sudo npm install -g gulp
 cd semantic && gulp build
 
-NOTE: yarn install is under consideration, some incompabilities remain
+NOTE: on Ubuntu, you may need to do `sudo apt-get install libcairo2-dev libjpeg-dev libgif-dev` to get npm to work.
+
+NOTE: yarn install is under consideration, some incompabilities remain.
 
 How to build some dashboards:
 gulp --layout metrics-by-project --config Dashiki:VitalSigns

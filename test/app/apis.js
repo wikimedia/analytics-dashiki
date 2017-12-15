@@ -278,8 +278,8 @@ define(function (require) {
 
             this.configApi.config = {
                 endpoint: 'test',
-                dashboardPage: 'dash',
-                defaultDashboardPageRoot: 'defaultDash',
+                dashboardArticle: 'dash',
+                defaultDashboardArticleRoot: 'defaultDash',
                 categorizedMetricsPage: 'metrics',
             };
             sandbox.stub(this.mediawikiStorage, 'get').returns(new $.Deferred());

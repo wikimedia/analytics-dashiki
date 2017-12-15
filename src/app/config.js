@@ -50,11 +50,12 @@ define(function (require) {
 
         // indicates which mediawiki host and pages contain the configuration
         configApi: {
-            endpoint: 'meta.wikimedia.org',
+            endpoint: buildConfig ? buildConfig.endpoint : 'meta.wikimedia.org',
             // next two fields are mediawiki page names
             categorizedMetricsPage: 'Dashiki:CategorizedMetrics',
-            dashboardPage: buildConfig ? buildConfig.dashboardArticle : null,
-            defaultDashboardPageRoot: 'Config:Dashiki:Sample',
+            dashboardArticle: buildConfig ? buildConfig.dashboardArticle : null,
+            dashboardConfigLink: buildConfig ? '//' + buildConfig.endpoint + '/wiki/' + buildConfig.dashboardArticle : null,
+            defaultDashboardArticleRoot: 'Config:Dashiki:Sample',
             //https://meta.wikimedia.org/wiki/Dashiki:OutOfService
             outOfService: 'Dashiki:OutOfService',
             // this is a digest of sitematrix taylored to the UI,

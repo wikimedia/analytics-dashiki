@@ -6,6 +6,7 @@ if (typeof window === 'undefined') {
             include: [
                 'requireLib',
                 'components/layouts/metrics-by-project/metrics-by-project',
+                'components/layouts/created-by/created-by',
                 'components/visualizers/wikimetrics/wikimetrics',
                 'components/selectors/metric/metric',
             ],

@@ -6,6 +6,7 @@ if (typeof window === 'undefined') {
             include: [
                 'requireLib',
                 'components/layouts/tabs/tabs',
+                'components/layouts/created-by/created-by',
                 'components/visualizers/visualizer/visualizer',
             ],
             bundles: {

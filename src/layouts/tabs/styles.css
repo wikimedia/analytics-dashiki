@@ -8,6 +8,21 @@ h1 small {
     color: #999999;
 }
 
+.created.by {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 5px;
+    font-size: 16px;
+    text-align: right;
+}
+.created.by hr {
+    margin: 2px;
+}
+.created.by p {
+    font-size: 12px;
+}
+
 .resizable.container {
     width: 100%;
     height: 100%;

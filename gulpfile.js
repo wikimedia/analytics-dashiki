@@ -24,7 +24,7 @@ var defaults = {
 
     layoutsRoot     : './src/layouts/',
     wiki            : 'meta.wikimedia.org',
-    namespace       : 'Config:', // NOTE: set this up on meta
+    namespace       : 'Config:',
     buildConfigPath : './src/config-from-build.js',
     outputPath      : 'dist/',
     requireConfig   : './src/app/require.config',

@@ -13,6 +13,7 @@ define(function(require) {
 
     // out-of-service component is common
     ko.components.register('out-of-service', {require: 'components/layouts/out-of-service/out-of-service'    });
+    ko.components.register('created-by', {require: 'components/layouts/created-by/created-by'    });
 
     // separate layouts, TODO: make each layout register its own components
 

@@ -6,6 +6,7 @@ if (typeof window === 'undefined') {
             include: [
                 'requireLib',
                 'components/layouts/compare/compare',
+                'components/layouts/created-by/created-by',
                 'components/controls/dropdown/dropdown',
                 'components/controls/button-group/button-group',
                 'components/controls/button-group/button-group',
