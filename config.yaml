@@ -1,13 +1,5 @@
 # Deployment config for dashboards
 config:
-    browser-reports:
-        layout: tabs
-        config: Dashiki:SimpleRequestBreakdowns
-        piwikHost: piwik.wikimedia.org
-        piwikId: 8
-        hostname: browser-reports.wmflabs.org
-        subfolder:
-
     edit-analysis:
         layout: compare
         config: Dashiki:VisualEditorAndWikitext
@@ -39,7 +31,7 @@ config:
         piwikId: 10
         hostname: edit-analysis.wmflabs.org
         subfolder: beta-enables
-   
+
     editor-engagement:
         layout: metrics-by-project
         config: Dashiki:EditorEngagement
