@@ -68,8 +68,8 @@ define(function (require) {
                 }
             }
         }
-        this.startDate = ko.observable(moment(graph.startDate).valueOf());
-        this.minDate = ko.observable(moment(graph.minDate).valueOf());
+        this.startDate = ko.observable(graph.startDate ? moment(graph.startDate).valueOf() : null);
+        this.minDate = ko.observable(graph.minDate ? moment(graph.minDate).valueOf() : null);
         this.endDate = ko.observable();
 
         /** If date is a unix tiemstamp change it to ISO format **/
