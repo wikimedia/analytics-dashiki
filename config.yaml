@@ -55,3 +55,11 @@ config:
         piwikId:
         hostname: page-creation.wmflabs.org
         subfolder:
+
+    notifications:
+        layout: metrics-by-project
+        config: Dashiki:Notifications
+        piwikHost:
+        piwikId:
+        hostname: edit-analysis.wmflabs.org
+        subfolder: notifications
