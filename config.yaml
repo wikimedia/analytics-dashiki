@@ -63,3 +63,12 @@ config:
         piwikId:
         hostname: edit-analysis.wmflabs.org
         subfolder: notifications
+
+    pingback:
+        layout: tabs
+        config: Dashiki:Pingback
+        piwikHost:
+        piwikId:
+        hostname: pingback.wmflabs.org
+        subfolder:
+
