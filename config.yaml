@@ -16,6 +16,14 @@ config:
         hostname: language-reportcard.wmflabs.org
         subfolder:
 
+    language-interlanguage:
+        layout: tabs
+        config: Dashiki:Interlanguage
+        piwikHost:
+        piwikId:
+        hostname: language-reportcard.wmflabs.org
+        subfolder: interlanguage
+
     multimedia-health:
         layout: metrics-by-project
         config: Dashiki:MultimediaHealth
