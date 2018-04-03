@@ -97,3 +97,9 @@ tabs-layout > .bottom.pane .attached.segment {
     font-size: 11px!important;
     padding-right: 4px!important;
 }
+
+.ui.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
