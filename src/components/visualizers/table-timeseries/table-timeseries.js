@@ -13,12 +13,9 @@ define(function (require) {
         this.rows = ko.computed(function () {
             return ko.unwrap(this.data).rowData({
                 convertToString: true,
-                // only show a few rows to speed up rendering
-                // TODO: paginate?
-                limit: {
-                    start: 0,
-                    end: 200,
-                },
+                // only show the last few rows to speed up rendering
+                // TODO: paginate, T191270
+                limit: { start: -900 },
             });
         }, this);
         this.header = ko.computed(function () {
