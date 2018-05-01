@@ -263,5 +263,30 @@ define(function (require) {
             expect(filteredColumns.fromDate).toEqual(1400000000000);
             expect(filteredColumns.toDate).toEqual(1400000000001);
         });
+
+        it('should pivot a dimension into columns', function () {
+            var header = [
+                    'pivot-by-this',
+                    'this-column-disappears-in-aggregation',
+                    'metric-to-aggregate',
+                ],
+                rowsByDate = {
+                    '2018-05-01': [['A', 'A1', 1], ['A', 'A2', 2], ['B', 'B1', 4]],
+                    '2018-05-02': [['B', 'B1', 40], ['A', 'A1', 10], ['C', 'C1', 50]],
+                    '2018-05-03': [['C', 'C2', 500]],
+                },
+                ts = new TimeseriesData(header, rowsByDate);
+
+            var pivotedTs = ts.pivot('pivot-by-this', 'metric-to-aggregate');
+
+            expect(pivotedTs.header).toEqual(['A', 'B', 'C']);
+            expect(pivotedTs.rowsByDate).toEqual({
+                '2018-05-01': [[3, 4, 0]],
+                '2018-05-02': [[10, 40, 50]],
+                '2018-05-03': [[0, 0, 500]],
+            });
+            expect(pivotedTs.colorLabels).toEqual(['A', 'B', 'C']);
+            expect(pivotedTs.patternLabels).toEqual(['pivot-by-this', 'pivot-by-this', 'pivot-by-this']);
+        });
     });
 });

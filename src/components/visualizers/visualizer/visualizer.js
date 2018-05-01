@@ -25,6 +25,7 @@ define(function (require) {
         this.title = graph.title;
         this.select = graph.select;
         this.selected = graph.selected;
+        this.pivot = graph.pivot;
         // TODO: add this property to the visualizers themselves and then reference
         // like visualizers[this.type].showColumnToggle
         this.columnToggle = this.type !== 'sunburst' && this.type !== 'hierarchy';
@@ -55,7 +56,13 @@ define(function (require) {
             }.bind(this));
 
         } else {
-            api.getData(graph, ['all']).done(this.data);
+            api.getData(graph, ['all']).done(function (timeseriesData) {
+                var data = graph.pivot ?
+                    timeseriesData.pivot(graph.pivot.dimension, graph.pivot.metric) :
+                    timeseriesData
+
+                this.data(data);
+            }.bind(this));
         }
 
         graph.minDate = graph.startDate;
@@ -89,6 +96,9 @@ define(function (require) {
                 return [];
             }
 
+            var selectTop = ko.unwrap(this.selectSuggestion),
+                tooManyColumns = data.header.length > 40;
+
             var header = data.header.map(function (h, i) {
                 return {
                     index: i,
@@ -97,7 +107,7 @@ define(function (require) {
                     patternLabel: data.patternLabels[i],
                     name: data.patternLabels[i] + ' - ' + h,
                     uniqueId: data.patternLabels[i] + ' - ' + h + (Math.floor(Math.random() * 100000)),
-                    selected: ko.observable(true),
+                    selected: ko.observable(tooManyColumns ? selectTop.indexOf(h) > -1 : true),
                     selectOnly: function () {
                         var onlyThis = this;
 
@@ -138,6 +148,29 @@ define(function (require) {
         }, this).extend({
             rateLimit: 0
         });
+
+        // this computed keeps track of the columns with the top 20 values in the first row
+        this.selectSuggestion = ko.computed(function () {
+            var data = ko.unwrap(this.data);
+
+            if (!data) {
+                return [];
+            }
+            data.filter(this.startDate, this.endDate);
+            var rows = data.rowData();
+
+            if (rows.length < 1) {
+                return [];
+            }
+
+            var labeledFirstRow = _.zip(data.header, rows[0].slice(1));
+            return _(labeledFirstRow)
+                .sortBy(function(l) { return l[1]; })
+                .reverse()
+                .take(5)
+                .map(function (l) { return l[0]; })
+                .value();
+        }, this);
 
         // make params for the underlying visualizer
         this.params = {

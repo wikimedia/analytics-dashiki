@@ -240,6 +240,63 @@ define(function (require) {
     };
 
     /**
+     * Pivot labels from the column "dimension" into columns,
+     * by aggregating values from "metric"
+     * Easy future improvements: allow custom aggregation, custom defaults
+     *
+     * @param {String} dimension - the column to pivot by
+     * @param {String} metric - the column to aggregate values from
+     *
+     * @return TimeseriesData
+     */
+    TimeseriesData.prototype.pivot = function (dimension, metric) {
+        var headerDict = {},
+            defaultValue = 0,
+            dimensionIndex = this.header.indexOf(dimension),
+            metricIndex = this.header.indexOf(metric);
+
+        if (dimensionIndex < 0 || metricIndex < 0) {
+            var badDimension = dimensionIndex < 0,
+                badMetric = metricIndex < 0,
+                bothBad = badDimension && badMetric,
+                missing = bothBad ? 'dimension and metric' : (badMetric ? 'metric' : 'dimension');
+            throw new Error('The ' + missing + ' you specified ' + bothBad ? 'were' : 'was' + ' bad');
+        }
+
+        var rowsDictionariesByDate = _.transform(this.rowsByDate, function (result, rows, key) {
+            // pivot each row also keeping track of all unique values for the header
+            // the result will be a dictionary of sparse dictionaries, keyed by date
+            result[key] = _.transform(rows, function(rowDict, row) {
+                var dimensionValue = row[dimensionIndex],
+                    metricValue = row[metricIndex];
+                if (!(dimensionValue in rowDict)) {
+                    rowDict[dimensionValue] = 0;
+                }
+
+                rowDict[dimensionValue] += metricValue;
+                headerDict[dimensionValue] = true;
+            }, {});
+
+        }, {});
+
+        // sort the header so output is deterministic
+        var header = _.sortBy(Object.keys(headerDict)),
+            patternLabels = header.map(function () { return dimension; });
+
+        var rowsByDate = _.transform(rowsDictionariesByDate, function (result, row, key) {
+            // fill in the sparse rows by setting a default value for each header column
+            _.forEach(header, function (h) {
+                if (!(h in row)) {
+                    row[h] = defaultValue;
+                }
+            });
+            result[key] = [header.map(function (h) { return row[h]; })];
+        }, {});
+
+        return new TimeseriesData(header, rowsByDate, header, patternLabels)
+    };
+
+    /**
      * Materializes the lodash chainable rowsByDate property and sorts it by date
      */
     TimeseriesData.prototype.rowData = function (options) {
