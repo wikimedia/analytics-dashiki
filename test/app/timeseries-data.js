@@ -34,8 +34,8 @@ define(function (require) {
         });
 
         it('should merge the header and labels', function () {
-            var t1 = new TimeseriesData([1, 2, 3]),
-                t2 = new TimeseriesData([4, 5]),
+            var t1 = new TimeseriesData([1, 2, 3], {'2018-01-01': [[1]]}),
+                t2 = new TimeseriesData([4, 5], {'2018-01-02': [[2]]}),
                 tt = t1.merge(t2);
 
             expect(tt.header).toEqual([1, 2, 3, 4, 5]);
@@ -44,8 +44,8 @@ define(function (require) {
         });
 
         it('should merge filters correctly', function () {
-            var t1 = new TimeseriesData(['filter left']),
-                t2 = new TimeseriesData(['filter right']);
+            var t1 = new TimeseriesData(['filter left'], {'2018-01-01': [[1]]}),
+                t2 = new TimeseriesData(['filter right'], {'2018-01-02': [[1]]});
 
             t1.filter(1, 10);
             expect(t1.merge(t2).fromDate).toEqual(1);
@@ -75,10 +75,10 @@ define(function (require) {
         });
 
         it('should handle empty rows', function () {
-            var t1 = new TimeseriesData([1, 2]),
-                t2 = new TimeseriesData([1, 2]);
+            var t1 = new TimeseriesData([1, 2], {'2018-01-01': [[]]}),
+                t2 = new TimeseriesData([1, 2], {'2018-01-02': [[]]});
 
-            expect(t1.merge(t2).rowData()).toEqual([]);
+            expect(t1.merge(t2).rowData()[0].length).toEqual(5);
         });
 
         it('should join the rows by date', function () {
@@ -134,9 +134,9 @@ define(function (require) {
         });
 
         it('should merge multiple instances', function () {
-            var t1 = new TimeseriesData([1, 2, 3]),
-                t2 = new TimeseriesData([4, 5]),
-                t3 = new TimeseriesData([5, 6]),
+            var t1 = new TimeseriesData([1, 2, 3], {'2018-01-01': [[1]]}),
+                t2 = new TimeseriesData([4, 5], {'2018-01-01': [[1]]}),
+                t3 = new TimeseriesData([5, 6], {'2018-01-01': [[1]]}),
                 tt = t1.merge([t2, t3]);
 
             expect(tt.header).toEqual([1, 2, 3, 4, 5, 5, 6]);
@@ -202,8 +202,10 @@ define(function (require) {
         });
 
         it('should not merge a TimeseriesData instance with duplicateDates', function () {
-            var t1 = new TimeseriesData(),
-                t2 = new TimeseriesData([], {}, [], [], true);
+            var t1 = new TimeseriesData([1, 2], {'2018-01-01': [[1]]}),
+                t2 = new TimeseriesData([1, 2], {'2018-01-02': [[1], [2]]});
+
+            t2.duplicateDates = true;
 
             expect(function () {
                 t1.merge(t2);

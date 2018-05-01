@@ -46,11 +46,16 @@ see the `src/layouts` folder and the README there.
 ### Build and Dev tools
 
 We're using karma as a test runner and gulp as a build tool.  You may want to
-install these tools globally:
+install gulp globally:
 
 ```
-npm install -g karma-cli
 npm install -g gulp
+```
+
+We don't recommend installing karma globally because new versions can break compatibility with the runners we have.  Instead, you can use the packages we've configured and tested for compatiblity:
+
+```
+./node_modules/karma/bin/karma start
 ```
 
 # Debugging dev tools

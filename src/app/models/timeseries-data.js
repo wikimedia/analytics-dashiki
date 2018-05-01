@@ -96,7 +96,7 @@ define(function (require) {
         // before merging remove empty entries, defective data ends up
         // creating an empty timeseries
          _.forEach(inputArray, function (t) {
-            if (!_.isEmpty(t['rowsByDate'])) {
+            if (!_.isEmpty(t.rowsByDate)) {
                 arrayOfTimeseries.push(t);
             }
         });
@@ -124,8 +124,6 @@ define(function (require) {
                 fromDate: first.fromDate,
                 toDate: first.toDate,
             };
-
-
 
         // in the following, we assume no duplicate rows per date, so we index
         // each date value at [0] to get what should be the only row there
