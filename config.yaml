@@ -24,6 +24,14 @@ config:
         hostname: language-reportcard.wmflabs.org
         subfolder: interlanguage
 
+    language-translations:
+        layout: tabs
+        config: Dashiki:CX2Translations
+        piwikHost:
+        piwikId:
+        hostname: language-reportcard.wmflabs.org
+        subfolder: cx2
+
     multimedia-health:
         layout: metrics-by-project
         config: Dashiki:MultimediaHealth
