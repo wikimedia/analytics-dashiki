@@ -1,13 +1,5 @@
 # Deployment config for dashboards
 config:
-    edit-analysis:
-        layout: compare
-        config: Dashiki:VisualEditorAndWikitext
-        piwikHost: piwik.wikimedia.org
-        piwikId: 10
-        hostname: edit-analysis.wmflabs.org
-        subfolder: compare
-
     language-reportcard:
         layout: metrics-by-project
         config: Dashiki:LanguageReportcard
@@ -32,14 +24,6 @@ config:
         hostname: language-reportcard.wmflabs.org
         subfolder: cx2
 
-    multimedia-health:
-        layout: metrics-by-project
-        config: Dashiki:MultimediaHealth
-        piwikHost: piwik.wikimedia.org
-        piwikId: 10
-        hostname: edit-analysis.wmflabs.org
-        subfolder: multimedia-health
-
     flow-by-wiki:
         layout: metrics-by-project
         config: Dashiki:FlowByWiki
@@ -47,14 +31,6 @@ config:
         piwikId: 10
         hostname: edit-analysis.wmflabs.org
         subfolder: beta-enables
-
-    editor-engagement:
-        layout: metrics-by-project
-        config: Dashiki:EditorEngagement
-        piwikHost: piwik.wikimedia.org
-        piwikId: 10
-        hostname: edit-analysis.wmflabs.org
-        subfolder: editor-engagement
 
     flow-reportcard:
         layout: tabs
