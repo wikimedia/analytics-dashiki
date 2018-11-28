@@ -53,6 +53,8 @@ define(function (require) {
 
             var rows = rawData.split(opt.lineSeparator).map(function (row) {
                 return row.split(opt.valueSeparator);
+            }).filter(function (row) {
+                return row.length > 1;
             });
 
             var header = rows

@@ -27,8 +27,8 @@ define(function (require) {
             expect(converted.patternLabels).toEqual(['arwiki']);
         });
 
-        it('bad records do not break parser', function () {
-            var sample = 'h1,h2,h3\ngarbage,1,2\n2014-08-18,3,4';
+        it('bad records or empty lines do not break parser', function () {
+            var sample = 'h1,h2,h3\ngarbage,1,2\n\n2014-08-18,3,4\n';
 
             var options = {
                 label: 'arwiki',
