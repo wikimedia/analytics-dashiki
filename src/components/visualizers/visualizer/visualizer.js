@@ -149,7 +149,7 @@ define(function (require) {
             rateLimit: 0
         });
 
-        // this computed keeps track of the columns with the top 20 values in the first row
+        // this computed keeps track of the columns with the top 5 values in the last row
         this.selectSuggestion = ko.computed(function () {
             var data = ko.unwrap(this.data);
 
@@ -163,9 +163,9 @@ define(function (require) {
                 return [];
             }
 
-            var labeledFirstRow = _.zip(data.header, rows[0].slice(1));
-            return _(labeledFirstRow)
-                .sortBy(function(l) { return l[1]; })
+            var labeledLastRow = _.zip(data.header, rows[rows.length-1].slice(1));
+            return _(labeledLastRow)
+                .sortBy(function(l) { return l[1] || Number.NEGATIVE_INFINITY; })
                 .reverse()
                 .take(5)
                 .map(function (l) { return l[0]; })
