@@ -16,7 +16,7 @@ var require = {
         'mediawiki-storage'     : '../node_modules/mediawiki-storage/dist/mediawiki-storage',
         'moment'                : '../node_modules/moment/moment',
         'numeral'               : '../node_modules/numeral/numeral',
-        'pageviews'             : '../node_modules/pageviews/pageviews',
+        'pageviews'             : '../node_modules/pageviews/pageviews.min',
         'text'                  : '../node_modules/requirejs-text/text',
         'topojson'              : '../node_modules/topojson/build/topojson',
         'twix'                  : '../node_modules/twix/dist/twix',
