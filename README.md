@@ -11,31 +11,32 @@ Dashiki: ***Dash***boards powered by ***wiki*** articles.
 ## Use
 
 ```
-git clone https://gerrit.wikimedia.org/r/analytics/dashiki
+$ git clone https://gerrit.wikimedia.org/r/analytics/dashiki
 
-cd dashiki
+$ cd dashiki
 
-# If you have fabric(from PyPI) installed you can also run `fab setup` instead of the following three
-npm install
-sudo npm install -g gulp
-cd semantic && gulp build
+Install npm modules and gulp:
+$ npm install
+$ sudo npm install -g gulp
+$ cd semantic && gulp build
 
-NOTE: on Ubuntu, you may need to do `sudo apt-get install libcairo2-dev libjpeg-dev libgif-dev` to get npm to work.
+TIPS:
+* If you have fabric(from PyPI) installed you can also run `fab setup` instead of the above three commands.
+* On Ubuntu, you may need to do `sudo apt-get install libcairo2-dev libjpeg-dev libgif-dev` to get npm to work.
+* yarn install is under consideration, some incompabilities remain.
+* If you get `npm ERR! code EINTEGRITY` with `npm install`,  try removing `package-lock.json`.
+* Gulp version 4 is not stable and compatible with other packages. If you are running into errors with `sudo npm install -g gulp`, use `sudo npm install gulp@3.9.0`.
 
-NOTE: yarn install is under consideration, some incompabilities remain.
+Build some dashboards by running the commands below from the project root folder:
+$ gulp --layout metrics-by-project --config Dashiki:VitalSigns
+$ gulp --layout compare --config Dashiki:VisualEditorAndWikitext
+$ gulp --layout tabs --config Dashiki:SimpleRequestBreakdowns
 
-How to build some dashboards:
-gulp --layout metrics-by-project --config Dashiki:VitalSigns
-
-gulp --layout compare --config Dashiki:VisualEditorAndWikitext
-
-gulp --layout tabs --config Dashiki:SimpleRequestBreakdowns
-
-
-python -m SimpleHTTPServer 5000
+Execute the following command to run the Python http server:
+$ python -m SimpleHTTPServer 5000
 ```
 
-And you can now browse to http://localhost:5000/dist/compare-VisualEditorAndWikitext
+And you can now browse to http://localhost:5000/dist/compare-Dashiki:VisualEditorAndWikitext/
 
 What is this magic?  When you pass `--layout compare` to the gulp build, you're telling it
 to use the layout defined in src/layouts/compare/.  When you pass `--config
