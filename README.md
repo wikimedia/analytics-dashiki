@@ -119,19 +119,16 @@ edit-analysis:
         subfolder: compare
 ```
 
-In Wikimedia labs, we are hoping to have all the dashboards setup in the Dashiki labs project, so ask for access to this project. And from Wikitech's Manage Web Proxies page, set up a proxy for your hostname. Use the dashiki-staging-01 instance to test, and dashiki-01 as prod. You can have different hostnames for them, like:
+In Wikimedia labs, we are hoping to have all the dashboards setup in the Dashiki labs project, so ask for access to this project. And from Wikitech's Manage Web Proxies page, set up a proxy for your hostname. Use dashiki-01 as prod and test. You can point multiple proxies at the same instance:
 
 ```
-edit-analysis-test.wmflabs.org, http://dashiki-staging-01.dashiki.eqiad.wmflabs:80
+edit-analysis-test.wmflabs.org, http://dashiki-01.dashiki.eqiad.wmflabs:80
 edit-analysis.wmflabs.org, http://dashiki-01.dashiki.eqiad.wmflabs:80
 ```
 
 If you are deploying to a different instance, add a stage to the STAGES dictionary defined in the fabfile.
 
-Apache has been configured on our instances to serve all files out of /srv/static/hostname at https://hostname. To get this working for your dashboard add your hostname to the staging/prod Hiera config page:
-
-* [Staging config](https://wikitech.wikimedia.org/wiki/Hiera:Dashiki/host/dashiki-staging-01)
-* [Prod config](https://wikitech.wikimedia.org/wiki/Hiera:Dashiki/host/dashiki-01)
+Apache has been configured on our instances to serve all files out of /srv/static/hostname at https://hostname. To get this working for your dashboard add your hostname in the Puppet Configuration tab for the instance you're deploying to, on Horizon.  The role is role::simplestatic and the Parameters are a list of the hostnames configured on that instance.
 
 You are all set!
 
