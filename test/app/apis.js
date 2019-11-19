@@ -489,6 +489,43 @@ define(function (require) {
             sandbox.restore();
         });
 
+        it('should fetch the correct URL when grouped', function () {
+            var deferred = new $.Deferred();
+            deferred.resolveWith(null, ['not important']);
+            sandbox.stub($, 'ajax').returns(deferred);
+
+            this.datasetsApi.root = 'something';
+            var expected = 'something/metric/submetric.tsv';
+            var metricInfo = {
+                'metric': 'metric',
+                'submetric': 'submetric',
+                grouped: true,
+            };
+            this.datasetsApi.getData(metricInfo, ['project']);
+            expect($.ajax.getCalls()[0].args[0].url).toBe(expected);
+        });
+
+        it('data looks good when parsing grouped results', function (done) {
+            var deferred = new $.Deferred(),
+                groupedTSV = 'wiki	date	total\nrowiki	2019-11-16	12\nrowiki	2019-11-17	13\netwiki	2019-11-17	23';
+
+            deferred.resolveWith(null, [groupedTSV]);
+            sandbox.stub($, 'ajax').returns(deferred);
+
+            this.datasetsApi.root = 'something';
+            var metricInfo = {
+                'metric': 'metric',
+                'submetric': 'submetric',
+                grouped: true,
+            };
+            this.datasetsApi.getData(metricInfo, ['rowiki', 'etwiki']).then(function(result) {
+                var rows = result.rowData();
+                expect(rows[0][1]).toBe(12);
+                expect(rows[1][2]).toBe(23);
+                done();
+            });
+        });
+
         it('should fetch the correct URL', function () {
             var deferred = new $.Deferred();
             deferred.resolveWith(null, ['not important']);

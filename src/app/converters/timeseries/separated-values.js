@@ -6,6 +6,7 @@
 define(function (require) {
 
     var _ = require('lodash'),
+        utils = require('utils.strings'),
         TimeseriesData = require('models.timeseries');
 
     /**
@@ -29,33 +30,34 @@ define(function (require) {
 
         return function (options, rawData) {
 
-            var opt = $.extend({
-                label: '',
-                lineSeparator: '\n',
-                valueSeparator: valueSeparator,
-                allColumns: true,
-                varyPatterns: false,
-                varyColors: false,
-                globalPattern: false,
-                doNotParse: [],
+            var rows = [],
+                opt = $.extend({
+                    label: '',
+                    lineSeparator: utils.separators.line,
+                    valueSeparator: valueSeparator,
+                    allColumns: true,
+                    varyPatterns: false,
+                    varyColors: false,
+                    globalPattern: false,
+                    doNotParse: [],
+                    alreadySplit: false,
 
-            }, options);
+                }, options);
 
-            if (!_.isString(rawData)) {
-                 return new TimeseriesData();
+            if (opt.alreadySplit) {
+                rows = rawData;
+            } else {
+                if (!_.isString(rawData)) {
+                     return new TimeseriesData();
+                }
 
+                if (rawData.indexOf(opt.valueSeparator) < 0 ||
+                    rawData.indexOf(opt.lineSeparator) < 0) {
+                    return new TimeseriesData();
+                }
+
+                rows = utils.splitter(rawData, opt.lineSeparator, opt.valueSeparator);
             }
-
-            if (rawData.indexOf(opt.valueSeparator) < 0 ||
-                rawData.indexOf(opt.lineSeparator) < 0) {
-                return new TimeseriesData();
-            }
-
-            var rows = rawData.split(opt.lineSeparator).map(function (row) {
-                return row.split(opt.valueSeparator);
-            }).filter(function (row) {
-                return row.length > 1;
-            });
 
             var header = rows
                             // grab the first row and treat it as the header (required)

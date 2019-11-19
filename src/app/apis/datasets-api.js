@@ -10,6 +10,7 @@ define(function (require) {
         TimeseriesData = require('models.timeseries'),
          _ = require('lodash'),
         uri = require('uri/URI'),
+        utils = require('utils.strings'),
         logger = require('logger');
 
     require('uri/URITemplate');
@@ -33,53 +34,97 @@ define(function (require) {
     DatasetsApi.prototype.getData = function (metricInfo, projects) {
 
 
-        var deferred = $.Deferred(),
+        var self = this,
+            deferred = $.Deferred(),
             address = '',
-            self = this,
-            timeseries = [];
+            promise,
+            promises,
+            opt = {
+                label: metricInfo.submetric,
+                varyColors: true,
+                doNotParse: metricInfo.doNotParse,
+            };
 
         if (!Array.isArray(projects)) {
             projects = [projects];
         }
 
-
-        var promises  = projects.map(function(_project) {
-
-            if (metricInfo.metric) {
-                address = self.root + uri.expand('/{metric}/{submetric}/{project}.{format}', {
+        if (metricInfo.grouped) {
+            metricInfo.address = self.root + uri.expand('/{metric}/{submetric}.{format}', {
                 metric: metricInfo.metric,
                 submetric: metricInfo.submetric,
-                project: _project,
                 format: self.config.format,
-                }).toString();
-            } else if (metricInfo.path) {
-                address = uri(self.root + '/' + metricInfo.path).normalize().toString();
-            }
+            });
 
-            metricInfo.downloadLink = address;
+            promises = $.ajax({ url: metricInfo.address });
 
-            return $.ajax({ url: address});
+            promise = $.when(promises).then(function(text){
+                var rows = utils.splitter(
+                        text,
+                        utils.separators.line,
+                        utils.separators.value[self.config.format]
+                    ),
+                    timeseriesByProject;
 
-        });
+                opt.alreadySplit = true;
 
+                // skip the header
+                rows.shift();
+                // partition data by wiki column (has to be first column by convention)
+                timeseriesByProject = rows.reduce(function(byProject, row) {
+                    var wiki = row.shift();
 
-        $.when.apply($,promises).then(function(){
-            var timeseriesData = _.flatten(arguments);
+                    if (projects.indexOf(wiki) >= 0) {
 
-             for (var i =0;i<timeseriesData.length;i++) {
-                var tdata = timeseriesData[i];
-                var opt = {
-                    label: metricInfo.submetric,
-                    varyColors: true,
-                    doNotParse: metricInfo.doNotParse,
-                };
+                        if (!byProject[wiki]) {
+                            // first row is a header identifying this wiki so we can merge later
+                            byProject[wiki] = [['date', wiki]];
+                        }
+                        byProject[wiki].push(row);
+                    }
 
-                timeseries.push(self.dataConverter(opt, tdata));
-            }
+                    return byProject;
+                }, {});
 
-            var data = TimeseriesData.mergeAll(timeseries);
+                return _.values(timeseriesByProject);
+            });
 
-            return deferred.resolve(data);
+        } else {
+            promises = projects.map(function(_project) {
+
+                if (metricInfo.metric) {
+                    address = self.root + uri.expand('/{metric}/{submetric}/{project}.{format}', {
+                        metric: metricInfo.metric,
+                        submetric: metricInfo.submetric,
+                        project: _project,
+                        format: self.config.format,
+                    }).toString();
+                } else if (metricInfo.path) {
+                    address = uri(self.root + '/' + metricInfo.path).normalize().toString();
+                }
+
+                // todo: this sideffect is ugly
+                metricInfo.downloadLink = address;
+
+                return $.ajax({ url: address });
+
+            });
+
+            promise = $.when.apply($, promises).then(function(){
+                return _.flatten(arguments);
+            });
+        }
+
+        promise.then(function(projectsData) {
+            // each tdata has a header with the project (wiki) name
+            var timeseries = projectsData.map(function(tdata) {
+                // if grouped, opt was set to alreadyParsed, and tdata are rows
+                // if not grouped, tdata is text
+                return self.dataConverter(opt, tdata);
+            });
+
+            // the merge and color varying works because of the headers
+            return deferred.resolve(TimeseriesData.mergeAll(timeseries));
 
         }).catch(function(reason) {
             deferred.resolve(new TimeseriesData());

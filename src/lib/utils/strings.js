@@ -28,5 +28,29 @@ define(function (require) {
             };
         },
 
+        /**
+         * splits text by separators
+         *
+         * Parameters
+         *      lineSeparator
+         *      colSeparator
+         *
+         * Returns an array of rows
+         */
+        splitter: function (text, lineSeparator, valueSeparator) {
+            return text.split(lineSeparator).map(function (row) {
+                return row.split(valueSeparator);
+            }).filter(function (row) {
+                return row.length > 1;
+            });
+        },
+
+        separators: {
+            line: '\n',
+            value: {
+                'tsv': '\t',
+                'csv': ',',
+            },
+        },
     };
 });

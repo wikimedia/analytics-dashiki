@@ -8,7 +8,8 @@ define(function (require) {
         wikimetricsTimeseries = require('converters.wikimetrics-timeseries'),
         buildHierarchy = require('converters.hierarchy-data'),
         aqsApiResponse = require('converters.aqs-api-response'),
-        annotationsData = require('converters.annotations');
+        annotationsData = require('converters.annotations'),
+        utils = require('utils.strings');
 
     /**
      * Based on format determine an appropriate converter and return it
@@ -26,10 +27,10 @@ define(function (require) {
 
         switch (format) {
             case 'tsv':
-                return separatedValues('\t');
+                return separatedValues(utils.separators.value.tsv);
 
             case 'csv':
-                return separatedValues(',');
+                return separatedValues(utils.separators.value.csv);
 
             case 'json':
                 return wikimetricsTimeseries();
