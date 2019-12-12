@@ -6,11 +6,11 @@ import yaml
 
 STAGES = {
     'staging': {
-        'hosts': ['dashiki-staging-01.dashiki.eqiad.wmflabs'],
+        'hosts': ['dashiki-staging-02.dashiki.eqiad.wmflabs'],
         'branch': 'master',
     },
     'production': {
-        'hosts': ['dashiki-01.dashiki.eqiad.wmflabs'],
+        'hosts': ['dashiki-02.dashiki.eqiad.wmflabs'],
         'branch': 'master',
     },
 }
@@ -212,6 +212,6 @@ def help():
 
     - To deploy pick a dashboard and a target environment, like:
 
-    fab dashboard:edit-analysis staging deploy
+    fab dashboard:language-reportcard staging deploy
     """
     local('fab -list')

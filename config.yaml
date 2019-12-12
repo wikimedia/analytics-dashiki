@@ -64,3 +64,11 @@ config:
         hostname: pingback.wmflabs.org
         subfolder:
 
+    wmcs-edits:
+        layout: tabs
+        config: Dashiki:WMCSEdits
+        piwikHost:
+        piwikId:
+        hostname: wmcs-edits.wmflabs.org
+        subfolder:
+

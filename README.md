@@ -101,29 +101,29 @@ karma start
 # Deploy
 We have fabric to help deploy dashboards - some parts of this explanation are Wikimedia labs specific - however you can also use the deployer without.
 
-To install fabric
+To install fabric (we haven't moved to fabric 2 yet, so you have to specify a 1.X version; the latest as of this writing is 1.14.1)
 
 ```
-pip install fabric
+pip install fabric==1.14.1
 ```
 
 Once you've built and tested your dashboard, add a section to the `dashiki/config.yaml` file with relevant config, for instance:
 
 ```
-edit-analysis:
-        layout: compare
-        config: VisualEditorAndWikitext
-        piwikHost:
-        piwikId:
-        hostname: edit-analysis.wmflabs.org
-        subfolder: compare
+language-reportcard:
+    layout: metrics-by-project
+    config: Dashiki:LanguageReportcard
+    piwikHost:
+    piwikId:
+    hostname: language-reportcard.wmflabs.org
+    subfolder:
 ```
 
-In Wikimedia labs, we are hoping to have all the dashboards setup in the Dashiki labs project, so ask for access to this project. And from Wikitech's Manage Web Proxies page, set up a proxy for your hostname. Use dashiki-01 as prod and test. You can point multiple proxies at the same instance:
+In Wikimedia labs, we are hoping to have all the dashboards setup in the Dashiki labs project, so ask for access to this project. And from Wikitech's Manage Web Proxies page, set up a proxy for your hostname. Use dashiki-02 as prod and dashiki-staging-02 as test. You can point multiple proxies at the same instance:
 
 ```
-edit-analysis-test.wmflabs.org, http://dashiki-01.dashiki.eqiad.wmflabs:80
-edit-analysis.wmflabs.org, http://dashiki-01.dashiki.eqiad.wmflabs:80
+language-reportcard-test.wmflabs.org, http://dashiki-02.eqiad.wmflabs:80
+language-reportcard.wmflabs.org, http://dashiki-02.eqiad.wmflabs:80
 ```
 
 If you are deploying to a different instance, add a stage to the STAGES dictionary defined in the fabfile.
@@ -143,7 +143,7 @@ If you are not using labs - you can have a similar setup - Feel free to adapt th
     fab dashboard:browser-reports,hostname=browser-reports.wmflabs.org production deploy -u <username>
 
 * Change dashboard config params while deploying: (This uses fabric's [keyword args syntax](http://docs.fabfile.org/en/1.10/usage/fab.html#per-task-arguments)) -
-`fab dashboard:edit-analysis,layout=compare,hostname=edit-analysis-test.wmflabs.org staging deploy`
+`fab dashboard:language-reportcard,layout=metrics-by-project,hostname=language-reportcard-test.wmflabs.org staging deploy`
 
 
 # Future Plans
