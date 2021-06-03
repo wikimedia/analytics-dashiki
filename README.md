@@ -33,7 +33,10 @@ $ gulp --layout compare --config Dashiki:VisualEditorAndWikitext
 $ gulp --layout tabs --config Dashiki:SimpleRequestBreakdowns
 
 Execute the following command to run the Python http server:
-$ python -m SimpleHTTPServer 5000
+$ python -m http.server 5000
+
+or:
+$ python2 -m SimpleHTTPServer 5000
 ```
 
 And you can now browse to http://localhost:5000/dist/compare-Dashiki:VisualEditorAndWikitext/
