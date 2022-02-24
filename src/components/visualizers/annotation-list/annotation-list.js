@@ -72,7 +72,7 @@ define(function (require) {
                             annotation.end
                         ),
                         // parses markdown and protects from malicious code
-                        htmlNote: marked(annotation.note, {sanitize: true})
+                        htmlNote: marked.marked(annotation.note, {sanitize: true})
                     };
                 });
         }, this);

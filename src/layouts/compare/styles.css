@@ -17,14 +17,6 @@ body {
     font-size: 12px;
 }
 
-.columnar.flexer {
-    display: flex;
-    flex-direction: column;
-}
-.flexed {
-    flex: 1;
-}
-
 filters, comparisons, graph {
     display: block;
 }

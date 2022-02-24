@@ -12,11 +12,7 @@ define(function (require) {
         init: function (element, valueAccessor) {
             var val = ko.unwrap(valueAccessor());
 
-            if (val.height) {
-                $(element).height(val.height);
-            }
-
-            $(element).append('<div class="flexed graph"></div>');
+            $(element).append('<div class="graph"></div>');
         },
         update: function (element, valueAccessor) {
             var $element = $(element),
@@ -25,7 +21,8 @@ define(function (require) {
                 annotations = ko.unwrap(val.annotations),
                 colors = val.colors,
                 patterns = val.patterns,
-                graph = $element.find('div.graph')[0];
+                graph = $element.find('div.graph'),
+                height = val.height;
 
             if (data && data.header && data.header.length) {
                 var rows = data.rowData({
@@ -67,8 +64,19 @@ define(function (require) {
                     };
                 });
 
+                if (!height) {
+                    var tallParent = graph.parents('.full.height');
+                    if (tallParent.length > 0) {
+                        height = tallParent[0].clientHeight - 40;
+                    }
+                }
+
+                if (height) {
+                    graph.height(height);
+                }
+
                 var dygraphChart = new window.Dygraph(
-                    graph,
+                    graph[0],
                     rows,
                     options
                 );

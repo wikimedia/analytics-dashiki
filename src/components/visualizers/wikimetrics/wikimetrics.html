@@ -6,7 +6,7 @@
     <i class="external url icon"></i>
 </a>
 
-<dygraphs-timeseries class="columnar flexer flexed" params="
+<dygraphs-timeseries class="full height" params="
     data: mergedData,
     colors: colorScale,
     patterns: patternScale,
@@ -18,7 +18,7 @@
 
 <!-- ko ifnot: mergedData && mergedData() && mergedData().header.length -->
 
-<p><i class="up arrow icon"/> Please select a metric above<p>
-<p><i class="left arrow icon"/> And projects from the left</p>
+<p><i class="arrow up icon"></i> Please select a metric above</p>
+<p><i class="arrow left icon"></i> And projects from the left</p>
 
 <!-- /ko -->

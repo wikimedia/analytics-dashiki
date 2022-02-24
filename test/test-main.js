@@ -36,7 +36,7 @@ require.config({
         'jquery'                : '../node_modules/jquery/dist/jquery',
         'knockout'              : '../node_modules/knockout/build/output/knockout-latest',
         'lodash'                : '../node_modules/lodash/lodash',
-        'marked'                : '../node_modules/marked/lib/marked',
+        'marked'                : '../node_modules/marked/lib/marked.umd',
         'mediawiki-storage'     : '../node_modules/mediawiki-storage/dist/mediawiki-storage',
         'moment'                : '../node_modules/moment/moment',
         'numeral'               : '../node_modules/numeral/numeral',

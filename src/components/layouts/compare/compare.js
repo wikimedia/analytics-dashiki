@@ -179,7 +179,7 @@ define(function (require) {
                         });
                     }, this).extend({rateLimit: 0});
 
-                    c.desc = c.desc ? marked(c.desc, {sanitize: true}) : '';
+                    c.desc = c.desc ? marked.marked(c.desc, {sanitize: true}) : '';
 
                     if (c.annotationsMetric) {
                         var annotationInfo = {

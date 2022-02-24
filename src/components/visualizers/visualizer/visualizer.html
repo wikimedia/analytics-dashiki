@@ -16,18 +16,19 @@
   </span>
 </div>
 <div class="ui attached segment grid">
-    <div class="ui three wide column flexer">
+    <div class="ui three wide column">
 
         <div class="ui fluid icon input">
             <input placeholder="filter by date" data-bind="datepicker: {start: startDate, end: endDate, minDate: minDate}" />
-            <i class="calendar icon" />
+            <i class="calendar icon"></i>
         </div>
         <hr/>
 
         <!-- ko if: columnToggle -->
-        <div class="ui flexed" data-bind="style: {height: legendHeight}">
+        <div class="children too tall" data-bind="style: {height: legendHeight}">
             <!-- ko foreach: filteredHeader -->
-            <div class="ui simple reveal basic tight segment" data-bind="style: {'border-bottom': '5px solid ' + color}">
+            <div class="ui simple reveal basic tight segment"
+                 data-bind="style: {'border-bottom': '5px solid ' + color}">
                 <div class="ui checkbox">
                     <input type="checkbox" data-bind="attr: {id: uniqueId}, checked: selected"/>
                     <label class="link" data-bind="attr: {for: uniqueId}">

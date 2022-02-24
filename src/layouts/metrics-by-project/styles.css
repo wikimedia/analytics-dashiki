@@ -2,6 +2,13 @@ body {
     font-family: "Nimbus Sans L","Liberation Sans","Helvetica Neue","Helvetica","Arial",sans-serif;
 }
 
+.full.height {
+    flex: 1;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+}
+
 .created.by {
     margin: 10px;
     color: white;
@@ -35,27 +42,30 @@ body {
 
 .page.container > .left {
     background-color: #6D6D6D;
-    width: 280px;
+    flex: 1;
+    max-width: 280px;
     padding: 10px;
 }
 
 .page.container > .right {
     background-color: #EEEEEE;
+    flex: 1;
     padding: 10px;
     min-height: 500px;
     min-width: 360px;
+    display: flex;
+    flex-direction: column;
+}
+
+.page.container > .right .metric {
+    flex: 0;
 }
 
 .page.container > .right .visualizer {
     margin-top: 0;
-}
-
-.columnar.flexer {
-    display: flex;
-    flex-direction: column;
-}
-.flexed {
     flex: 1;
+    align-self: stretch;
+    display: flex;
 }
 
 /* our custom styles */
@@ -64,6 +74,8 @@ body {
 dygraphs-timeseries {
     display: block;
     margin-top: 20px;
+    top: 0;
+    bottom: 0;
 }
 dygraphs-timeseries .dygraph-roller input {
     position: relative !important;

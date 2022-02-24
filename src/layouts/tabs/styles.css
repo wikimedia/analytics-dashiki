@@ -33,15 +33,6 @@ h1 small {
     cursor: pointer!important;
 }
 
-.flexer {
-    display: flex;
-    flex-direction: column;
-}
-.flexed {
-    overflow-x: hidden!important;
-    flex: 1;
-}
-
 tabs-layout {
     height: 100%;
 }
@@ -102,4 +93,8 @@ tabs-layout > .bottom.pane .attached.segment {
     position: sticky;
     top: 0;
     z-index: 2;
+}
+
+.children.too.tall {
+    overflow-y: scroll;
 }

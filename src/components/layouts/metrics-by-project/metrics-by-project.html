@@ -17,19 +17,19 @@
         <created-by></created-by>
     </section>
 
-    <section class="right columnar flexer flexed">
+    <section class="right">
         <div class="ui segment metric">
             <metric-selector params="selectedMetric: selectedMetric,
                                             metrics: metrics,
                                    defaultSelection: defaultMetrics">
             </metric-selector>
         </div>
-        <div class="ui segment columnar flexer flexed visualizer">
+        <div class="ui segment visualizer">
             <wikimetrics params="projects: selectedProjects,
                                    metric: selectedMetric,
                          breakdownColumns: breakdownColumns,
                                  patterns: patterns"
-                         class="columnar flexer flexed">
+                         class="full height">
             </wikimetrics>
         </div>
     </section>
