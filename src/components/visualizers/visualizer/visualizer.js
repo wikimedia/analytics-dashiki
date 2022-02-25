@@ -59,7 +59,7 @@ define(function (require) {
             api.getData(graph, ['all']).done(function (timeseriesData) {
                 var data = graph.pivot ?
                     timeseriesData.pivot(graph.pivot.dimension, graph.pivot.metric) :
-                    timeseriesData
+                    timeseriesData;
 
                 this.data(data);
             }.bind(this));

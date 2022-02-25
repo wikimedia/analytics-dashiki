@@ -129,12 +129,19 @@ function getPiwikScript() {
 }
 /* End Helper Functions */
 
-
 /* Parse Arguments and set Defaults */
-if (!args.layout || !args.config) {
-    var msg = '[ERROR] you need --layout and --config parameters to build';
+var invalid = [];
+var justClean = args._.length === 1 && args._.includes('clean');
+if (!args.layout) {
+    invalid.push('you need the --layout parameter');
+}
+if (!justClean && !args.config) {
+    invalid.push('you need the --config parameter');
+}
+if (invalid.length) {
+    var msg = '[ERROR] ' + invalid.join(', ')
     gutil.log(msg);
-    throw msg;
+    throw(msg);
 }
 
 writeBuildConfig(args.config);
@@ -154,11 +161,73 @@ layout.requireJsOptimizerConfig = merge(
 /* End Parse Arguments */
 
 /* Gulp Tasks (all tasks are layout-specific, based on the arguments parsed above) */
-gulp.task('default', ['html'], function () {
-    gutil.log('');
+
+/**
+ * Removes all files from ./dist/ (w/o using streams)
+ * you can negate patterns
+ */
+gulp.task('clean', function (callback) {
+    return del([layout.destPath], callback);
 });
 
-gulp.task('html', ['js', 'css', 'themes'], function () {
+gulp.task('lint', function () {
+    return gulp.src(layout.lintSources)
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'));
+});
+
+/**
+ * Copies any custom or local fonts so the css can find them
+ */
+gulp.task('custom-fonts', gulp.series('clean', function () {
+    var customFonts = 'src/css/fonts/**/*';
+
+    // put fonts in both places, too (TODO: check if subfolder deploys need this)
+    return gulp.src([
+        customFonts,
+    ])
+        .pipe(gulp.dest(layout.destPath + 'fonts/'))
+        .pipe(gulp.dest(layout.destPath + '../fonts/'));
+}));
+
+gulp.task('js', gulp.series(gulp.parallel('lint', 'clean'), function (done) {
+    // version the names of all the bundles, so they can bust caches
+    Object.keys(layout.requireJsOptimizerConfig.bundles).forEach(function (bundle) {
+        layout.requireJsOptimizerConfig.bundles[bundle + '-' + layout.version] = layout.requireJsOptimizerConfig.bundles[bundle];
+        delete layout.requireJsOptimizerConfig.bundles[bundle];
+    });
+
+    // Discovers all AMD dependencies, concatenates together all required .js files, minifies them
+    rjs(layout.requireJsOptimizerConfig)
+        .pipe(uglify({
+            preserveComments: 'some'
+        }))
+        .pipe(gulp.dest(layout.destPath));
+    done();
+}));
+
+gulp.task('css', gulp.series('clean', function () {
+    return gulp.src(layout.cssSources)
+        .pipe(minifyCSS())
+        .pipe(concat('styles.css'))
+        .pipe(gulp.dest(layout.destPath));
+}));
+
+/**
+ * Copies semantic themes where the css expects them to be
+ */
+gulp.task('themes', gulp.series(gulp.parallel('custom-fonts', 'clean'), function () {
+    var semanticThemes = 'src/themes/default/**/*';
+
+    // put themes in both places (TODO: can semantic build overrides prevent this?)
+    return gulp.src([
+        semanticThemes,
+    ])
+        .pipe(gulp.dest(layout.destPath + 'themes/default/'))
+        .pipe(gulp.dest(layout.destPath + '../themes/default/'));
+}));
+
+gulp.task('build', gulp.series(gulp.parallel('js', 'css', 'themes'), function () {
     // restore the build config to return nothing so it doesn't break
     // automated or local testing
     writeBuildConfig(null);
@@ -176,65 +245,7 @@ gulp.task('html', ['js', 'css', 'themes'], function () {
 
         }))
         .pipe(gulp.dest(layout.destPath));
-});
+}));
 
-gulp.task('js', ['lint', 'clean'], function () {
-    // version the names of all the bundles, so they can bust caches
-    Object.keys(layout.requireJsOptimizerConfig.bundles).forEach(function (bundle) {
-        layout.requireJsOptimizerConfig.bundles[bundle + '-' + layout.version] = layout.requireJsOptimizerConfig.bundles[bundle];
-        delete layout.requireJsOptimizerConfig.bundles[bundle];
-    });
-
-    // Discovers all AMD dependencies, concatenates together all required .js files, minifies them
-    return rjs(layout.requireJsOptimizerConfig)
-        .pipe(uglify({
-            preserveComments: 'some'
-        }))
-        .pipe(gulp.dest(layout.destPath));
-});
-
-gulp.task('css', ['clean'], function () {
-    return gulp.src(layout.cssSources)
-        .pipe(minifyCSS())
-        .pipe(concat('styles.css'))
-        .pipe(gulp.dest(layout.destPath));
-});
-
-/** Copies semantic themes where the css expects them to be**/
-gulp.task('themes', ['custom-fonts', 'clean'], function () {
-    var semanticThemes = 'src/themes/default/**/*';
-
-    // put themes in both places (TODO: can semantic build overrides prevent this?)
-    return gulp.src([
-        semanticThemes,
-    ])
-        .pipe(gulp.dest(layout.destPath + 'themes/default/'))
-        .pipe(gulp.dest(layout.destPath + '../themes/default/'));
-});
-
-/** Copies any custom or local fonts so the css can find them **/
-gulp.task('custom-fonts', ['clean'], function () {
-    var customFonts = 'src/css/fonts/**/*';
-
-    // put fonts in both places, too (TODO: check if subfolder deploys need this)
-    return gulp.src([
-        customFonts,
-    ])
-        .pipe(gulp.dest(layout.destPath + 'fonts/'))
-        .pipe(gulp.dest(layout.destPath + '../fonts/'));
-});
-
-gulp.task('lint', function () {
-    gulp.src(layout.lintSources)
-        .pipe(jshint())
-        .pipe(jshint.reporter('default'));
-});
-
-// Removes all files from ./dist/ (w/o using streams)
-// you can negate patterns
-gulp.task('clean', function (callback) {
-    return del([layout.destPath], callback);
-});
-
-gulp.task('default', ['html']);
+gulp.task('default', gulp.series('build'));
 /* End Gulp Tasks */

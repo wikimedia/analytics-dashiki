@@ -293,7 +293,7 @@ define(function (require) {
             result[key] = [header.map(function (h) { return row[h]; })];
         }, {});
 
-        return new TimeseriesData(header, rowsByDate, header, patternLabels)
+        return new TimeseriesData(header, rowsByDate, header, patternLabels);
     };
 
     /**

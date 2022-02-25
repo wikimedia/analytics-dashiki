@@ -9,9 +9,7 @@ define(function (require) {
     require('./dygraphs.patch');
 
     ko.bindingHandlers.dygraphs = {
-        init: function (element, valueAccessor) {
-            var val = ko.unwrap(valueAccessor());
-
+        init: function (element) {
             $(element).append('<div class="graph"></div>');
         },
         update: function (element, valueAccessor) {
