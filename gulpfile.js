@@ -17,7 +17,9 @@ var gulp        = require('gulp'),
     concat      = require('gulp-concat'),
     minifyCSS   = require('gulp-clean-css'),
     htmlreplace = require('gulp-html-replace'),
-    jshint      = require('gulp-jshint');
+    jshint      = require('gulp-jshint'),
+    vinylize    = require('./lib/vinylize');
+
 
 // configuration defaults
 var defaults = {
@@ -166,20 +168,20 @@ layout.requireJsOptimizerConfig = merge(
  * Removes all files from ./dist/ (w/o using streams)
  * you can negate patterns
  */
-gulp.task('clean', function (callback) {
+function clean (callback) {
     return del([layout.destPath], callback);
-});
+}
 
-gulp.task('lint', function () {
+function lint () {
     return gulp.src(layout.lintSources)
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
-});
+}
 
 /**
  * Copies any custom or local fonts so the css can find them
  */
-gulp.task('custom-fonts', gulp.series('clean', function () {
+function customFonts () {
     var customFonts = 'src/css/fonts/**/*';
 
     // put fonts in both places, too (TODO: check if subfolder deploys need this)
@@ -188,35 +190,34 @@ gulp.task('custom-fonts', gulp.series('clean', function () {
     ])
         .pipe(gulp.dest(layout.destPath + 'fonts/'))
         .pipe(gulp.dest(layout.destPath + '../fonts/'));
-}));
+}
 
-gulp.task('js', gulp.series(gulp.parallel('lint', 'clean'), function (done) {
+function js () {
     // version the names of all the bundles, so they can bust caches
     Object.keys(layout.requireJsOptimizerConfig.bundles).forEach(function (bundle) {
-        layout.requireJsOptimizerConfig.bundles[bundle + '-' + layout.version] = layout.requireJsOptimizerConfig.bundles[bundle];
+        layout.requireJsOptimizerConfig.bundles[bundle + '-' + layout.version]
+             = layout.requireJsOptimizerConfig.bundles[bundle];
         delete layout.requireJsOptimizerConfig.bundles[bundle];
     });
 
     // Discovers all AMD dependencies, concatenates together all required .js files, minifies them
-    rjs(layout.requireJsOptimizerConfig)
-        .pipe(uglify({
-            preserveComments: 'some'
-        }))
+    return rjs(layout.requireJsOptimizerConfig)
+        .pipe(vinylize())
+        .pipe(uglify())
         .pipe(gulp.dest(layout.destPath));
-    done();
-}));
+}
 
-gulp.task('css', gulp.series('clean', function () {
+function css () {
     return gulp.src(layout.cssSources)
         .pipe(minifyCSS())
         .pipe(concat('styles.css'))
         .pipe(gulp.dest(layout.destPath));
-}));
+}
 
 /**
  * Copies semantic themes where the css expects them to be
  */
-gulp.task('themes', gulp.series(gulp.parallel('custom-fonts', 'clean'), function () {
+function themes () {
     var semanticThemes = 'src/themes/default/**/*';
 
     // put themes in both places (TODO: can semantic build overrides prevent this?)
@@ -225,9 +226,9 @@ gulp.task('themes', gulp.series(gulp.parallel('custom-fonts', 'clean'), function
     ])
         .pipe(gulp.dest(layout.destPath + 'themes/default/'))
         .pipe(gulp.dest(layout.destPath + '../themes/default/'));
-}));
+}
 
-gulp.task('build', gulp.series(gulp.parallel('js', 'css', 'themes'), function () {
+function html () {
     // restore the build config to return nothing so it doesn't break
     // automated or local testing
     writeBuildConfig(null);
@@ -245,7 +246,8 @@ gulp.task('build', gulp.series(gulp.parallel('js', 'css', 'themes'), function ()
 
         }))
         .pipe(gulp.dest(layout.destPath));
-}));
+}
 
+gulp.task('build', gulp.series(clean, lint, customFonts, themes, css, js, html));
 gulp.task('default', gulp.series('build'));
 /* End Gulp Tasks */
