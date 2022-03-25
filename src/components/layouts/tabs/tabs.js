@@ -67,7 +67,7 @@ define(function (require) {
                     g.showLastDays = g.showLastDays || visualizers[g.type].defaultDays;
 
                     if (t.dataRange) {
-                        g.startDate = t.dataRange.startDate;
+                        g.startDate = g.startDate || t.dataRange.startDate;
                     }
                     g.typeIcon = visualizers[g.type].icon;
 

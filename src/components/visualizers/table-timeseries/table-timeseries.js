@@ -16,7 +16,8 @@ define(function (require) {
                 // only show the last few rows to speed up rendering
                 // TODO: paginate, T191270
                 limit: { start: -900 },
-            });
+            // show last item first, so we don't have to scroll
+            }).reverse();
         }, this);
         this.header = ko.computed(function () {
             return ko.unwrap(this.data).header;
