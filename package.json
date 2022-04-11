@@ -32,7 +32,7 @@
     "pageviews": "^1.4.1",
     "requirejs": "^2.3.2",
     "requirejs-text": "^2.0.12",
-    "semantic-datepicker": "https://github.com/milimetric/semantic-ui-daterangepicker/archive/master.tar.gz",
+    "semantic-datepicker": "https://github.com/milimetric/semantic-ui-daterangepicker/archive/main.tar.gz",
     "topojson": "^1.6.27",
     "twix": "^1.1.1",
     "typeahead.js": "0.10.5",
