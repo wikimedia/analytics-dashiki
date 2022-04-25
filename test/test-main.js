@@ -46,7 +46,6 @@ require.config({
         'twix'                  : '../node_modules/twix/dist/twix',
         'typeahead'             : '../node_modules/typeahead.js/dist/typeahead.jquery',
         'uri'                   : '../node_modules/urijs/src',
-        'vega'                  : '../node_modules/vega/vega',
 
         'semantic-dropdown'     : '../semantic/dist/components/dropdown',
         'semantic-popup'        : '../semantic/dist/components/popup',
@@ -107,7 +106,7 @@ require.config({
 
         // *** mocks
         'mocks.URI'                 : '../test/mocks/URIProxy/URI',
-        
+
         // data
         'data.country-codes'        : 'lib/data/country-codes',
         'data.world-50m'            : 'lib/data/world-50m'
@@ -122,9 +121,6 @@ require.config({
         },
         d3: {
             exports: 'd3',
-        },
-        vega: {
-            deps: ['d3'],
         },
         'semantic-popup': {
             deps: ['jquery'],

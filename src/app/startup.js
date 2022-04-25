@@ -24,7 +24,6 @@ define(function(require) {
     ko.components.register('project-selector',          { require: 'components/selectors/project/project' });
     ko.components.register('metric-selector',           { require: 'components/selectors/metric/metric' });
     ko.components.register('breakdown-toggle',          { require: 'components/controls/breakdown-toggle/breakdown-toggle' });
-    ko.components.register('vega-timeseries',           { require: 'components/visualizers/vega-timeseries/vega-timeseries' });
     ko.components.register('annotation-list',           { require: 'components/visualizers/annotation-list/annotation-list' });
     // *********** END Metrics By Project Layout Components ************ //
 

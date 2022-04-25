@@ -36,8 +36,7 @@
     "topojson": "^1.6.27",
     "twix": "^1.1.1",
     "typeahead.js": "0.10.5",
-    "urijs": "^1.19.8",
-    "vega": "^5.21.0"
+    "urijs": "^1.19.8"
   },
   "devDependencies": {
     "babel-polyfill": "^6.26.0",

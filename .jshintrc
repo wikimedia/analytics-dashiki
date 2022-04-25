@@ -24,7 +24,6 @@
         "expect":true,
         "require":true,
         "d3": true,
-        "vega":true,
         "ko":true,
         "Logger" :true,
         "define": true,

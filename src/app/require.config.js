@@ -22,7 +22,6 @@ var require = {
         'twix'                  : '../node_modules/twix/dist/twix',
         'typeahead'             : '../node_modules/typeahead.js/dist/typeahead.jquery',
         'uri'                   : '../node_modules/urijs/src',
-        'vega'                  : '../node_modules/vega/vega',
 
         'semantic-dropdown'     : '../semantic/dist/components/dropdown',
         'semantic-popup'        : '../semantic/dist/components/popup',
@@ -94,9 +93,6 @@ var require = {
         },
         d3: {
             exports: 'd3',
-        },
-        vega: {
-            deps: ['d3'],
         },
         'semantic-popup': {
             deps: ['jquery']
