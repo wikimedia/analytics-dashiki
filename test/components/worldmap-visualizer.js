@@ -22,6 +22,7 @@ define(function (require) {
         ]
     };
 
+    // TODO: move to bindings
     var container = document.createElement('div');
     $(container).addClass('map-test');
     container.innerHTML = '<div class = "map-container" data-bind="worldmap: {data: data, date: date}" ></div>'

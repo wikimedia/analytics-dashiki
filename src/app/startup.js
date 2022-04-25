@@ -15,7 +15,7 @@ define(function(require) {
     ko.components.register('out-of-service', {require: 'components/layouts/out-of-service/out-of-service'    });
     ko.components.register('created-by', {require: 'components/layouts/created-by/created-by'    });
 
-    // separate layouts, TODO: make each layout register its own components
+    // separate layouts, NOTE: might be cleaner to have each layout register its own components
 
     // *********** BEGIN Metrics By Project Layout Components ********** //
     ko.components.register('metrics-by-project-layout', { require: 'components/layouts/metrics-by-project/metrics-by-project' });
